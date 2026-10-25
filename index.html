@@ -41,6 +41,12 @@ button{font-family:inherit;color:inherit;outline:0}
 .pill{height:44px;padding:0 18px;border-radius:22px;display:flex;align-items:center;font-size:15px;font-weight:500;gap:8px}
 .pill i{width:8px;height:8px;border-radius:50%;background:#30d158;box-shadow:0 0 10px #30d158}
 .demo{font-size:12px;font-weight:600;opacity:.7;border-left:1px solid var(--gb);padding-left:10px;margin-left:2px}
+.modal{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(12px)}
+.modal.show{display:flex}.dialog{width:420px;max-width:calc(100% - 40px);border-radius:28px;padding:28px;background:var(--bg);box-shadow:0 25px 80px var(--sh)}
+.dialog h2{margin:0 0 8px;font-size:24px}.dialog p{font-size:14px;line-height:1.5;color:var(--mut)}
+.dialog label{display:block;font-size:13px;font-weight:600;margin:15px 0 6px}.dialog input{box-sizing:border-box;width:100%;padding:13px;border:1px solid var(--gb);border-radius:12px;background:var(--gt2);color:var(--tx);font:inherit}
+.dialog .actions{display:flex;gap:10px;margin-top:20px}.dialog button{padding:12px 16px;border:0;border-radius:12px;cursor:pointer;background:var(--gt2)}.dialog button.primary{background:#0a84ff;color:white}
+.dialog .error{color:#ff453a;min-height:20px;margin:10px 0 0}.live .sc,.live .tile{cursor:default}.live .sc{opacity:.55}
 .cb{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
 .cb:active{transform:scale(.88)}
 .av{font-size:18px;font-weight:600;background:linear-gradient(135deg,#ff9f0a,#ff375f);color:#fff;border:0}
@@ -63,7 +69,7 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stro
 .chip.act small{color:rgba(60,60,67,.65)}
 .chip svg{width:22px;height:22px;flex:none}
 .chip b{display:block;font-size:13px;font-weight:600;line-height:1.1}.chip small{font-size:11px;font-weight:500;color:var(--mut)}
-#grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:112px;gap:12px;align-content:start}
+#grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:112px;gap:12px;align-content:start;overflow:auto;min-height:0;padding:2px 4px 12px}
 .tile{border-radius:28px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;border:1px solid transparent;border-top-color:var(--gb)}
 .tile.in{animation:rise .65s cubic-bezier(.2,1.3,.4,1) both}
 @keyframes rise{from{opacity:0;transform:translateY(24px) scale(.92);filter:blur(6px)}}
@@ -115,7 +121,7 @@ aside{width:320px;display:flex;flex-direction:column;gap:14px}
       <div class="pill glass" title="Os aparelhos exibidos são exemplos e ainda não estão conectados à sua conta"><i></i><span id="sum"></span><span class="demo">Demonstração</span></div>
       <button class="cb glass" id="amBtn" aria-label="Modo ambiente"><svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
       <button class="cb glass" id="thBtn" aria-label="Tema"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"/></svg></button>
-      <button class="cb av" aria-label="Perfil">C</button>
+      <button class="cb av" id="connectBtn" aria-label="Configurar conexão" title="Configurar conexão">C</button>
     </div>
     <div id="main">
       <div id="col">
@@ -135,6 +141,16 @@ aside{width:320px;display:flex;flex-direction:column;gap:14px}
     <div id="dock" class="glass"><div id="tabs"><div id="lens"></div></div></div>
   </div>
   <div id="amb"><div class="big" id="ac"></div><div class="sub" id="ad"></div><div class="sub" style="font-size:20px;opacity:.6">24° · Parcialmente nublado</div></div>
+  <div id="connectionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="connectionTitle"><div class="dialog">
+    <h2 id="connectionTitle">Conectar Home Assistant</h2>
+    <p>Exibe os aparelhos já cadastrados no Home Assistant. A conexão é direta do seu navegador; o token não é enviado ao GitHub nem salvo neste site.</p>
+    <form id="connectionForm">
+      <label for="haUrl">URL HTTPS do Home Assistant</label><input id="haUrl" type="url" placeholder="https://seu-endereco.ui.nabu.casa" required autocomplete="url">
+      <label for="haToken">Token de acesso de longa duração</label><input id="haToken" type="password" required autocomplete="off">
+      <p id="connectionError" class="error" role="alert"></p>
+      <div class="actions"><button type="button" id="connectionCancel">Cancelar</button><button type="button" id="disconnectBtn" hidden>Desconectar</button><button class="primary" type="submit">Conectar</button></div>
+    </form>
+  </div></div>
 </div></div>
 <script>
 const P={
@@ -174,8 +190,8 @@ const D={
  'Varanda':[['bulb','Luz externa',Y,0,'',0],['drop','Irrigação',B,0,'Agendada 18h',0],['lock','Porta da frente',G,1,'Trancada',1],['cam','Câmera',B,1,'Ao vivo',0]]
 };
 const R={'Favoritos':'star','Sala':'sofa','Cozinha':'kit','Quarto':'bed','Escritório':'bag','Varanda':'leaf'};
-const CAT={bulb:'luz',lamp:'luz',snow:'clima',fan:'clima',lock:'seg',cam:'seg',tv:'tv',spk:'tv',drop:'agua'};
-const CH=[['luz','bulb','Luzes'],['clima','snow','Clima'],['seg','lock','Segurança'],['tv','tv','TV e som'],['agua','drop','Água']];
+const CAT={bulb:'luz',lamp:'luz',snow:'clima',fan:'clima',lock:'seg',cam:'seg',tv:'tv',spk:'tv',drop:'agua',plug:'energia',blinds:'seg'};
+const CH=[['luz','bulb','Luzes'],['clima','snow','Clima'],['seg','lock','Segurança'],['tv','tv','TV e som'],['agua','drop','Água'],['energia','plug','Energia']];
 const set=(d,o,s)=>{d[3]=o;if(s)d[4]=s};
 const SC=[['Bom dia','sun','linear-gradient(135deg,#ff9a3c,#ff4f7b)','Acordar',()=>{set(D.Cozinha[0],1,'100%');set(D.Cozinha[2],1,'Ligada');set(D.Sala[4],1,'Aberta 100%');set(D.Quarto[1],0)}],
  ['Chegar em casa','home','linear-gradient(135deg,#34c7a0,#0a84ff)','Boas-vindas',()=>{set(D.Sala[0],1,'80%');set(D.Sala[3],1,'23°');set(D.Varanda[2],0)}],
@@ -184,25 +200,26 @@ const SC=[['Bom dia','sun','linear-gradient(135deg,#ff9a3c,#ff4f7b)','Acordar',(
 let cur='Favoritos',sel=null;const $=s=>document.querySelector(s);
 const all=()=>Object.values(D).flat();
 const list=()=>sel?all().filter(d=>CAT[d[0]]===sel):cur==='Favoritos'?all().filter(d=>d[5]):D[cur];
-const stx=d=>d[3]?(d[4]||'Ligado'):d[0]==='lock'?'Destrancada':d[0]==='blinds'?'Fechada':'Desligado';
+const stx=d=>d[7]?d[4]:d[3]?(d[4]||'Ligado'):d[0]==='lock'?'Destrancada':d[0]==='blinds'?'Fechada':'Desligado';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function tabs(){$('#tabs').insertAdjacentHTML('beforeend',Object.keys(R).map(r=>`<button class="tab" data-r="${r}">${S(R[r])}${r}</button>`).join(''))}
 function mark(){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('act',!sel&&b.dataset.r===cur));const b=$('.tab[data-r="'+cur+'"]'),l=$('#lens');l.style.opacity=sel?0:1;l.style.width=b.offsetWidth+'px';l.style.transform=`translateX(${b.offsetLeft}px)`}
-function chips(){const A=all();$('#chips').innerHTML=CH.map(([k,ic,n])=>{const L=A.filter(d=>CAT[d[0]]===k);let s;
+function chips(){const A=all();$('#chips').innerHTML=CH.map(([k,ic,n])=>{const L=A.filter(d=>CAT[d[0]]===k);if(haLive&&!L.length)return '';let s;
  if(k==='luz'){const c=L.filter(d=>d[3]).length;s=c?c+(c>1?' ligadas':' ligada'):'Apagadas'}
  else if(k==='clima'){const a=L.find(d=>d[6]&&d[3]);s=a?a[4]:L.some(d=>d[3])?'Ventilando':'Desligado'}
- else if(k==='seg'){s=L.find(d=>d[0]==='lock')[3]?'Trancada':'Destrancada'}
+ else if(k==='seg'){const lock=L.find(d=>d[0]==='lock');s=lock?(lock[3]?'Trancada':'Destrancada'):L.length+' aparelhos'}
  else if(k==='tv'){const c=L.filter(d=>d[3]).length;s=c?c+' em uso':'Em espera'}
- else s='Agendada 18h';
+ else s=haLive?L.filter(d=>d[3]).length+' em uso':k==='agua'?'Agendada 18h':L.filter(d=>d[3]).length+' em uso';
  return `<button class="chip glass tilt ${sel===k?'act':''}" data-k="${k}">${S(ic)}<div><b>${n}</b><small>${s}</small></div></button>`}).join('')}
 function grid(anim){$('#grid').innerHTML=list().map((d,i)=>{const[ic,n,c,on,,,t]=d;
- return `<button class="tile glass tilt ${on?'on':''} ${anim?'in':''}" data-i="${i}" style="--c:${c};animation-delay:${i*55}ms"><span class="ico">${S(ic)}</span>${t&&on?'<div class="pm"><span data-d="-1">−</span><span data-d="1">+</span></div>':''}<div><div class="nm">${n}</div><div class="st">${stx(d)}</div></div></button>`}).join('');
- $('#sum').textContent=all().filter(d=>d[3]).length+' dispositivos ligados'}
+ return `<button class="tile glass tilt ${on?'on':''} ${anim?'in':''}" data-i="${i}" style="--c:${c};animation-delay:${i*55}ms"><span class="ico">${S(ic)}</span>${!haLive&&t&&on?'<div class="pm"><span data-d="-1">−</span><span data-d="1">+</span></div>':''}<div><div class="nm">${esc(n)}</div><div class="st">${esc(stx(d))}</div></div></button>`}).join('');
+ $('#sum').textContent=haLive?all().length+' aparelhos':all().filter(d=>d[3]).length+' dispositivos ligados'}
 const ref=a=>{grid(a);chips()};
 $('#scn').innerHTML=SC.map((s,i)=>`<button class="sc tilt" data-s="${i}" style="background:${s[2]}">${S(s[1])}<b>${s[0]}</b><small>${s[3]}</small></button>`).join('');
-$('#scn').onclick=e=>{const b=e.target.closest('.sc');if(!b)return;SC[b.dataset.s][4]();b.classList.remove('ping');void b.offsetWidth;b.classList.add('ping');ref(0)};
+$('#scn').onclick=e=>{if(haLive)return;const b=e.target.closest('.sc');if(!b)return;SC[b.dataset.s][4]();b.classList.remove('ping');void b.offsetWidth;b.classList.add('ping');ref(0)};
 $('#chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;sel=sel===b.dataset.k?null:b.dataset.k;mark();ref(1)};
 $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;if(b.dataset.r===cur&&!sel)return;cur=b.dataset.r;sel=null;mark();ref(1)};
-$('#grid').onclick=e=>{const t=e.target.closest('.tile');if(!t)return;const d=list()[t.dataset.i],p=e.target.closest('.pm span');
+$('#grid').onclick=e=>{if(haLive)return;const t=e.target.closest('.tile');if(!t)return;const d=list()[t.dataset.i],p=e.target.closest('.pm span');
  if(p){d[4]=(parseInt(d[4]||23)+ +p.dataset.d)+'°'}else{d[3]=d[3]?0:1;if(d[6]&&d[3]&&!d[4])d[4]='23°'}ref(0)};
 const wd=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'],mn=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 function tick(){const n=new Date(),t=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
@@ -225,6 +242,44 @@ const wake=()=>{amb.classList.remove('show');clearTimeout(idle);idle=setTimeout(
 $('#amBtn').onclick=e=>{e.stopPropagation();amb.classList.add('show')};
 amb.onclick=e=>{e.stopPropagation();wake()};
 ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,()=>{if(!amb.classList.contains('show'))wake()}));
+let haLive=false,haSocket=null,haRequest=0;
+const haKinds={light:['bulb',Y],switch:['plug',G],fan:['fan',B],climate:['snow',B],cover:['blinds',G],lock:['lock',G],camera:['cam',B],media_player:['tv',B]};
+const haState=s=>{const domain=s.entity_id.split('.')[0],kind=haKinds[domain];if(!kind)return null;
+ const state=s.state,unavailable=state==='unavailable'||state==='unknown';
+ let label=unavailable?'Indisponível':state==='on'?'Ligado':state==='off'?'Desligado':state;
+ if(domain==='climate'&&!unavailable)label=(s.attributes.current_temperature??s.attributes.temperature??state)+(typeof (s.attributes.current_temperature??s.attributes.temperature)==='number'?'°':'');
+ if(domain==='lock')label=state==='locked'?'Trancada':state==='unlocked'?'Destrancada':label;
+ const on=!unavailable&&!['off','closed','unlocked','idle','standby'].includes(state);
+ return [kind[0],s.attributes.friendly_name||s.entity_id,kind[1],on,label,1,0,true,s.entity_id]};
+function haRender(states){const found=states.map(haState).filter(Boolean);D.Sala=found;for(const room of Object.keys(D))if(room!=='Sala')D[room]=[];
+ haLive=true;document.documentElement.classList.add('live');cur='Favoritos';sel=null;
+ document.querySelectorAll('.tab:not([data-r="Favoritos"])').forEach(b=>b.hidden=true);
+ $('.demo').textContent='Home Assistant';$('#connectBtn').textContent='HA';mark();ref(1);
+ if(!found.length)$('#grid').innerHTML='<p>Nenhum aparelho compatível foi encontrado no Home Assistant.</p>'}
+function haDisconnect(){if(haSocket){const socket=haSocket;haSocket=null;socket.close()}haLive=false;document.documentElement.classList.remove('live');
+ document.querySelectorAll('.tab').forEach(b=>b.hidden=false);$('.demo').textContent='Demonstração';$('#connectBtn').textContent='C';
+ location.reload()}
+function connectHa(url,token){return new Promise((resolve,reject)=>{let socket;try{const u=new URL(url);if(u.protocol!=='https:')throw Error('Use uma URL HTTPS válida.');
+ u.protocol='wss:';u.pathname=u.pathname.replace(/\/$/,'')+'/api/websocket';u.search='';u.hash='';socket=new WebSocket(u.href)}catch(e){reject(e);return}
+ let settled=false,authenticated=false;const timeout=setTimeout(()=>fail('Tempo esgotado. Verifique a URL e o acesso ao Home Assistant.'),15000);
+ function fail(msg){if(!settled){settled=true;clearTimeout(timeout);socket.close();reject(Error(msg))}}
+ socket.onerror=()=>fail('Não foi possível abrir a conexão segura com o Home Assistant.');
+ socket.onclose=()=>{if(!settled)fail('A conexão foi encerrada.');else if(haSocket===socket){haSocket=null;$('.demo').textContent='Desconectado'}};
+ socket.onmessage=e=>{let m;try{m=JSON.parse(e.data)}catch{return}
+ if(m.type==='auth_required'){socket.send(JSON.stringify({type:'auth',access_token:token}));return}
+ if(m.type==='auth_invalid'){fail('Token inválido ou sem acesso.');return}
+ if(m.type==='auth_ok'){authenticated=true;socket.send(JSON.stringify({id:++haRequest,type:'get_states'}));return}
+ if(m.type==='result'&&m.success===false&&!settled){fail(m.error?.message||'O Home Assistant recusou a consulta.');return}
+ if(m.type==='result'&&authenticated&&Array.isArray(m.result)){clearTimeout(timeout);settled=true;if(haSocket&&haSocket!==socket)haSocket.close();haSocket=socket;haRender(m.result);
+ socket.send(JSON.stringify({id:++haRequest,type:'subscribe_events',event_type:'state_changed'}));resolve();return}
+ if(m.type==='event'&&m.event?.event_type==='state_changed'){const s=m.event.data.new_state;if(!s)return;
+ const old=Object.values(D).flat().filter(d=>d[8]!==s.entity_id);const item=haState(s);if(item){item[8]=s.entity_id;old.push(item)}D.Sala=old;ref(0)}
+ };});}
+$('#connectBtn').onclick=()=>{$('#connectionModal').classList.add('show');$('#disconnectBtn').hidden=!haLive;$('#connectionError').textContent='';$('#haUrl').focus()};
+$('#connectionCancel').onclick=()=>$('#connectionModal').classList.remove('show');
+$('#connectionModal').onclick=e=>{if(e.target.id==='connectionModal')e.currentTarget.classList.remove('show')};
+$('#disconnectBtn').onclick=haDisconnect;
+$('#connectionForm').onsubmit=async e=>{e.preventDefault();$('#connectionError').textContent='Conectando…';try{await connectHa($('#haUrl').value.trim(),$('#haToken').value.trim());$('#haToken').value='';$('#connectionModal').classList.remove('show')}catch(err){$('#connectionError').textContent=err.message}};
 tabs();cal();tick();ref(1);fit();wake();setInterval(tick,1000);
 document.fonts&&document.fonts.ready.then(mark);
 </script>
