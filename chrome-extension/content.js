@@ -1,231 +1,201 @@
 (() => {
-  const ROOM_NAMES = new Set([
-    "Banheiro", "Cozinha", "Escritório", "Quarto", "Quarto de visitas",
-    "Sala", "Varanda", "Área externa", "Área de serviço", "Lavanderia",
-    "Hall", "Corredor", "Garagem", "Jardim", "Entrada", "Outro"
-  ]);
-  const STATUS = /off[\s-]?line|online|pausad|ativad|desativad|desligad|ligad|standby|idle|unavailable|indisponível/i;
-  let queued = false;
-
-  const THEME = `
-    :host, html, body { font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,"Segoe UI",sans-serif!important; }
-    [data-homehub-room-nav] { box-sizing:border-box!important; flex:0 0 210px!important; width:210px!important; min-width:210px!important; max-width:210px!important; }
-    [data-homehub-room-nav] button,[data-homehub-room-nav] [role="button"] { min-height:46px!important; border-radius:16px!important; font-size:14px!important; }
-    [data-homehub-room-title] { font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,sans-serif!important; font-size:clamp(20px,1.5vw,26px)!important; font-weight:650!important; letter-spacing:-.035em!important; }
-    [data-homehub-room-grid] { display:grid!important; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))!important; gap:16px!important; align-items:stretch!important; }
-    [data-homehub-card] { box-sizing:border-box!important; position:relative!important; min-height:104px!important; width:100%!important; max-width:none!important; border-radius:25px!important; padding:16px 18px!important; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,sans-serif!important; font-size:15px!important; letter-spacing:-.01em!important; transition:transform .18s ease,box-shadow .2s ease!important; }
-    [data-homehub-card]:hover { transform:translateY(-2px)!important; }
-    [data-homehub-card] [data-homehub-original-icon] { visibility:hidden!important; }
-    [data-homehub-card]::before { content:""!important; position:absolute!important; z-index:1!important; left:17px!important; top:50%!important; width:25px!important; height:25px!important; transform:translateY(-50%)!important; background-color:currentColor!important; -webkit-mask:var(--homehub-icon) center/contain no-repeat!important; mask:var(--homehub-icon) center/contain no-repeat!important; pointer-events:none!important; }
-    [data-homehub-card][data-homehub-kind="light"] { --homehub-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4 12c.7.6 1 1.4 1 2h6c0-.7.3-1.4 1-2A7 7 0 0 0 12 2Z' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-    [data-homehub-card][data-homehub-kind="climate"] { --homehub-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2v20M4 7l16 10M4 17 20 7m-8 1 3-3m-3 11 3 3m-3-11L9 5m3 11-3 3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
-    [data-homehub-card][data-homehub-kind="media"] { --homehub-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='4' width='18' height='14' rx='2' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M8 21h8m-4-3v3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
-    [data-homehub-card][data-homehub-kind="plug"] { --homehub-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 3v6m6-6v6M6 9h12v3a6 6 0 0 1-12 0V9Zm6 9v3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-    [data-homehub-card][data-homehub-kind="security"] { --homehub-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='4' y='10' width='16' height='11' rx='2' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3m-4 4v3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
-    [data-homehub-card][data-homehub-kind="default"] { --homehub-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m3 11 9-8 9 8M5 10v10h14V10m-9 10v-6h4v6' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
-    @media(max-width:700px) { [data-homehub-room-grid]{grid-template-columns:1fr!important;gap:12px!important} [data-homehub-card]{min-height:88px!important} }
+  const STYLE = `
+    ghw-devices .devices-container > mat-sidenav[data-homehub-rooms] {
+      box-sizing:border-box!important;
+      width:220px!important;
+      min-width:220px!important;
+      max-width:220px!important;
+      flex:0 0 220px!important;
+      border-radius:0 26px 26px 0!important;
+      overflow:hidden!important;
+    }
+    ghw-devices .devices-container > mat-sidenav-content[data-homehub-content] {
+      margin-left:220px!important;
+    }
+    ghw-devices .devices-container > mat-sidenav[data-homehub-rooms] .mat-mdc-list-item {
+      min-height:48px!important;
+      border-radius:15px!important;
+      margin:3px 10px!important;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Segoe UI",sans-serif!important;
+    }
+    ghw-devices .spaces-container[data-homehub-spaces] {
+      box-sizing:border-box!important;
+      width:100%!important;
+      max-width:1640px!important;
+      margin-inline:auto!important;
+      padding:18px clamp(20px,3vw,48px) 52px!important;
+    }
+    ghw-devices .spaces-container > .space[data-homehub-space] {
+      margin:0 0 30px!important;
+    }
+    ghw-devices .space[data-homehub-space] > h2 {
+      margin:8px 0 16px!important;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,"Segoe UI",sans-serif!important;
+      font-size:clamp(21px,1.55vw,27px)!important;
+      line-height:1.15!important;
+      font-weight:650!important;
+      letter-spacing:-.035em!important;
+    }
+    ghw-devices .space > .tile-container[data-homehub-grid] {
+      display:grid!important;
+      grid-template-columns:repeat(auto-fill,minmax(min(100%,248px),1fr))!important;
+      align-items:stretch!important;
+      gap:15px!important;
+      width:100%!important;
+    }
+    ghw-devices .tile-container[data-homehub-grid] > .tile-column {
+      display:contents!important;
+    }
+    ghw-devices .tile-container[data-homehub-grid] ghw-device-tile,
+    ghw-devices .tile-container[data-homehub-grid] .device-tile {
+      display:block!important;
+      box-sizing:border-box!important;
+      width:100%!important;
+      min-width:0!important;
+      height:100%!important;
+    }
+    ghw-devices .device-tile button.on-off-tile,
+    ghw-devices .device-tile button.media-tile,
+    ghw-devices .device-tile button[class*="slider-"],
+    ghw-devices .device-tile .generic-tile {
+      box-sizing:border-box!important;
+      display:flex!important;
+      align-items:center!important;
+      gap:15px!important;
+      width:100%!important;
+      min-height:106px!important;
+      height:100%!important;
+      padding:17px 19px!important;
+      border-radius:24px!important;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Segoe UI",sans-serif!important;
+      transition:transform .18s ease,box-shadow .2s ease!important;
+    }
+    ghw-devices .device-tile button.on-off-tile:hover,
+    ghw-devices .device-tile button.media-tile:hover,
+    ghw-devices .device-tile button[class*="slider-"]:hover,
+    ghw-devices .device-tile .generic-tile:hover {
+      transform:translateY(-2px)!important;
+    }
+    ghw-devices .device-tile .icon {
+      display:grid!important;
+      place-items:center!important;
+      flex:0 0 42px!important;
+      width:42px!important;
+      height:42px!important;
+      border-radius:50%!important;
+      background:rgba(127,139,160,.12)!important;
+    }
+    ghw-devices .device-tile mat-icon[data-homehub-icon] {
+      display:block!important;
+      overflow:visible!important;
+      width:25px!important;
+      height:25px!important;
+      font-size:0!important;
+      line-height:0!important;
+    }
+    ghw-devices .device-tile mat-icon[data-homehub-icon]::after {
+      content:""!important;
+      display:block!important;
+      width:25px!important;
+      height:25px!important;
+      background:currentColor!important;
+      -webkit-mask:var(--homehub-mask) center/contain no-repeat!important;
+      mask:var(--homehub-mask) center/contain no-repeat!important;
+    }
+    ghw-devices mat-icon[data-homehub-icon="light"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4 12c.7.6 1 1.4 1 2h6c0-.7.3-1.4 1-2A7 7 0 0 0 12 2Z' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+    ghw-devices mat-icon[data-homehub-icon="coffee"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 9h12v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9Zm12 2h2a2 2 0 1 1 0 4h-2M8 3v3m4-3v3m4-3v3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+    ghw-devices mat-icon[data-homehub-icon="speaker"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='6' y='2.5' width='12' height='19' rx='2' fill='none' stroke='black' stroke-width='1.7'/%3E%3Ccircle cx='12' cy='16' r='2.6' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M12 7v.01' stroke='black' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+    ghw-devices mat-icon[data-homehub-icon="media"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='4' width='18' height='14' rx='2' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M8 21h8m-4-3v3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
+    ghw-devices mat-icon[data-homehub-icon="climate"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2v20M4 7l16 10M4 17 20 7m-8 1 3-3m-3 11 3 3m-3-11L9 5m3 11-3 3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
+    ghw-devices mat-icon[data-homehub-icon="plug"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 3v6m6-6v6M6 9h12v3a6 6 0 0 1-12 0V9Zm6 9v3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+    ghw-devices mat-icon[data-homehub-icon="camera"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 7h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3zM16 11l5-3v8l-5-3z' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+    ghw-devices mat-icon[data-homehub-icon="vacuum"] { --homehub-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8.5' fill='none' stroke='black' stroke-width='1.7'/%3E%3Ccircle cx='12' cy='12' r='2' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M8 18h8' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E"); }
+    ghw-devices .device-tile .content { min-width:0!important; text-align:left!important; }
+    ghw-devices .device-tile .content .title { font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Segoe UI",sans-serif!important; font-size:15px!important; line-height:1.2!important; font-weight:600!important; letter-spacing:-.02em!important; }
+    ghw-devices .device-tile .content .subtitle { font-size:12px!important; line-height:1.25!important; }
+    @media(max-width:900px) {
+      ghw-devices .devices-container > mat-sidenav[data-homehub-rooms] { width:180px!important;min-width:180px!important;max-width:180px!important;flex-basis:180px!important; }
+      ghw-devices .devices-container > mat-sidenav-content[data-homehub-content] { margin-left:180px!important; }
+      ghw-devices .space > .tile-container[data-homehub-grid] { grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr))!important; }
+    }
+    @media(max-width:620px) {
+      ghw-devices .devices-container > mat-sidenav[data-homehub-rooms] { width:76px!important;min-width:76px!important;max-width:76px!important;flex-basis:76px!important; }
+      ghw-devices .devices-container > mat-sidenav-content[data-homehub-content] { margin-left:76px!important; }
+      ghw-devices .devices-container > mat-sidenav[data-homehub-rooms] .mat-mdc-list-item-title { display:none!important; }
+      ghw-devices .space > .tile-container[data-homehub-grid] { grid-template-columns:1fr!important; }
+    }
   `;
 
-  function roots() {
-    const found = [];
-    const visit = root => {
-      if (!root) return;
-      found.push(root);
-      const nodes = root.querySelectorAll?.("*") || [];
-      for (const node of nodes) if (node.shadowRoot) visit(node.shadowRoot);
-    };
-    visit(document);
-    return found;
+  const ICONS = new Map([
+    ["lightbulb", "light"], ["light_group", "light"], ["light_mode", "light"],
+    ["coffee", "coffee"], ["coffee_maker", "coffee"],
+    ["speaker", "speaker"], ["speaker_group", "speaker"], ["volume_up", "speaker"],
+    ["tv", "media"], ["tv_remote", "media"], ["desktop_windows", "media"], ["monitor", "media"],
+    ["ac_unit", "climate"], ["mode_fan", "climate"], ["air", "climate"], ["thermostat", "climate"],
+    ["power", "plug"], ["power_settings_new", "plug"], ["electrical_services", "plug"], ["outlet", "plug"],
+    ["videocam", "camera"], ["camera", "camera"], ["doorbell", "camera"],
+    ["vacuum", "vacuum"], ["robot_vacuum", "vacuum"]
+  ]);
+
+  let updateQueued = false;
+  let styleAdded = false;
+
+  function ensureStyle() {
+    if (styleAdded || !document.head) return;
+    const style = document.createElement("style");
+    style.dataset.homehubGoogleHome = "";
+    style.textContent = STYLE;
+    document.head.appendChild(style);
+    styleAdded = true;
   }
 
-  function style(root) {
-    if (root.querySelector?.("style[data-homehub-theme]")) return;
-    const el = document.createElement("style");
-    el.dataset.homehubTheme = "";
-    el.textContent = THEME;
-    if (root.nodeType === Node.DOCUMENT_NODE) (root.head || root.documentElement).appendChild(el);
-    else root.appendChild(el);
-  }
+  function apply() {
+    updateQueued = false;
+    ensureStyle();
+    const app = document.querySelector("ghw-devices");
+    if (!app) return;
 
-  function label(el) {
-    return (el.innerText || el.textContent || "").replace(/\s+/g, " ").trim();
-  }
+    const drawer = app.querySelector(".devices-container > mat-sidenav");
+    const content = app.querySelector(".devices-container > mat-sidenav-content");
+    const spaces = app.querySelector(".spaces-container");
+    if (drawer) drawer.setAttribute("data-homehub-rooms", "");
+    if (content) content.setAttribute("data-homehub-content", "");
+    if (spaces) spaces.setAttribute("data-homehub-spaces", "");
 
-  function visible(el) {
-    const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0;
-  }
-
-  function allElements(root) {
-    return [...(root.querySelectorAll?.("*") || [])];
-  }
-
-  function findRoomTitles(root) {
-    const titles = [];
-    for (const el of allElements(root)) {
-      const text = label(el);
-      if (!ROOM_NAMES.has(text) || !visible(el)) continue;
-      const r = el.getBoundingClientRect();
-      if (r.left < 280 || r.width > 360 || r.height > 80) continue;
-      titles.push({ el, text, top: r.top, left: r.left });
-    }
-    // In the screenshot, room names appear once in the room menu and once above
-    // each device group. Keep the occurrence furthest into the content area.
-    const byName = new Map();
-    for (const title of titles) {
-      const previous = byName.get(title.text);
-      if (!previous || title.left > previous.left) byName.set(title.text, title);
-    }
-    return [...byName.values()].sort((a, b) => a.top - b.top);
-  }
-
-  function markRoomNav(root) {
-    const entries = [];
-    for (const el of allElements(root)) {
-      if (!ROOM_NAMES.has(label(el)) || !visible(el)) continue;
-      const r = el.getBoundingClientRect();
-      if (r.left < 150 || r.left > 520 || r.width > 320 || r.height > 90) continue;
-      let item = el;
-      for (let i = 0; i < 5 && item.parentElement; i++) {
-        if (item.matches('button,[role="button"],[tabindex="0"]')) break;
-        item = item.parentElement;
-      }
-      if (item.matches('button,[role="button"],[tabindex="0"]')) entries.push(item);
-    }
-    const unique = [...new Set(entries)];
-    if (unique.length < 3) return;
-    let common = unique[0];
-    while (common && !unique.every(item => common.contains(item))) common = common.parentElement;
-    if (common && common !== root && common !== document.documentElement) {
-      const bounds = common.getBoundingClientRect();
-      if (bounds.width >= 250 && bounds.width <= 700 && bounds.height > 220) {
-        common.setAttribute("data-homehub-room-nav", "");
-      }
-    }
-  }
-
-  function kindOf(text) {
-    if (/lâmp|lamp|luz|light/i.test(text)) return "light";
-    if (/ar[- ]?condicionado|clima|ventil|aquec|termostat|temperature/i.test(text)) return "climate";
-    if (/tv|televis|som|speaker|caixa de som|media/i.test(text)) return "media";
-    if (/tomada|plug|roteador|cafeteira|exaustor|interruptor/i.test(text)) return "plug";
-    if (/câmera|camera|fechadura|porta|alarme|lock/i.test(text)) return "security";
-    return "default";
-  }
-
-  function findCards(root) {
-    const selector = 'button,[role="button"],[tabindex="0"],[class*="card"],[class*="Card"],[class*="device"],[class*="Device"]';
-    const cards = [];
-    for (const el of root.querySelectorAll?.(selector) || []) {
-      if (!visible(el)) continue;
-      const text = label(el);
-      if (!text || text.length > 190 || !STATUS.test(text)) continue;
-      const r = el.getBoundingClientRect();
-      if (r.width < 150 || r.width > 650 || r.height < 54 || r.height > 230) continue;
-      if (ROOM_NAMES.has(text)) continue;
-      const clickable = el.matches('button,[role="button"],[tabindex="0"]') || getComputedStyle(el).cursor === "pointer";
-      if (!clickable) continue;
-      cards.push({ el, text, top: r.top, area: r.width * r.height });
-    }
-    // Nested wrappers can all match. Keep the largest clickable candidate at
-    // nearly identical coordinates so each physical device receives one style.
-    cards.sort((a, b) => b.area - a.area);
-    const chosen = [];
-    for (const card of cards) {
-      const r = card.el.getBoundingClientRect();
-      const duplicate = chosen.some(other => {
-        const o = other.el.getBoundingClientRect();
-        const overlapW = Math.max(0, Math.min(r.right, o.right) - Math.max(r.left, o.left));
-        const overlapH = Math.max(0, Math.min(r.bottom, o.bottom) - Math.max(r.top, o.top));
-        return overlapW * overlapH / Math.min(r.width * r.height, o.width * o.height) > .86;
-      });
-      if (!duplicate) chosen.push(card);
-    }
-    return chosen;
-  }
-
-  function markGrid(cards) {
-    if (cards.length < 2) return;
-    let parent = cards[0].el.parentElement;
-    while (parent && parent !== document.body) {
-      const cardSet = new Set(cards.map(card => card.el));
-      const direct = [...parent.children].filter(child => cardSet.has(child));
-      if (direct.length === cards.length && parent.children.length <= cards.length + 2) {
-        parent.setAttribute("data-homehub-room-grid", "");
-        return;
-      }
-      parent = parent.parentElement;
-    }
-  }
-
-  function markIcon(card, kind) {
-    const icons = card.el.querySelectorAll("svg,md-icon,mat-icon,ha-icon,[role=img]");
-    let chosen = null;
-    const cardRect = card.el.getBoundingClientRect();
-    for (const icon of icons) {
-      const r = icon.getBoundingClientRect();
-      if (r.width < 10 || r.width > 52 || r.height < 10 || r.height > 52) continue;
-      if (r.left > cardRect.left + cardRect.width * .42) continue;
-      if (!chosen || r.left < chosen.getBoundingClientRect().left) chosen = icon;
-    }
-    if (chosen) chosen.setAttribute("data-homehub-original-icon", "");
-    card.el.setAttribute("data-homehub-kind", kind);
-  }
-
-  function scan() {
-    queued = false;
-    const allRooms = [];
-    const allCards = [];
-    for (const root of roots()) {
-      style(root);
-      observe(root);
-      const rooms = findRoomTitles(root);
-      const cards = findCards(root);
-      markRoomNav(root);
-      allRooms.push(...rooms);
-      allCards.push(...cards);
-      for (const room of rooms) room.el.setAttribute("data-homehub-room-title", "");
-      for (const card of cards) {
-        card.el.setAttribute("data-homehub-card", "");
-        markIcon(card, kindOf(card.text));
+    for (const space of app.querySelectorAll(".spaces-container > .space")) {
+      space.setAttribute("data-homehub-space", "");
+      const grid = space.querySelector(":scope > .tile-container");
+      if (grid) grid.setAttribute("data-homehub-grid", "");
+      for (const tile of space.querySelectorAll(".tile-column > ghw-device-tile")) {
+        tile.setAttribute("data-homehub-tile", "");
       }
     }
 
-    // Apply the responsive grid to groups of cards immediately below a room
-    // heading when their page order makes the grouping unambiguous.
-    const byRoomName = new Map();
-    for (const room of allRooms) {
-      const prev = byRoomName.get(room.text);
-      if (!prev || room.left > prev.left) byRoomName.set(room.text, room);
-    }
-    const rooms = [...byRoomName.values()].sort((a, b) => a.top - b.top);
-    if (!rooms.length) return;
-    for (let i = 0; i < rooms.length; i++) {
-      const room = rooms[i];
-      const nextTop = rooms[i + 1]?.top ?? Infinity;
-      const group = allCards.filter(card => card.top > room.top && card.top < nextTop);
-      if (group.length > 1) markGrid(group);
+    for (const icon of app.querySelectorAll(".device-tile mat-icon")) {
+      const name = (icon.textContent || "").trim().toLowerCase();
+      const kind = ICONS.get(name);
+      if (kind && icon.getAttribute("data-homehub-icon") !== kind) {
+        icon.setAttribute("data-homehub-icon", kind);
+      }
     }
   }
 
   function schedule() {
-    if (queued) return;
-    queued = true;
-    setTimeout(scan, 250);
+    if (updateQueued) return;
+    updateQueued = true;
+    setTimeout(apply, 180);
   }
 
-  function observe(root) {
-    if (!root || root.__homeHubObserver) return;
-    try {
-      Object.defineProperty(root, "__homeHubObserver", { value: true });
-      new MutationObserver(schedule).observe(root, { childList: true, subtree: true, characterData: true });
-    } catch (_) { /* Some browser-managed roots cannot be observed. */ }
+  function start() {
+    ensureStyle();
+    new MutationObserver(schedule).observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+    apply();
   }
 
-  const boot = setInterval(() => {
-    if (!document.documentElement) return;
-    clearInterval(boot);
-    observe(document.documentElement);
-    scan();
-  }, 80);
+  if (document.documentElement) start();
+  else document.addEventListener("DOMContentLoaded", start, { once: true });
 })();
