@@ -1,13 +1,16 @@
 {
   "manifest_version": 3,
   "name": "Home Hub — tema Apple para Google Home",
-  "version": "0.5.0",
-  "description": "Reorganiza e estiliza os cartões do Google Home Web com um visual inspirado no Apple Home, apenas neste navegador.",
+  "version": "0.6.0",
+  "description": "Google Home Web com visual inspirado no Apple Home, relógio analógico e previsão do tempo.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://api.open-meteo.com/*", "https://geocoding-api.open-meteo.com/*"],
+  "background": {"service_worker": "weather-worker.js"},
   "content_scripts": [
     {
       "matches": ["https://home.google.com/*"],
-      "css": ["theme.css"],
-      "js": ["content.js"],
+      "css": ["theme.css", "widgets.css"],
+      "js": ["widgets.js", "content.js"],
       "run_at": "document_start"
     }
   ]
