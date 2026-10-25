@@ -178,31 +178,36 @@
       for(const tile of space.querySelectorAll('.tile-column > ghw-device-tile')) {
         const card=tile.querySelector('.device-tile .on-off-tile,.device-tile .media-tile,.device-tile .generic-tile');
         if(!card)continue;
-        const icon=card.querySelector('.icon');
-        const iconText=(icon?.querySelector('mat-icon')?.textContent||'').trim().toLowerCase();
-        const [category,kind]=typeOf(card,iconText);
-        card.dataset.homehubCard='';card.dataset.homehubKind=kind;
-        if(icon) {
-          icon.dataset.homehubSymbol='';
-          const old=icon.querySelector('.homehub-symbol');
-          if(!old||old.dataset.kind!==kind) {
-            old?.remove();const svg=symbol(kind);svg.classList.add('homehub-symbol');svg.dataset.kind=kind;icon.append(svg);
+        const expand=tile.querySelector('.expand-button');
+        let category,primaryKind;
+        for(const item of tile.querySelectorAll('.on-off-tile,.media-tile,.generic-tile')) {
+          const icon=item.querySelector('.icon');
+          const iconText=(icon?.querySelector('mat-icon')?.textContent||'').trim().toLowerCase();
+          const [itemCategory,itemKind]=typeOf(item,iconText);
+          if(item===card){category=itemCategory;primaryKind=itemKind;}
+          const kind=itemKind;
+          item.dataset.homehubCard='';item.dataset.homehubKind=kind;
+          if(icon) {
+            icon.dataset.homehubSymbol='';
+            const old=icon.querySelector('.homehub-symbol');
+            if(!old||old.dataset.kind!==kind) {
+              old?.remove();const svg=symbol(kind);svg.classList.add('homehub-symbol');svg.dataset.kind=kind;icon.append(svg);
+            }
+          }
+          if(expand&&item===card) {
+            item.dataset.homehubGroup='true';expand.dataset.homehubSymbol='';
+            if(!expand.querySelector('.homehub-symbol')){const arrow=symbol('chevron');arrow.classList.add('homehub-symbol');expand.append(arrow);}
+          }
+          let roomLabel=item.querySelector(':scope > .homehub-room-label');
+          if(!roomLabel){roomLabel=node('span',{class:'homehub-room-label','aria-hidden':'true'});item.append(roomLabel);}
+          text(roomLabel,room);
+          const content=item.querySelector('.content');
+          if(content&&!content.querySelector('.subtitle,span:not(.homehub-native-status)')&&!content.querySelector('.homehub-native-status')) {
+            content.append(node('span',{class:'homehub-native-status'},[item.classList.contains('readonly')?'Sem controles disponíveis':'Disponível']));
           }
         }
-        const expand=tile.querySelector('.expand-button');
-        if(expand) {
-          card.dataset.homehubGroup='true';expand.dataset.homehubSymbol='';
-          if(!expand.querySelector('.homehub-symbol')){const arrow=symbol('chevron');arrow.classList.add('homehub-symbol');expand.append(arrow);}
-        }
-        let roomLabel=card.querySelector(':scope > .homehub-room-label');
-        if(!roomLabel){roomLabel=node('span',{class:'homehub-room-label','aria-hidden':'true'});card.append(roomLabel);}
-        text(roomLabel,room);
-        const content=card.querySelector('.content');
-        if(content&&!content.querySelector('.subtitle,span:not(.homehub-native-status)')&&!content.querySelector('.homehub-native-status')) {
-          content.append(node('span',{class:'homehub-native-status'},[card.classList.contains('readonly')?'Sem controles disponíveis':'Disponível']));
-        }
         const offline=card.classList.contains('offline');
-        result.push({tile,card,room,category,kind,offline,on:card.classList.contains('active')&&!offline});
+        result.push({tile,card,room,category,kind:primaryKind,offline,on:card.classList.contains('active')&&!offline});
       }
     }
     return result;
