@@ -3,6 +3,15 @@
   const paths = {
     home:'m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9',
     room:'M5 21V3h13v18M18 21h3M5 21H2M13 12h.01',
+    bathroom:'M3 12h18M5 12v3a5 5 0 0 0 5 5h4a5 5 0 0 0 5-5v-3M6 12V6a3 3 0 0 1 5.4-1.8L13 6m-2 2 4-4M7 20v2m10-2v2',
+    kitchen:'M6 3v7M3.5 3v4.5a2.5 2.5 0 0 0 5 0V3M6 10v11M18 3c-2.5 2.5-3.5 5.2-3.5 8H18V3Zm0 8v10',
+    office:'M4 3h16v12H4zM12 15v5m-4 0h8M7 6h10',
+    bedroom:'M3 18V6m18 12v-5a2 2 0 0 0-2-2H3m0 7h18M5 18v3m14-3v3M6 11V7h5v4m2 0V7h5v4',
+    guest:'M3 18V9m18 9v-5H3m0 5h18M5 18v3m14-3v3M6 13V9h5v4m2 0V9h5v4M16 2l.8 1.7L19 4.5l-2.2.8L16 7l-.8-1.7-2.2-.8 2.2-.8Z',
+    living:'M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M3 13a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v6H3v-6Zm3 6v2m12-2v2',
+    garden:'M5 20C4 10 10 4 20 3c0 10-5 16-14 16M4 21l10-10',
+    laundry:'M4 3h16v18H4zM8 6h.01M12 6h4M12 10a4 4 0 1 0 0 8 4 4 0 0 0 0-8m-3.5 4c2-2 5 2 7 0',
+    garage:'m3 10 9-7 9 7M5 9v12h14V9M8 21v-8h8v8M8 16h8m-8 3h8',
     grid:'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
     light:'M9 18h6m-5 3h4M12 2a6.5 6.5 0 0 0-4 11.6c.8.7 1 1.4 1 2.4h6c0-1 .2-1.7 1-2.4A6.5 6.5 0 0 0 12 2Z',
     plug:'M9 3v6m6-6v6M6 9h12v3a6 6 0 0 1-12 0V9Zm6 9v3',
@@ -26,6 +35,76 @@
   const memory = {enabled:true,theme:'light',room:null,category:'all',roomSignature:'',categorySignature:''};
   try {memory.enabled=sessionStorage.getItem('homehub.original')!=='1';memory.theme=sessionStorage.getItem('homehub.theme')||'light';} catch (_) {}
   let ui=null,refs={},queued=false,records=[];
+  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer=matchMedia('(hover: hover) and (pointer: fine)');
+  const motion={surface:null,frame:0,event:null,pressed:false,interacting:null};
+
+  function roomKind(name) {
+    const value=name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    if(/visita|hospede|guest/.test(value))return 'guest';
+    if(/banheiro|lavabo|bath/.test(value))return 'bathroom';
+    if(/cozinha|jantar|kitchen|dining/.test(value))return 'kitchen';
+    if(/escritorio|office|estudio|study/.test(value))return 'office';
+    if(/quarto|suite|bedroom/.test(value))return 'bedroom';
+    if(/lavanderia|servico|laundry/.test(value))return 'laundry';
+    if(/varanda|jardim|extern|terraco|garden|balcon/.test(value))return 'garden';
+    if(/garagem|garage/.test(value))return 'garage';
+    if(/sala|living|estar/.test(value))return 'living';
+    return 'room';
+  }
+
+  function resetSurface() {
+    if(!motion.surface)return;
+    motion.surface.style.setProperty('--hh-glass-visible','0');
+    motion.surface.style.setProperty('--hh-depth-x','0px');
+    motion.surface.style.setProperty('--hh-depth-y','0px');
+    motion.surface=null;
+  }
+  function resetMotion() {
+    if(motion.frame)cancelAnimationFrame(motion.frame);
+    motion.frame=0;motion.event=null;resetSurface();
+    document.documentElement.style.setProperty('--hh-scene-x','0px');
+    document.documentElement.style.setProperty('--hh-scene-y','0px');
+  }
+  function moveGlass() {
+    motion.frame=0;
+    const event=motion.event;
+    if(!event||!memory.enabled||reducedMotion.matches||!finePointer.matches||motion.pressed)return;
+    const root=document.documentElement;
+    root.style.setProperty('--hh-scene-x',((event.x/innerWidth-.5)*12).toFixed(2)+'px');
+    root.style.setProperty('--hh-scene-y',((event.y/innerHeight-.5)*9).toFixed(2)+'px');
+    const surface=event.target?.closest('[data-homehub-card],#homehub-ui .hh-sidebar,#homehub-ui .hh-chip,#homehub-ui .hh-theme');
+    if(motion.surface!==surface){resetSurface();motion.surface=surface;}
+    if(!surface)return;
+    const rect=surface.getBoundingClientRect();
+    if(!rect.width||!rect.height)return;
+    const x=Math.max(0,Math.min(1,(event.x-rect.left)/rect.width));
+    const y=Math.max(0,Math.min(1,(event.y-rect.top)/rect.height));
+    surface.style.setProperty('--hh-glass-x',(x*100).toFixed(1)+'%');
+    surface.style.setProperty('--hh-glass-y',(y*100).toFixed(1)+'%');
+    surface.style.setProperty('--hh-glass-visible','1');
+    surface.style.setProperty('--hh-depth-x',((x-.5)*5).toFixed(2)+'px');
+    surface.style.setProperty('--hh-depth-y',((y-.5)*5).toFixed(2)+'px');
+  }
+  function startMotion() {
+    document.addEventListener('pointermove',event=>{
+      if(event.pointerType!=='mouse'||!memory.enabled||!document.documentElement.hasAttribute('data-homehub-active')||reducedMotion.matches||!finePointer.matches||motion.pressed)return;
+      motion.event={x:event.clientX,y:event.clientY,target:event.target};
+      if(!motion.frame)motion.frame=requestAnimationFrame(moveGlass);
+    },{passive:true});
+    document.addEventListener('pointerdown',event=>{
+      motion.pressed=true;resetMotion();
+      motion.interacting=event.target.closest?.('[data-homehub-card]')||null;
+      motion.interacting?.setAttribute('data-homehub-interacting','');
+    },{passive:true,capture:true});
+    const release=()=>{motion.pressed=false;motion.interacting?.removeAttribute('data-homehub-interacting');motion.interacting=null;};
+    document.addEventListener('pointerup',release,{passive:true,capture:true});
+    document.addEventListener('pointercancel',release,{passive:true,capture:true});
+    document.addEventListener('pointerout',event=>{if(!event.relatedTarget)resetMotion();},{passive:true});
+    window.addEventListener('blur',()=>{release();resetMotion();});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){release();resetMotion();}});
+    reducedMotion.addEventListener('change',resetMotion);finePointer.addEventListener('change',resetMotion);
+  }
 
   function node(tag,attrs={},children=[]) {
     const element=document.createElement(tag);
@@ -41,12 +120,12 @@
   }
   function text(element,value) {if(element.textContent!==value)element.textContent=value;}
   function button(className,label,kind,action) {
-    const result=node('button',{class:className,type:'button'},[symbol(kind),node('span',{},[label])]);
+    const result=node('button',{class:className,type:'button'},[symbol(kind),node('span',{class:'hh-button-label'},[label])]);
     result.addEventListener('click',action);return result;
   }
   function save(key,value) {try{sessionStorage.setItem(key,value);}catch(_) {}}
   function toggleOriginal(enabled) {
-    memory.enabled=enabled;save('homehub.original',enabled?'0':'1');render();
+    memory.enabled=enabled;if(!enabled)resetMotion();save('homehub.original',enabled?'0':'1');render();
   }
   function refreshView() {
     render();document.querySelector('ghw-devices .devices-container > mat-sidenav-content')?.scrollTo({top:0});
@@ -137,7 +216,10 @@
       refs.rooms.replaceChildren();refs.mobile.replaceChildren(node('option',{value:''},['Visão geral']));
       for(const room of rooms) {
         const count=records.filter(record=>record.room===room).length;
-        const entry=button('hh-nav',room,'room',()=>{memory.room=room;memory.category='all';refreshView();});
+        const kind=roomKind(room);
+        const entry=button('hh-nav',room,kind,()=>{memory.room=room;memory.category='all';refreshView();});
+        const glyph=entry.querySelector('svg');
+        const badge=node('span',{class:'hh-room-icon','data-room-kind':kind},[glyph]);entry.prepend(badge);
         entry.dataset.room=room;entry.append(node('span',{class:'hh-count'},[String(count)]));refs.rooms.append(entry);
         refs.mobile.append(node('option',{value:room},[room]));
       }
@@ -174,7 +256,7 @@
   function apply() {
     queued=false;
     const app=document.querySelector('ghw-devices');
-    if(!app) {document.documentElement.removeAttribute('data-homehub-active');if(ui)ui.hidden=true;return;}
+    if(!app) {document.documentElement.removeAttribute('data-homehub-active');resetMotion();if(ui)ui.hidden=true;return;}
     if(!document.body)return;
     if(!ui)makeUi();ui.hidden=false;
     const house=document.querySelector('ghw-toolbar .home-nav');
@@ -189,7 +271,7 @@
     if(queued)return;queued=true;setTimeout(apply,100);
   }
   function start() {
-    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','aria-disabled']});apply();
+    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class','aria-disabled']});startMotion();apply();
   }
   if(document.documentElement)start();else document.addEventListener('DOMContentLoaded',start,{once:true});
 })();
