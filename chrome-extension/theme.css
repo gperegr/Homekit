@@ -82,7 +82,7 @@ html[data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {
   scrollbar-color:rgba(100,118,149,.25) transparent;
 }
 html[data-homehub-active] ghw-devices .spaces-container {
-  display:grid!important;grid-template-columns:repeat(auto-fill,minmax(178px,1fr))!important;
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
   align-content:start!important;align-items:stretch!important;gap:14px!important;
   box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:none!important;
   margin:0!important;padding:3px 5px 136px 2px!important;
@@ -95,7 +95,7 @@ html[data-homehub-active] ghw-devices .tile-container > .tile-column {
 html[data-homehub-active] ghw-devices .space > h2 {display:none!important;}
 html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {
   display:block!important;position:relative!important;box-sizing:border-box!important;
-  width:auto!important;min-width:0!important;max-width:none!important;height:180px!important;
+  width:auto!important;min-width:0!important;max-width:none!important;height:auto!important;aspect-ratio:1;
   min-height:0!important;margin:0!important;padding:0!important;grid-column:auto!important;
 }
 html[data-homehub-active] ghw-devices ghw-device-tile[data-homehub-hidden="true"] {display:none!important;}
@@ -308,8 +308,8 @@ html[data-homehub-dock="compact"] #homehub-ui .hh-original {height:44px;}
   #homehub-ui .hh-theme,#homehub-ui .hh-tool-button {width:34px;height:34px;flex-basis:34px;}
   #homehub-ui .hh-categories {left:20px;right:20px;top:130px;}
   html[data-homehub-active] ghw-devices {inset:184px 18px 12px!important;}
-  html[data-homehub-active] ghw-devices .spaces-container {grid-template-columns:repeat(auto-fill,minmax(145px,1fr))!important;gap:11px!important;padding-bottom:124px!important;}
-  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {height:172px!important;}
+  html[data-homehub-active] ghw-devices .spaces-container {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important;padding-bottom:124px!important;}
+  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {height:auto!important;aspect-ratio:1;}
   html[data-homehub-active] ghw-devices [data-homehub-card] .icon {width:52px!important;height:52px!important;flex-basis:52px!important;}
   html[data-homehub-active] .homehub-symbol {width:34px!important;height:34px!important;}
   #homehub-ui .hh-dock {bottom:18px;max-width:calc(100vw - 28px);padding:6px;gap:3px;}
@@ -326,4 +326,29 @@ html[data-homehub-dock="compact"] #homehub-ui .hh-original {height:44px;}
   #homehub-ui .hh-room-icon,#homehub-ui .hh-nav {transform:none!important;transition:none!important;}
   html[data-homehub-active] ghw-devices [data-homehub-card]::before,
   #homehub-ui .hh-dock::before,#homehub-ui .hh-chip::before,#homehub-ui .hh-theme::before {opacity:0!important;transition:none!important;}
+}
+
+/* Expanded groups keep their native controls and join the square grid as one band. */
+html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) {
+  display:grid!important;grid-template-columns:subgrid!important;grid-column:1/-1!important;
+  gap:14px!important;height:auto!important;aspect-ratio:auto!important;
+  border-radius:26px;background:color-mix(in srgb,var(--hh-card) 45%,transparent);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--hh-card) 45%,transparent);
+}
+html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile,
+html[data-homehub-active] ghw-devices .expanded-group .group-child {
+  width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:1!important;
+  min-width:0!important;margin:0!important;padding:0!important;display:block!important;
+}
+html[data-homehub-active] ghw-devices .expanded-group {
+  display:contents!important;
+}
+@media (min-width:761px) and (max-width:900px) {
+  html[data-homehub-active] ghw-devices .spaces-container {grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
+
+html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile .expand-button .homehub-symbol {transform:rotate(180deg);}
+
+@media(max-width:760px) {
+  html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) {gap:11px!important;}
 }
