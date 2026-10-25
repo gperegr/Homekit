@@ -4,8 +4,13 @@ task_script_dir="$(cd -- "$(dirname -- "$0")" && pwd)"
 task_root="$(dirname -- "$task_script_dir")"
 task_dir="$task_root/safari-extension"
 task_developer="${DEVELOPER_DIR:-}"
-if [[ -z "$task_developer" && -d /Applications/Xcode.app/Contents/Developer ]]; then
-  task_developer=/Applications/Xcode.app/Contents/Developer
+if [[ -z "$task_developer" ]]; then
+  for task_xcode in /Applications/Xcode.app /Volumes/Kingston/Aplicativos/Xcode.app; do
+    if [[ -d "$task_xcode/Contents/Developer" ]]; then
+      task_developer="$task_xcode/Contents/Developer"
+      break
+    fi
+  done
 fi
 if [[ -n "$task_developer" ]]; then export DEVELOPER_DIR="$task_developer"; fi
 task_tool=''
