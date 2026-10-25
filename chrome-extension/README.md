@@ -1,19 +1,21 @@
-# Tema Home Hub para Google Home Web
+# Home Hub para Google Home Web
 
-Extensão local do Chrome que aplica um tema inspirado no Apple Home a `home.google.com`. O script observa a estrutura renderizada no navegador para compactar a navegação dos cômodos, organizar cartões em uma grade responsiva, mudar tipografia e substituir ícones de dispositivos conhecidos. Os mesmos cartões interativos permanecem no Google Home.
+Extensão local do Chrome que transforma a tela de dispositivos do Google Home em uma interface inspirada no Apple Home. Inclui visão geral compacta, filtros por cômodo e categoria, ícones vetoriais e aparência clara ou escura.
 
-O script não faz chamadas de rede, não coleta credenciais e não envia dados. Ele precisa ler os nomes e estados já renderizados na página para identificar os cartões. A extensão é limitada ao domínio `home.google.com`.
+Os cartões dos aparelhos continuam sendo os elementos originais do Google Home. A extensão reorganiza sua apresentação e observa os estados já exibidos pela página. Nenhuma credencial é solicitada e o código não faz chamadas de rede. A seleção de aparência fica na sessão atual do navegador.
 
-## Instalar no Chrome
+## Instalação e atualização
 
-1. Abra `chrome://extensions`.
-2. Ative **Modo do desenvolvedor**.
-3. Clique em **Carregar sem compactação**.
-4. Selecione esta pasta `chrome-extension`.
-5. Abra ou recarregue `https://home.google.com/`.
+1. Abra `chrome://extensions` e ative **Modo do desenvolvedor**.
+2. Clique em **Carregar sem compactação** e selecione esta pasta `chrome-extension`.
+3. Abra ou recarregue `https://home.google.com/` e entre na tela **Dispositivos**.
 
-Para remover o tema, desative a extensão em `chrome://extensions`.
+Se a extensão já estava carregada desta pasta, clique em **Recarregar** no cartão da extensão e atualize a aba do Google Home. A versão deve ser **0.4.0**.
 
-## Limites
+O botão **Ver Google Home** restaura a interface original na aba. **Ativar Home Hub** volta ao tema. O botão de lua/sol alterna a aparência.
 
-O tema foi ajustado aos componentes Angular observados no Google Home Web: `ghw-devices`, `.spaces-container`, `.space`, `.tile-container`, `.tile-column` e os cartões `.on-off-tile`, `.media-tile` e `.generic-tile`. O Google pode mudar esses seletores; se isso acontecer, algumas partes podem deixar de receber o tema. As cores de estado e os cartões originais são preservados.
+## Validação e limites
+
+O layout foi renderizado em um Chrome isolado com uma cópia anonimizada da estrutura fornecida pelo usuário. Foram conferidos filtros, preservação dos elementos e eventos de clique, atualização de estado, alternância de tema, retorno à interface original e larguras de 1440, 1024 e 390 pixels, sem rolagem horizontal do conteúdo.
+
+Essa verificação não aciona aparelhos reais. Os recursos disponíveis continuam sendo os que o Google Home Web oferece para cada aparelho. A extensão depende dos componentes Angular atuais (`ghw-devices`, `.spaces-container`, `.space`, `.tile-container`, `.tile-column` e os cartões nativos); mudanças do Google podem exigir atualização.
