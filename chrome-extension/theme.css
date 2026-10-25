@@ -1,114 +1,42 @@
-/* Home Hub: camada de tema local para home.google.com.
-   O tema altera cores, tipografia e superfícies; não lê nem envia dados. */
+/* Home Hub local theme for Google Home Web.
+   Keep Google's own foreground/background colors so paired text surfaces
+   retain their original contrast. Change typography and surface treatment. */
 :root,
-html {
-  color-scheme: light dark !important;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    Inter, "Segoe UI", sans-serif !important;
-
-  /* Material 3 / Material You tokens usados por componentes da página. */
-  --md-sys-color-primary: #087cff;
-  --md-sys-color-on-primary: #fff;
-  --md-sys-color-primary-container: #d8eaff;
-  --md-sys-color-on-primary-container: #001d36;
-  --md-sys-color-secondary: #596579;
-  --md-sys-color-secondary-container: #e5eaf2;
-  --md-sys-color-tertiary: #69558c;
-  --md-sys-color-background: #f2f5fa;
-  --md-sys-color-on-background: #1c1d20;
-  --md-sys-color-surface: rgba(255, 255, 255, .76);
-  --md-sys-color-surface-dim: #e2e6ee;
-  --md-sys-color-surface-container: rgba(255, 255, 255, .62);
-  --md-sys-color-surface-container-low: rgba(255, 255, 255, .48);
-  --md-sys-color-surface-container-high: rgba(255, 255, 255, .84);
-  --md-sys-color-on-surface: #1c1d20;
-  --md-sys-color-on-surface-variant: #60646d;
-  --md-sys-color-outline: rgba(92, 103, 122, .22);
-  --md-sys-color-outline-variant: rgba(92, 103, 122, .14);
-  --md-sys-shape-corner-small: 12px;
-  --md-sys-shape-corner-medium: 19px;
-  --md-sys-shape-corner-large: 28px;
-  --md-sys-shape-corner-extra-large: 34px;
-
-  /* Older Material and Angular Material tokens. */
-  --mdc-theme-primary: #087cff;
-  --mat-sys-primary: #087cff;
-  --mat-sys-on-primary: #fff;
-  --mat-sys-surface: rgba(255, 255, 255, .76);
-  --mat-sys-background: #f2f5fa;
-  --mat-sys-corner-large: 28px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root,
-  html {
-    --md-sys-color-primary: #83b8ff;
-    --md-sys-color-on-primary: #002f60;
-    --md-sys-color-primary-container: #004787;
-    --md-sys-color-on-primary-container: #d7e8ff;
-    --md-sys-color-secondary: #b9c5d8;
-    --md-sys-color-secondary-container: #394557;
-    --md-sys-color-tertiary: #d1bdf5;
-    --md-sys-color-background: #101116;
-    --md-sys-color-on-background: #e4e5ea;
-    --md-sys-color-surface: rgba(34, 36, 44, .78);
-    --md-sys-color-surface-dim: #15161c;
-    --md-sys-color-surface-container: rgba(38, 40, 49, .72);
-    --md-sys-color-surface-container-low: rgba(29, 31, 39, .72);
-    --md-sys-color-surface-container-high: rgba(48, 50, 60, .86);
-    --md-sys-color-on-surface: #e4e5ea;
-    --md-sys-color-on-surface-variant: #b7bac4;
-    --md-sys-color-outline: rgba(211, 218, 232, .2);
-    --md-sys-color-outline-variant: rgba(211, 218, 232, .12);
-    --mdc-theme-primary: #83b8ff;
-    --mat-sys-primary: #83b8ff;
-    --mat-sys-on-primary: #002f60;
-    --mat-sys-surface: rgba(34, 36, 44, .78);
-    --mat-sys-background: #101116;
-  }
-}
-
 html,
 body {
-  min-height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
     Inter, "Segoe UI", sans-serif !important;
-  background-color: #f2f5fa !important;
-  background-image:
-    radial-gradient(ellipse at 8% 2%, rgba(255, 151, 186, .20), transparent 42%),
-    radial-gradient(ellipse at 92% 8%, rgba(104, 168, 255, .20), transparent 42%),
-    radial-gradient(ellipse at 50% 100%, rgba(255, 213, 133, .13), transparent 44%) !important;
-  color: #1c1d20;
+
+  /* Shape tokens only. Google's color tokens are intentionally untouched. */
+  --md-sys-shape-corner-small: 12px;
+  --md-sys-shape-corner-medium: 18px;
+  --md-sys-shape-corner-large: 26px;
+  --md-sys-shape-corner-extra-large: 32px;
+  --mdc-shape-small: 12px;
+  --mdc-shape-medium: 18px;
+  --mdc-shape-large: 26px;
+  --mat-sys-corner-small: 12px;
+  --mat-sys-corner-medium: 18px;
+  --mat-sys-corner-large: 26px;
 }
 
-@media (prefers-color-scheme: dark) {
-  html,
-  body {
-    background-color: #101116 !important;
-    background-image:
-      radial-gradient(ellipse at 8% 2%, rgba(91, 52, 201, .20), transparent 42%),
-      radial-gradient(ellipse at 92% 8%, rgba(10, 95, 224, .19), transparent 42%),
-      radial-gradient(ellipse at 50% 100%, rgba(194, 48, 95, .13), transparent 44%) !important;
-    color: #e4e5ea;
-  }
-}
-
-/* Common button and card surfaces used by Material Web and semantic layouts. */
 button,
 [role="button"],
 md-filled-button,
 md-outlined-button,
 md-text-button,
+md-icon-button,
 mat-card,
-md-card,
-[role="listitem"] {
+md-card {
   font-family: inherit !important;
   border-radius: 18px !important;
+  transition: box-shadow .2s ease, filter .2s ease, transform .18s ease !important;
 }
 
 md-filled-button,
 md-outlined-button,
 md-text-button,
+md-icon-button,
 mat-card,
 md-card {
   --md-filled-button-container-shape: 18px;
@@ -118,14 +46,21 @@ md-card {
   --md-outlined-card-container-shape: 26px;
 }
 
+/* A quiet glass edge on interactive surfaces without recoloring device states. */
 button,
-[role="button"] {
-  transition: filter .18s ease, transform .18s ease, box-shadow .18s ease !important;
+[role="button"],
+mat-card,
+md-card {
+  border-top: 1px solid rgba(255, 255, 255, .18) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08),
+    0 5px 18px rgba(18, 28, 46, .08) !important;
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
 }
 
 button:hover,
 [role="button"]:hover {
-  filter: brightness(1.035) saturate(1.04);
+  filter: brightness(1.045) saturate(1.04);
 }
 
 button:active,
@@ -134,6 +69,6 @@ button:active,
 }
 
 :focus-visible {
-  outline: 3px solid rgba(10, 132, 255, .65) !important;
+  outline: 2px solid #0a84ff !important;
   outline-offset: 2px;
 }
