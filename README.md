@@ -18,7 +18,7 @@ O painel não precisa de compilação nem de dependências instaladas. Ele carre
 
 Para usar a ideia atual, carregue sem compactação a pasta `chrome-extension` em `chrome://extensions` com o Modo do desenvolvedor ligado. A extensão se aplica a `home.google.com` e não acessa credenciais nem copia dados de aparelhos.
 
-A versão atual inclui barra de cômodos recolhível, relógio analógico local e previsão externa do Open-Meteo para uma cidade escolhida. Veja as instruções e permissões em [chrome-extension/README.md](chrome-extension/README.md).
+A versão atual inclui dock de cômodos flutuante, ícones maiores, relógio analógico, calendário mensal e previsão externa do Open-Meteo. O modo ambiente mostra hora, data e temperatura. Veja as instruções e permissões em [chrome-extension/README.md](chrome-extension/README.md).
 
 ## Experimento anterior: Home Assistant
 
