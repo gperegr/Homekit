@@ -1,0 +1,29 @@
+#homehub-ambient {
+  position:fixed;inset:0;box-sizing:border-box;width:100vw;height:100dvh;
+  max-width:none;max-height:none;margin:0;padding:0;border:0;overflow:hidden;
+  background:linear-gradient(145deg,rgba(9,17,34,.38),rgba(14,27,52,.48));
+  color:#fff;font-family:var(--hh-font,-apple-system,BlinkMacSystemFont,sans-serif);
+  backdrop-filter:blur(48px) saturate(155%);
+}
+#homehub-ambient[open] {display:flex;align-items:center;justify-content:center;}
+#homehub-ambient::backdrop {background:rgba(7,14,28,.18);}
+#homehub-ambient::before {
+  content:"";position:absolute;inset:-10%;pointer-events:none;
+  background:radial-gradient(ellipse at 18% 22%,rgba(156,121,191,.14),transparent 50%),radial-gradient(ellipse at 80% 74%,rgba(99,154,213,.14),transparent 50%);
+}
+#homehub-ambient .hh-ambient-core {position:relative;display:flex;flex-direction:column;align-items:center;max-width:calc(100% - 40px);padding-bottom:25px;text-align:center;}
+#homehub-ambient .hh-ambient-time {font-size:clamp(96px,15vw,196px);font-weight:200;letter-spacing:-.065em;line-height:1.05;font-variant-numeric:tabular-nums;text-shadow:0 5px 45px rgba(0,0,0,.06);}
+#homehub-ambient .hh-ambient-date {margin-top:20px;font-size:clamp(17px,2.3vw,28px);font-weight:450;line-height:1.4;letter-spacing:-.02em;opacity:.91;}
+#homehub-ambient .hh-ambient-weather {display:flex;align-items:center;justify-content:center;gap:10px;margin-top:24px;font-size:clamp(16px,1.8vw,23px);font-weight:450;line-height:1.4;opacity:.85;}
+#homehub-ambient .hhw-weather-icon {display:block;width:38px;height:38px;flex-shrink:0;}
+#homehub-ambient .hh-ambient-location {font-size:12px;font-weight:450;margin-top:4px;line-height:1.5;opacity:.5;}
+#homehub-ambient .hh-ambient-hint {position:absolute;bottom:38px;left:20px;right:20px;text-align:center;font-size:11px;line-height:1.5;letter-spacing:.015em;opacity:.42;}
+#homehub-ambient .hh-ambient-exit {position:absolute;z-index:2;right:30px;top:26px;display:grid;place-items:center;box-sizing:border-box;width:40px;height:40px;padding:0;border:1px solid rgba(255,255,255,.18);border-radius:50%;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);font:300 28px/1 var(--hh-font,sans-serif);cursor:pointer;}
+#homehub-ambient .hh-ambient-exit:focus-visible {outline:2px solid #fff;outline-offset:4px;}
+@media(max-width:760px) {
+  #homehub-ambient .hh-ambient-core {padding-bottom:20px;}
+  #homehub-ambient .hh-ambient-date {margin-top:16px;max-width:300px;}
+  #homehub-ambient .hh-ambient-weather {margin-top:20px;gap:7px;}
+  #homehub-ambient .hhw-weather-icon {width:30px;height:30px;}
+  #homehub-ambient .hh-ambient-hint {font-size:10px;bottom:30px;}
+}
