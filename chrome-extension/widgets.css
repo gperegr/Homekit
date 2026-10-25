@@ -1,7 +1,7 @@
 /* Clock, Weather and collapsible navigation for Home Hub. */
 #homehub-widgets {display:none;}
 html[data-homehub-active] #homehub-widgets {
-  display:grid;grid-column:1/-1;grid-template-columns:210px minmax(0,1fr) 252px;gap:16px;
+  display:grid;grid-column:1/-1;grid-template-columns:subgrid;gap:14px;
   align-items:stretch;box-sizing:border-box;min-width:0;margin:0 0 6px;padding:0;
   font-family:var(--hh-font);color:var(--hh-ink);
 }
@@ -11,7 +11,7 @@ html[data-homehub-active] #homehub-widgets {
 #homehub-widgets button:focus-visible,#homehub-weather-dialog :focus-visible {outline:3px solid #2e9bff;outline-offset:3px;}
 #homehub-widgets button:disabled {cursor:default;opacity:.55;}
 #homehub-widgets .hhw-clock,#homehub-widgets .hhw-weather,#homehub-widgets .hhw-calendar {
-  position:relative;isolation:isolate;overflow:hidden;min-width:0;min-height:236px;
+  position:relative;isolation:isolate;overflow:hidden;min-width:0;min-height:0;aspect-ratio:1;
   border:1px solid rgba(255,255,255,.6);border-radius:27px;
   box-shadow:0 8px 26px rgba(44,66,106,.08),inset 1px 1px 1px rgba(255,255,255,.65);
 }
@@ -21,7 +21,7 @@ html[data-homehub-active] #homehub-widgets {
   background:radial-gradient(240px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),rgba(237,230,252,.35),transparent 72%);
   opacity:var(--hh-glass-visible,0);transition:opacity .25s;
 }
-#homehub-widgets .hhw-clock-face {display:block;width:166px;height:166px;flex-shrink:0;position:relative;}
+#homehub-widgets .hhw-clock-face {display:block;width:76%;height:auto;aspect-ratio:1;flex-shrink:0;position:relative;}
 #homehub-widgets .hhw-clock-tick {stroke:#d8d3e7;stroke-width:1.5;stroke-linecap:round;}
 #homehub-widgets .hhw-clock-tick-major {stroke:#b7aecf;stroke-width:2;stroke-linecap:round;}
 #homehub-widgets .hhw-clock-number {font-family:var(--hh-font);font-size:18px;font-weight:600;letter-spacing:-.6px;fill:#8d82b0;}
@@ -29,7 +29,7 @@ html[data-homehub-active] #homehub-widgets {
 #homehub-widgets .hhw-hand-second {stroke:#9b8db9;}
 #homehub-widgets .hhw-clock-caption {position:relative;display:flex;align-items:center;justify-content:space-between;gap:15px;width:100%;max-width:174px;font-size:10px;font-weight:500;color:#8a829d;}
 #homehub-widgets .hhw-clock-digital {font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;color:#74688e;}
-#homehub-widgets .hhw-weather {padding:15px 20px 12px;color:#fff;background:linear-gradient(150deg,#78a9dd,#3b72b1);}
+#homehub-widgets .hhw-weather {grid-column:span 2;aspect-ratio:auto;display:flex;flex-direction:column;justify-content:space-between;padding:15px 20px 12px;color:#fff;background:linear-gradient(150deg,#78a9dd,#3b72b1);}
 #homehub-widgets .hhw-weather[data-weather="cloudy"],#homehub-widgets .hhw-weather[data-weather="fog"] {background:linear-gradient(145deg,#93a8bf,#647f9c);}
 #homehub-widgets .hhw-weather[data-weather="rain"] {background:linear-gradient(145deg,#708ba6,#405b78);}
 #homehub-widgets .hhw-weather[data-weather="storm"] {background:linear-gradient(145deg,#5d708b,#38455e);}
@@ -93,7 +93,7 @@ html[data-homehub-theme="dark"] #homehub-weather-dialog {background:rgba(30,42,6
 #homehub-weather-dialog .hhw-city-attribution {font-size:9px;line-height:1.4;color:var(--hh-faint);margin:20px 0 0;}
 #homehub-weather-dialog .hhw-city-attribution a {color:inherit;}
 
-#homehub-widgets .hhw-calendar {padding:16px 16px 12px;background:var(--hh-card);backdrop-filter:blur(24px) saturate(160%);}
+#homehub-widgets .hhw-calendar {display:flex;flex-direction:column;padding:16px 16px 12px;background:var(--hh-card);backdrop-filter:blur(24px) saturate(160%);}
 #homehub-widgets .hhw-calendar-header {display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:9px;}
 #homehub-widgets .hhw-calendar-month {min-width:0;padding:0;font-size:15px;font-weight:650;letter-spacing:-.03em;line-height:1.3;color:#ed675e;text-transform:capitalize;white-space:nowrap;}
 #homehub-widgets .hhw-calendar-actions {display:flex;gap:3px;flex-shrink:0;}
@@ -102,35 +102,71 @@ html[data-homehub-theme="dark"] #homehub-weather-dialog {background:rgba(30,42,6
 #homehub-widgets .hhw-calendar-arrow svg {width:13px;height:13px;}
 #homehub-widgets .hhw-calendar-prev svg {transform:rotate(90deg);}
 #homehub-widgets .hhw-calendar-next svg {transform:rotate(-90deg);}
-#homehub-widgets .hhw-calendar-grid {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px 0;text-align:center;align-items:center;}
+#homehub-widgets .hhw-calendar-grid {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));flex:1;min-height:0;grid-template-rows:17px repeat(6,minmax(0,1fr));gap:1px 0;text-align:center;align-items:center;}
 #homehub-widgets .hhw-calendar-weekday {font-size:9px;font-weight:600;color:var(--hh-faint);height:17px;}
 #homehub-widgets .hhw-calendar-day {display:block;width:22px;height:22px;line-height:22px;margin:auto;border-radius:50%;font-size:11px;font-weight:500;font-variant-numeric:tabular-nums;}
 #homehub-widgets .hhw-calendar-day.is-outside {opacity:.3;}
 #homehub-widgets .hhw-calendar-day.is-today {background:#f36960;color:white;opacity:1;font-weight:650;box-shadow:0 2px 7px rgba(227,87,78,.15);}
 #homehub-widgets .hhw-calendar-footer {padding-top:8px;margin-top:6px;border-top:1px solid color-mix(in srgb,var(--hh-muted) 12%,transparent);font-size:9px;line-height:1.3;color:var(--hh-muted);}
-@media(max-width:1050px) {
-  html[data-homehub-active] #homehub-widgets {grid-template-columns:190px minmax(0,1fr) 230px;}
-  #homehub-widgets .hhw-clock-face {width:154px;height:154px;}
+@media(max-width:900px) {
+  #homehub-widgets .hhw-clock {grid-column:1;grid-row:1;}
+  #homehub-widgets .hhw-calendar {grid-column:2;grid-row:1;}
+  #homehub-widgets .hhw-weather {grid-column:1/-1;grid-row:2;aspect-ratio:2.06;}
 }
 @media(max-width:760px) {
-  html[data-homehub-active] #homehub-widgets {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
-  #homehub-widgets .hhw-weather {grid-column:1/-1;grid-row:2;min-height:236px;padding-left:16px;padding-right:16px;}
-  #homehub-widgets .hhw-clock {grid-column:1;grid-row:1;min-height:218px;padding:12px;gap:10px;}
-  #homehub-widgets .hhw-clock-face {width:100%;max-width:146px;height:auto;aspect-ratio:1;}
-  #homehub-widgets .hhw-clock-caption {font-size:9px;gap:8px;}
-  #homehub-widgets .hhw-clock-digital {font-size:11px;}
-  #homehub-widgets .hhw-calendar {grid-column:2;grid-row:1;min-height:218px;padding:14px 10px 10px;}
-  #homehub-widgets .hhw-calendar-month {font-size:12px;}
-  #homehub-widgets .hhw-calendar-header {gap:2px;margin-bottom:10px;}
+  html[data-homehub-active] #homehub-widgets {gap:11px;}
+  #homehub-widgets .hhw-clock {padding:10px;gap:5px;}
+  #homehub-widgets .hhw-clock-face {width:82%;}
+  #homehub-widgets .hhw-clock-caption {font-size:8px;gap:5px;}
+  #homehub-widgets .hhw-clock-digital {font-size:10px;}
+  #homehub-widgets .hhw-calendar {padding:10px 8px 8px;}
+  #homehub-widgets .hhw-calendar-month {font-size:10px;}
+  #homehub-widgets .hhw-calendar-header {gap:0;margin-bottom:3px;}
   #homehub-widgets .hhw-calendar-actions {gap:0;}
-  #homehub-widgets .hhw-calendar-arrow {width:17px;height:22px;padding:1px;}
-  #homehub-widgets .hhw-calendar-day {width:19px;height:19px;line-height:19px;font-size:10px;}
-  #homehub-widgets .hhw-calendar-footer {font-size:8px;margin-top:7px;}
-  #homehub-widgets .hhw-current-sky {margin-right:0;min-width:100px;}
-  #homehub-widgets .hhw-weather-setup {gap:13px;}
-  #homehub-widgets .hhw-weather-setup > .hhw-weather-icon {width:60px;height:60px;}
-  #homehub-widgets .hhw-weather-setup h3 {font-size:18px;}
+  #homehub-widgets .hhw-calendar-arrow {width:16px;height:18px;padding:1px;}
+  #homehub-widgets .hhw-calendar-grid {grid-template-rows:12px repeat(6,minmax(0,1fr));gap:0;}
+  #homehub-widgets .hhw-calendar-weekday {font-size:8px;height:12px;}
+  #homehub-widgets .hhw-calendar-day {width:17px;height:17px;line-height:17px;font-size:9px;}
+  #homehub-widgets .hhw-calendar-footer {font-size:7px;margin-top:3px;padding-top:4px;}
+  #homehub-widgets .hhw-weather {padding:10px 14px;}
+  #homehub-widgets .hhw-city {font-size:13px;}
+  #homehub-widgets .hhw-now {margin:0;gap:8px;}
+  #homehub-widgets .hhw-temperature {font-size:38px;letter-spacing:-2px;}
+  #homehub-widgets .hhw-condition {font-size:10px;}
+  #homehub-widgets .hhw-range {font-size:8px;margin-top:1px;}
+  #homehub-widgets .hhw-current-sky {margin-right:0;min-width:90px;}
+  #homehub-widgets .hhw-current-sky .hhw-weather-icon {width:35px;height:35px;}
+  #homehub-widgets .hhw-feels-like {font-size:8px;}
+  #homehub-widgets .hhw-hours {padding-top:4px;}
+  #homehub-widgets .hhw-hour .hhw-weather-icon {width:18px;height:18px;}
+  #homehub-widgets .hhw-hour-label {font-size:8px;}
+  #homehub-widgets .hhw-hour b {font-size:9px;}
+  #homehub-widgets .hhw-weather-footer {margin-top:2px;font-size:7px;}
+  #homehub-widgets .hhw-weather-setup {min-height:0;flex:1;gap:12px;}
+  #homehub-widgets .hhw-weather-setup > .hhw-weather-icon {width:50px;height:50px;}
+  #homehub-widgets .hhw-weather-setup h3 {font-size:16px;}
+  #homehub-widgets .hhw-weather-setup p {font-size:10px;}
+  #homehub-widgets .hhw-choose-city {margin-top:7px;}
 }
 @media(prefers-reduced-motion:reduce) {
   #homehub-widgets .hhw-clock::before {opacity:0!important;transition:none!important;}
+}
+/* Intrinsic weather text must not stretch the square tracks. */
+#homehub-widgets .hhw-clock,#homehub-widgets .hhw-calendar {width:100%;align-self:start;}
+#homehub-widgets .hhw-weather {contain:size;height:100%;}
+@media(max-width:900px) {
+  #homehub-widgets .hhw-weather {height:auto;aspect-ratio:auto;}
+  html[data-homehub-active] #homehub-widgets {grid-template-rows:repeat(2,minmax(0,1fr));}
+}
+
+@media(max-width:380px) {
+  #homehub-widgets .hhw-calendar-day {width:13px;height:13px;line-height:13px;font-size:8px;}
+  #homehub-widgets .hhw-calendar-footer {display:none;}
+  #homehub-widgets .hhw-calendar-month {font-size:9px;}
+  #homehub-widgets .hhw-calendar-arrow {width:13px;}
+  #homehub-widgets .hhw-weather {padding:8px 12px;}
+  #homehub-widgets .hhw-temperature {font-size:30px;}
+  #homehub-widgets .hhw-range,#homehub-widgets .hhw-feels-like {display:none;}
+  #homehub-widgets .hhw-refresh {width:20px;height:20px;}
+  #homehub-widgets .hhw-hour .hhw-weather-icon {width:16px;height:16px;}
 }
