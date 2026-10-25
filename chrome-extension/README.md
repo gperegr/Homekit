@@ -18,7 +18,7 @@ Somente o módulo Tempo faz consultas externas, limitadas aos domínios de previ
 2. Clique em **Carregar sem compactação** e selecione esta pasta `chrome-extension`.
 3. Abra ou recarregue `https://home.google.com/` e entre na tela **Dispositivos**.
 
-Se a extensão já estava carregada desta pasta, clique em **Recarregar** no cartão da extensão e atualize a aba do Google Home. A versão deve ser **0.7.0**.
+Se a extensão já estava carregada desta pasta, clique em **Recarregar** no cartão da extensão e atualize a aba do Google Home. A versão deve ser **0.7.1**.
 
 O ícone **Ver Google Home**, na ponta direita do dock, restaura a interface original na aba. **Ativar Home Hub** volta ao tema. O botão de lua/sol alterna a aparência.
 
@@ -39,3 +39,5 @@ O dock inferior, os ícones de acessórios com 38 px, o calendário com fevereir
 Os testes do serviço de previsão não dependem de pacotes externos: `node --test tests/weather-worker.test.cjs`, executado a partir da raiz do repositório. Eles cobrem cache, consultas simultâneas, persistência da cidade, recusa de origens inválidas e falhas de rede.
 
 Essa verificação não aciona aparelhos reais. Os recursos disponíveis continuam sendo os que o Google Home Web oferece para cada aparelho. A extensão depende dos componentes Angular atuais (`ghw-devices`, `.spaces-container`, `.space`, `.tile-container`, `.tile-column` e os cartões nativos); mudanças do Google podem exigir atualização.
+
+A grade usa módulos quadrados: relógio, calendário e acessórios ocupam um módulo, e o Tempo ocupa dois módulos com a mesma altura. Grupos expandidos formam uma faixa própria com o cartão principal e os controles internos quadrados; os elementos e eventos nativos do Google são preservados. As proporções foram verificadas em larguras de 320, 390, 800, 1024 e 1440 px, incluindo a inserção e remoção dinâmica dos controles de grupo.
