@@ -1,6 +1,8 @@
 # Tema Home Hub para Google Home Web
 
-Extensão local do Chrome que aplica um tema inspirado no Apple Home a `home.google.com`. Ela injeta somente CSS na aba do Google Home. Não lê os aparelhos, não altera os comandos e não envia dados para nenhum servidor.
+Extensão local do Chrome que aplica um tema inspirado no Apple Home a `home.google.com`. O script observa a estrutura renderizada no navegador para compactar a navegação dos cômodos, organizar cartões em uma grade responsiva, mudar tipografia e substituir ícones de dispositivos conhecidos. Os mesmos cartões interativos permanecem no Google Home.
+
+O script não faz chamadas de rede, não coleta credenciais e não envia dados. Ele precisa ler os nomes e estados já renderizados na página para identificar os cartões. A extensão é limitada ao domínio `home.google.com`.
 
 ## Instalar no Chrome
 
@@ -14,4 +16,4 @@ Para remover o tema, desative a extensão em `chrome://extensions`.
 
 ## Limites
 
-O Google Home Web mantém sua própria estrutura e pode redesenhá-la. Este tema preserva as cores do Google para manter o contraste e o estado dos aparelhos; ajusta fontes, cantos e sombras comuns. Componentes encapsulados em Shadow DOM podem ignorar algumas regras. Os aparelhos e os controles continuam pertencendo ao Google Home; o tema não os copia para o painel Home Hub.
+O Google Home Web pode redesenhar sua estrutura. A extensão tenta reconhecer cômodos e cartões pela hierarquia visível, então alguns componentes podem ficar sem estilo se não forem encontrados. Ela preserva as cores de estado do Google e mantém os cartões originais, para que os controles continuem funcionando.
