@@ -1,7 +1,7 @@
 /* Clock, Weather and collapsible navigation for Home Hub. */
 #homehub-widgets {display:none;}
 html[data-homehub-active] #homehub-widgets {
-  display:grid;grid-column:1/-1;grid-template-columns:220px minmax(0,1fr);gap:16px;
+  display:grid;grid-column:1/-1;grid-template-columns:210px minmax(0,1fr) 252px;gap:16px;
   align-items:stretch;box-sizing:border-box;min-width:0;margin:0 0 6px;padding:0;
   font-family:var(--hh-font);color:var(--hh-ink);
 }
@@ -10,7 +10,7 @@ html[data-homehub-active] #homehub-widgets {
 #homehub-widgets button {cursor:pointer;color:inherit;border:0;background:none;}
 #homehub-widgets button:focus-visible,#homehub-weather-dialog :focus-visible {outline:3px solid #2e9bff;outline-offset:3px;}
 #homehub-widgets button:disabled {cursor:default;opacity:.55;}
-#homehub-widgets .hhw-clock,#homehub-widgets .hhw-weather {
+#homehub-widgets .hhw-clock,#homehub-widgets .hhw-weather,#homehub-widgets .hhw-calendar {
   position:relative;isolation:isolate;overflow:hidden;min-width:0;min-height:236px;
   border:1px solid rgba(255,255,255,.6);border-radius:27px;
   box-shadow:0 8px 26px rgba(44,66,106,.08),inset 1px 1px 1px rgba(255,255,255,.65);
@@ -21,7 +21,7 @@ html[data-homehub-active] #homehub-widgets {
   background:radial-gradient(240px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),rgba(237,230,252,.35),transparent 72%);
   opacity:var(--hh-glass-visible,0);transition:opacity .25s;
 }
-#homehub-widgets .hhw-clock-face {display:block;width:174px;height:174px;flex-shrink:0;position:relative;}
+#homehub-widgets .hhw-clock-face {display:block;width:166px;height:166px;flex-shrink:0;position:relative;}
 #homehub-widgets .hhw-clock-tick {stroke:#d8d3e7;stroke-width:1.5;stroke-linecap:round;}
 #homehub-widgets .hhw-clock-tick-major {stroke:#b7aecf;stroke-width:2;stroke-linecap:round;}
 #homehub-widgets .hhw-clock-number {font-family:var(--hh-font);font-size:18px;font-weight:600;letter-spacing:-.6px;fill:#8d82b0;}
@@ -93,49 +93,44 @@ html[data-homehub-theme="dark"] #homehub-weather-dialog {background:rgba(30,42,6
 #homehub-weather-dialog .hhw-city-attribution {font-size:9px;line-height:1.4;color:var(--hh-faint);margin:20px 0 0;}
 #homehub-weather-dialog .hhw-city-attribution a {color:inherit;}
 
-#homehub-ui .hh-sidebar-toggle {display:grid;place-items:center;width:40px;height:40px;flex-shrink:0;margin-right:-6px;border:1px solid var(--hh-line);border-radius:50%;background:var(--hh-sidebar);box-shadow:inset 0 1px 0 var(--hh-rim);backdrop-filter:blur(16px);}
-#homehub-ui .hh-sidebar-toggle svg {width:18px;height:18px;}
-@media(min-width:761px) {
-  #homehub-ui .hh-sidebar {transition:width .2s ease;}
-  #homehub-ui .hh-header,#homehub-ui .hh-categories {transition:left .2s ease;}
-  html[data-homehub-active] ghw-devices {transition:left .2s ease;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-sidebar {width:72px;padding-left:10px;padding-right:10px;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-brand {justify-content:center;padding:0 0 23px;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-brand > div,
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-section-label,
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-nav .hh-button-label,
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-count,
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-original .hh-button-label {display:none;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-rooms {margin-top:18px;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-nav {justify-content:center;padding:8px 5px;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-sidebar-bottom {padding-left:0;padding-right:0;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-original {justify-content:center;width:100%;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-header,
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-categories {left:126px;}
-  html[data-homehub-active][data-homehub-sidebar="collapsed"] ghw-devices {left:124px!important;}
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-empty {left:124px;}
+#homehub-widgets .hhw-calendar {padding:16px 16px 12px;background:var(--hh-card);backdrop-filter:blur(24px) saturate(160%);}
+#homehub-widgets .hhw-calendar-header {display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:9px;}
+#homehub-widgets .hhw-calendar-month {min-width:0;padding:0;font-size:15px;font-weight:650;letter-spacing:-.03em;line-height:1.3;color:#ed675e;text-transform:capitalize;white-space:nowrap;}
+#homehub-widgets .hhw-calendar-actions {display:flex;gap:3px;flex-shrink:0;}
+#homehub-widgets .hhw-calendar-arrow {display:grid;place-items:center;width:21px;height:24px;padding:2px;border-radius:8px;color:var(--hh-muted);}
+#homehub-widgets .hhw-calendar-arrow:hover {background:rgba(128,145,169,.10);}
+#homehub-widgets .hhw-calendar-arrow svg {width:13px;height:13px;}
+#homehub-widgets .hhw-calendar-prev svg {transform:rotate(90deg);}
+#homehub-widgets .hhw-calendar-next svg {transform:rotate(-90deg);}
+#homehub-widgets .hhw-calendar-grid {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px 0;text-align:center;align-items:center;}
+#homehub-widgets .hhw-calendar-weekday {font-size:9px;font-weight:600;color:var(--hh-faint);height:17px;}
+#homehub-widgets .hhw-calendar-day {display:block;width:22px;height:22px;line-height:22px;margin:auto;border-radius:50%;font-size:11px;font-weight:500;font-variant-numeric:tabular-nums;}
+#homehub-widgets .hhw-calendar-day.is-outside {opacity:.3;}
+#homehub-widgets .hhw-calendar-day.is-today {background:#f36960;color:white;opacity:1;font-weight:650;box-shadow:0 2px 7px rgba(227,87,78,.15);}
+#homehub-widgets .hhw-calendar-footer {padding-top:8px;margin-top:6px;border-top:1px solid color-mix(in srgb,var(--hh-muted) 12%,transparent);font-size:9px;line-height:1.3;color:var(--hh-muted);}
+@media(max-width:1050px) {
+  html[data-homehub-active] #homehub-widgets {grid-template-columns:190px minmax(0,1fr) 230px;}
+  #homehub-widgets .hhw-clock-face {width:154px;height:154px;}
 }
-@media(min-width:761px) and (max-width:1050px) {
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-header,
-  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-categories {left:114px;}
-  html[data-homehub-active][data-homehub-sidebar="collapsed"] ghw-devices {left:112px!important;}
-}
-@media(max-width:1050px) {html[data-homehub-active] #homehub-widgets {grid-template-columns:190px minmax(0,1fr);}}
 @media(max-width:760px) {
-  #homehub-ui .hh-sidebar-toggle {display:none;}
-  html[data-homehub-active] #homehub-widgets {grid-template-columns:1fr;gap:12px;}
-  #homehub-widgets .hhw-clock {flex-direction:row;min-height:154px;padding:10px 18px;gap:22px;}
-  #homehub-widgets .hhw-clock-face {width:134px;height:134px;}
-  #homehub-widgets .hhw-clock-caption {flex-direction:column;align-items:flex-start;gap:7px;width:auto;}
-  #homehub-widgets .hhw-clock-digital {font-size:20px;letter-spacing:-.03em;font-weight:550;}
-  #homehub-widgets .hhw-weather {min-height:236px;padding-left:16px;padding-right:16px;}
+  html[data-homehub-active] #homehub-widgets {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  #homehub-widgets .hhw-weather {grid-column:1/-1;grid-row:2;min-height:236px;padding-left:16px;padding-right:16px;}
+  #homehub-widgets .hhw-clock {grid-column:1;grid-row:1;min-height:218px;padding:12px;gap:10px;}
+  #homehub-widgets .hhw-clock-face {width:100%;max-width:146px;height:auto;aspect-ratio:1;}
+  #homehub-widgets .hhw-clock-caption {font-size:9px;gap:8px;}
+  #homehub-widgets .hhw-clock-digital {font-size:11px;}
+  #homehub-widgets .hhw-calendar {grid-column:2;grid-row:1;min-height:218px;padding:14px 10px 10px;}
+  #homehub-widgets .hhw-calendar-month {font-size:12px;}
+  #homehub-widgets .hhw-calendar-header {gap:2px;margin-bottom:10px;}
+  #homehub-widgets .hhw-calendar-actions {gap:0;}
+  #homehub-widgets .hhw-calendar-arrow {width:17px;height:22px;padding:1px;}
+  #homehub-widgets .hhw-calendar-day {width:19px;height:19px;line-height:19px;font-size:10px;}
+  #homehub-widgets .hhw-calendar-footer {font-size:8px;margin-top:7px;}
   #homehub-widgets .hhw-current-sky {margin-right:0;min-width:100px;}
   #homehub-widgets .hhw-weather-setup {gap:13px;}
   #homehub-widgets .hhw-weather-setup > .hhw-weather-icon {width:60px;height:60px;}
   #homehub-widgets .hhw-weather-setup h3 {font-size:18px;}
 }
 @media(prefers-reduced-motion:reduce) {
-  #homehub-ui .hh-sidebar,#homehub-ui .hh-header,#homehub-ui .hh-categories,
-  html[data-homehub-active] ghw-devices {transition:none!important;}
   #homehub-widgets .hhw-clock::before {opacity:0!important;transition:none!important;}
 }
