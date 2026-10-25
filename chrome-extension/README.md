@@ -16,4 +16,4 @@ Para remover o tema, desative a extensão em `chrome://extensions`.
 
 ## Limites
 
-O Google Home Web pode redesenhar sua estrutura. A extensão tenta reconhecer cômodos e cartões pela hierarquia visível, então alguns componentes podem ficar sem estilo se não forem encontrados. Ela preserva as cores de estado do Google e mantém os cartões originais, para que os controles continuem funcionando.
+O tema foi ajustado aos componentes Angular observados no Google Home Web: `ghw-devices`, `.spaces-container`, `.space`, `.tile-container`, `.tile-column` e os cartões `.on-off-tile`, `.media-tile` e `.generic-tile`. O Google pode mudar esses seletores; se isso acontecer, algumas partes podem deixar de receber o tema. As cores de estado e os cartões originais são preservados.
