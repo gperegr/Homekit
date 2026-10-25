@@ -1,0 +1,141 @@
+/* Clock, Weather and collapsible navigation for Home Hub. */
+#homehub-widgets {display:none;}
+html[data-homehub-active] #homehub-widgets {
+  display:grid;grid-column:1/-1;grid-template-columns:220px minmax(0,1fr);gap:16px;
+  align-items:stretch;box-sizing:border-box;min-width:0;margin:0 0 6px;padding:0;
+  font-family:var(--hh-font);color:var(--hh-ink);
+}
+#homehub-widgets *,#homehub-weather-dialog * {box-sizing:border-box;}
+#homehub-widgets button,#homehub-weather-dialog button,#homehub-weather-dialog input {font:inherit;}
+#homehub-widgets button {cursor:pointer;color:inherit;border:0;background:none;}
+#homehub-widgets button:focus-visible,#homehub-weather-dialog :focus-visible {outline:3px solid #2e9bff;outline-offset:3px;}
+#homehub-widgets button:disabled {cursor:default;opacity:.55;}
+#homehub-widgets .hhw-clock,#homehub-widgets .hhw-weather {
+  position:relative;isolation:isolate;overflow:hidden;min-width:0;min-height:236px;
+  border:1px solid rgba(255,255,255,.6);border-radius:27px;
+  box-shadow:0 8px 26px rgba(44,66,106,.08),inset 1px 1px 1px rgba(255,255,255,.65);
+}
+#homehub-widgets .hhw-clock {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:13px 18px;background:rgba(255,255,255,.94);color:#242532;}
+#homehub-widgets .hhw-clock::before {
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(240px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),rgba(237,230,252,.35),transparent 72%);
+  opacity:var(--hh-glass-visible,0);transition:opacity .25s;
+}
+#homehub-widgets .hhw-clock-face {display:block;width:174px;height:174px;flex-shrink:0;position:relative;}
+#homehub-widgets .hhw-clock-tick {stroke:#d8d3e7;stroke-width:1.5;stroke-linecap:round;}
+#homehub-widgets .hhw-clock-tick-major {stroke:#b7aecf;stroke-width:2;stroke-linecap:round;}
+#homehub-widgets .hhw-clock-number {font-family:var(--hh-font);font-size:18px;font-weight:600;letter-spacing:-.6px;fill:#8d82b0;}
+#homehub-widgets .hhw-hand-hour,#homehub-widgets .hhw-hand-minute {stroke:#17181d;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15));}
+#homehub-widgets .hhw-hand-second {stroke:#9b8db9;}
+#homehub-widgets .hhw-clock-caption {position:relative;display:flex;align-items:center;justify-content:space-between;gap:15px;width:100%;max-width:174px;font-size:10px;font-weight:500;color:#8a829d;}
+#homehub-widgets .hhw-clock-digital {font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;color:#74688e;}
+#homehub-widgets .hhw-weather {padding:15px 20px 12px;color:#fff;background:linear-gradient(150deg,#78a9dd,#3b72b1);}
+#homehub-widgets .hhw-weather[data-weather="cloudy"],#homehub-widgets .hhw-weather[data-weather="fog"] {background:linear-gradient(145deg,#93a8bf,#647f9c);}
+#homehub-widgets .hhw-weather[data-weather="rain"] {background:linear-gradient(145deg,#708ba6,#405b78);}
+#homehub-widgets .hhw-weather[data-weather="storm"] {background:linear-gradient(145deg,#5d708b,#38455e);}
+#homehub-widgets .hhw-weather[data-weather="snow"] {background:linear-gradient(145deg,#a0bacd,#6c91ad);}
+#homehub-widgets .hhw-weather[data-day="night"] {background:linear-gradient(150deg,#1e2b50,#3b5681);}
+#homehub-widgets .hhw-weather::before {
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 94% 0,rgba(255,255,255,.24),transparent 57%),radial-gradient(200px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),rgba(255,255,255,.12),transparent 75%);
+}
+#homehub-widgets .hhw-weather[data-day="night"]::before {
+  background:radial-gradient(circle at 71% 22%,rgba(255,255,255,.65) 0 1px,transparent 1.5px),radial-gradient(circle at 87% 44%,rgba(255,255,255,.45) 0 1px,transparent 1.5px),radial-gradient(circle at 61% 12%,rgba(255,255,255,.5) 0 .7px,transparent 1.2px),radial-gradient(ellipse at 94% 0,rgba(162,184,238,.2),transparent 60%);
+}
+#homehub-widgets .hhw-weather > * {position:relative;z-index:1;}
+#homehub-widgets .hhw-weather-top {display:flex;align-items:center;justify-content:space-between;gap:10px;}
+#homehub-widgets .hhw-city {display:flex;align-items:center;gap:7px;min-width:0;max-width:calc(100% - 35px);padding:0!important;font-size:16px;font-weight:600;letter-spacing:-.025em;text-align:left;}
+#homehub-widgets .hhw-city > span {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#homehub-widgets .hhw-city svg {width:13px;height:13px;flex-shrink:0;opacity:.7;}
+#homehub-widgets .hhw-refresh {display:grid;place-items:center;width:25px;height:25px;padding:5px!important;border-radius:50%;background:rgba(255,255,255,.11);flex-shrink:0;}
+#homehub-widgets .hhw-refresh svg {display:block;width:14px;height:14px;}
+#homehub-widgets .hhw-now {display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 10px;}
+#homehub-widgets .hhw-current {min-width:0;}
+#homehub-widgets .hhw-temperature {font-size:60px;font-weight:220;line-height:1;letter-spacing:-4px;}
+#homehub-widgets .hhw-condition {font-size:12px;font-weight:500;line-height:1.3;margin-top:1px;}
+#homehub-widgets .hhw-range {font-size:10px;line-height:1.3;opacity:.82;margin-top:3px;}
+#homehub-widgets .hhw-current-sky {display:flex;flex-direction:column;align-items:center;gap:2px;min-width:110px;margin-right:15px;}
+#homehub-widgets .hhw-weather-icon {display:block;flex-shrink:0;}
+#homehub-widgets .hhw-current-sky .hhw-weather-icon {width:65px;height:65px;filter:drop-shadow(0 4px 8px rgba(17,49,89,.12));}
+#homehub-widgets .hhw-feels-like {font-size:10px;opacity:.78;}
+#homehub-widgets .hhw-hours {display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding-top:9px;border-top:1px solid rgba(255,255,255,.20);}
+#homehub-widgets .hhw-hour {display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;}
+#homehub-widgets .hhw-hour-label {font-size:9px;font-weight:500;opacity:.8;}
+#homehub-widgets .hhw-hour .hhw-weather-icon {width:24px;height:24px;}
+#homehub-widgets .hhw-hour b {font-size:11px;font-weight:600;line-height:1.2;}
+#homehub-widgets .hhw-weather-footer {display:flex;justify-content:space-between;gap:10px;margin-top:9px;font-size:8.5px;line-height:1.3;opacity:.72;}
+#homehub-widgets .hhw-weather-footer a {color:inherit;text-decoration:none;}
+#homehub-widgets .hhw-weather-footer a:hover {text-decoration:underline;}
+#homehub-widgets .hhw-weather-setup {display:flex;align-items:center;justify-content:center;gap:24px;min-height:160px;}
+#homehub-widgets .hhw-weather-setup > .hhw-weather-icon {width:84px;height:84px;}
+#homehub-widgets .hhw-weather-setup h3 {margin:0 0 6px;font-size:20px;font-weight:550;letter-spacing:-.03em;}
+#homehub-widgets .hhw-weather-setup p {font-size:11px;line-height:1.5;max-width:240px;margin:0;opacity:.8;}
+#homehub-widgets .hhw-choose-city {display:inline-block;margin-top:15px;padding:8px 12px;border:1px solid rgba(255,255,255,.25);border-radius:11px;font-size:11px;font-weight:550;background:rgba(255,255,255,.13);}
+#homehub-widgets .hhw-weather-error {font-size:10px;opacity:.85;margin:0 0 3px;}
+
+#homehub-weather-dialog {width:min(430px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:28px;border:1px solid var(--hh-line,rgba(255,255,255,.5));border-radius:27px;background:rgba(247,249,253,.96);color:var(--hh-ink,#202938);font-family:var(--hh-font,sans-serif);box-shadow:0 30px 100px rgba(14,32,63,.2);backdrop-filter:blur(30px);}
+html[data-homehub-theme="dark"] #homehub-weather-dialog {background:rgba(30,42,64,.97);}
+#homehub-weather-dialog::backdrop {background:rgba(19,34,56,.25);backdrop-filter:blur(8px);}
+#homehub-weather-dialog h2 {margin:0 30px 7px 0;font-size:23px;font-weight:650;line-height:1.15;letter-spacing:-.04em;}
+#homehub-weather-dialog .hhw-city-intro {margin:0 0 22px;font-size:12px;line-height:1.5;color:var(--hh-muted);}
+#homehub-weather-dialog .hhw-dialog-close {position:absolute;top:14px;right:14px;display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(126,142,166,.1);color:var(--hh-muted);font-size:22px;line-height:1;cursor:pointer;}
+#homehub-weather-dialog label {display:block;font-size:11px;font-weight:600;margin-bottom:7px;}
+#homehub-weather-dialog .hhw-search-row {display:flex;gap:8px;}
+#homehub-weather-dialog input {min-width:0;flex:1;padding:11px 12px;border:1px solid rgba(133,151,177,.25);border-radius:12px;background:rgba(255,255,255,.25);color:inherit;font-size:13px;}
+#homehub-weather-dialog .hhw-primary {padding:10px 15px;border:0;border-radius:12px;background:#1384f6;color:#fff;font-size:12px;font-weight:600;cursor:pointer;}
+#homehub-weather-dialog .hhw-primary:disabled {opacity:.5;cursor:default;}
+#homehub-weather-dialog .hhw-search-status {font-size:11px;line-height:1.5;color:var(--hh-muted);margin:13px 0 8px;min-height:16px;}
+#homehub-weather-dialog .hhw-city-results {display:flex;flex-direction:column;gap:4px;}
+#homehub-weather-dialog .hhw-city-result {display:flex;flex-direction:column;gap:4px;padding:11px 12px;text-align:left;border:0;border-radius:12px;background:rgba(130,151,180,.06);color:inherit;cursor:pointer;}
+#homehub-weather-dialog .hhw-city-result:hover {background:rgba(100,150,220,.13);}
+#homehub-weather-dialog .hhw-city-result strong {font-size:13px;font-weight:600;}
+#homehub-weather-dialog .hhw-city-result span {font-size:10px;color:var(--hh-muted);}
+#homehub-weather-dialog .hhw-city-attribution {font-size:9px;line-height:1.4;color:var(--hh-faint);margin:20px 0 0;}
+#homehub-weather-dialog .hhw-city-attribution a {color:inherit;}
+
+#homehub-ui .hh-sidebar-toggle {display:grid;place-items:center;width:40px;height:40px;flex-shrink:0;margin-right:-6px;border:1px solid var(--hh-line);border-radius:50%;background:var(--hh-sidebar);box-shadow:inset 0 1px 0 var(--hh-rim);backdrop-filter:blur(16px);}
+#homehub-ui .hh-sidebar-toggle svg {width:18px;height:18px;}
+@media(min-width:761px) {
+  #homehub-ui .hh-sidebar {transition:width .2s ease;}
+  #homehub-ui .hh-header,#homehub-ui .hh-categories {transition:left .2s ease;}
+  html[data-homehub-active] ghw-devices {transition:left .2s ease;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-sidebar {width:72px;padding-left:10px;padding-right:10px;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-brand {justify-content:center;padding:0 0 23px;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-brand > div,
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-section-label,
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-nav .hh-button-label,
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-count,
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-original .hh-button-label {display:none;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-rooms {margin-top:18px;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-nav {justify-content:center;padding:8px 5px;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-sidebar-bottom {padding-left:0;padding-right:0;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-original {justify-content:center;width:100%;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-header,
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-categories {left:126px;}
+  html[data-homehub-active][data-homehub-sidebar="collapsed"] ghw-devices {left:124px!important;}
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-empty {left:124px;}
+}
+@media(min-width:761px) and (max-width:1050px) {
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-header,
+  html[data-homehub-sidebar="collapsed"] #homehub-ui .hh-categories {left:114px;}
+  html[data-homehub-active][data-homehub-sidebar="collapsed"] ghw-devices {left:112px!important;}
+}
+@media(max-width:1050px) {html[data-homehub-active] #homehub-widgets {grid-template-columns:190px minmax(0,1fr);}}
+@media(max-width:760px) {
+  #homehub-ui .hh-sidebar-toggle {display:none;}
+  html[data-homehub-active] #homehub-widgets {grid-template-columns:1fr;gap:12px;}
+  #homehub-widgets .hhw-clock {flex-direction:row;min-height:154px;padding:10px 18px;gap:22px;}
+  #homehub-widgets .hhw-clock-face {width:134px;height:134px;}
+  #homehub-widgets .hhw-clock-caption {flex-direction:column;align-items:flex-start;gap:7px;width:auto;}
+  #homehub-widgets .hhw-clock-digital {font-size:20px;letter-spacing:-.03em;font-weight:550;}
+  #homehub-widgets .hhw-weather {min-height:236px;padding-left:16px;padding-right:16px;}
+  #homehub-widgets .hhw-current-sky {margin-right:0;min-width:100px;}
+  #homehub-widgets .hhw-weather-setup {gap:13px;}
+  #homehub-widgets .hhw-weather-setup > .hhw-weather-icon {width:60px;height:60px;}
+  #homehub-widgets .hhw-weather-setup h3 {font-size:18px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  #homehub-ui .hh-sidebar,#homehub-ui .hh-header,#homehub-ui .hh-categories,
+  html[data-homehub-active] ghw-devices {transition:none!important;}
+  #homehub-widgets .hhw-clock::before {opacity:0!important;transition:none!important;}
+}
