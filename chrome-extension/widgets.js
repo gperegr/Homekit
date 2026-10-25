@@ -2,6 +2,7 @@
   'use strict';
   const NS='http://www.w3.org/2000/svg';
   const REFRESH=20*60*1000;
+  const IDLE_DELAY=60*1000;
 
   function svgNode(tag,attrs={}) {
     const element=document.createElementNS(NS,tag);
@@ -48,9 +49,10 @@
   }
 
   function create({node,symbol}) {
-    let active=false,clockTimer=0,refreshTimer=0,initialized=false,weatherSequence=0,searchSequence=0;
+    let active=false,clockTimer=0,refreshTimer=0,idleTimer=0,initialized=false,weatherSequence=0,searchSequence=0,lastActivity=Date.now();
     let lastState={location:null,forecast:null},pending=false;
-    const root=node('section',{id:'homehub-widgets','aria-label':'Relógio e tempo'});
+    let calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),calendarToday='';
+    const root=node('section',{id:'homehub-widgets','aria-label':'Relógio, tempo e calendário'});
     const clock=node('section',{class:'hhw-clock','aria-label':'Relógio local'});
     const face=svgNode('svg',{viewBox:'0 0 200 200',role:'img',class:'hhw-clock-face'});
     const ticks=svgNode('g');
@@ -77,7 +79,33 @@
     const digital=node('span',{class:'hhw-clock-digital'});
     clock.append(face,node('div',{class:'hhw-clock-caption'},[node('span',{},['Hora local']),digital]));
     const weather=node('section',{class:'hhw-weather','aria-label':'Previsão do tempo'});
-    root.append(clock,weather);
+    const calendar=node('section',{class:'hhw-calendar','aria-label':'Calendário'});
+    const previous=node('button',{class:'hhw-calendar-arrow hhw-calendar-prev',type:'button','aria-label':'Mês anterior'},[symbol('chevron')]);
+    const next=node('button',{class:'hhw-calendar-arrow hhw-calendar-next',type:'button','aria-label':'Próximo mês'},[symbol('chevron')]);
+    const monthLabel=node('button',{class:'hhw-calendar-month',type:'button',title:'Voltar ao mês atual'});
+    const calendarDays=node('div',{class:'hhw-calendar-grid',role:'grid','aria-label':'Dias do mês'});
+    const calendarFooter=node('div',{class:'hhw-calendar-footer'});
+    calendar.append(node('div',{class:'hhw-calendar-header'},[monthLabel,node('div',{class:'hhw-calendar-actions'},[previous,next])]),calendarDays,calendarFooter);
+    previous.addEventListener('click',()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);renderCalendar();});
+    next.addEventListener('click',()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);renderCalendar();});
+    monthLabel.addEventListener('click',()=>{const now=new Date();calendarMonth=new Date(now.getFullYear(),now.getMonth(),1);renderCalendar();});
+    root.append(clock,weather,calendar);
+
+    const ambient=node('dialog',{id:'homehub-ambient','aria-label':'Protetor de tela: hora, data e tempo'});
+    const ambientTime=node('div',{class:'hh-ambient-time'});
+    const ambientDate=node('div',{class:'hh-ambient-date'});
+    const ambientWeather=node('div',{class:'hh-ambient-weather'});
+    const ambientLocation=node('div',{class:'hh-ambient-location'});
+    const ambientExit=node('button',{class:'hh-ambient-exit',type:'button','aria-label':'Sair do protetor de tela'},['×']);
+    ambient.append(ambientExit,node('div',{class:'hh-ambient-core'},[ambientTime,ambientDate,ambientWeather,ambientLocation]),node('div',{class:'hh-ambient-hint'},['Clique ou pressione uma tecla para voltar']));
+    ambient.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();closeAmbient();},true);
+    ambient.addEventListener('keydown',event=>{
+      if(!event.metaKey&&!event.ctrlKey&&!event.altKey)event.preventDefault();
+      event.stopImmediatePropagation();closeAmbient();
+    },true);
+    ambient.addEventListener('cancel',event=>{event.preventDefault();closeAmbient();});
+    ambient.addEventListener('close',()=>{document.documentElement.removeAttribute('data-homehub-ambient');armIdle();});
+    document.body.append(ambient);
 
     const dialog=node('dialog',{id:'homehub-weather-dialog','aria-labelledby':'hhw-location-title'});
     const close=node('button',{class:'hhw-dialog-close',type:'button','aria-label':'Fechar'},['×']);
@@ -94,6 +122,58 @@
     document.body.append(dialog);
 
     function setText(element,value){if(element.textContent!==value)element.textContent=value;}
+    function renderCalendar() {
+      const now=new Date(),year=calendarMonth.getFullYear(),month=calendarMonth.getMonth();
+      calendarToday=`${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+      setText(monthLabel,new Intl.DateTimeFormat('pt-BR',{month:'long'}).format(calendarMonth)+' '+year);
+      calendarDays.replaceChildren();
+      const weekdays=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+      for(const name of weekdays)calendarDays.append(node('span',{class:'hhw-calendar-weekday',role:'columnheader','aria-label':name},[name.slice(0,1).toUpperCase()]));
+      const firstDay=new Date(year,month,1).getDay();
+      for(let i=0;i<42;i++) {
+        const day=new Date(year,month,i-firstDay+1),outside=day.getMonth()!==month;
+        const isToday=day.getFullYear()===now.getFullYear()&&day.getMonth()===now.getMonth()&&day.getDate()===now.getDate();
+        const attrs={class:'hhw-calendar-day'+(outside?' is-outside':'')+(isToday?' is-today':''),role:'gridcell','aria-label':new Intl.DateTimeFormat('pt-BR',{dateStyle:'full'}).format(day),'data-in-month':String(!outside)};
+        if(isToday)attrs['aria-current']='date';
+        calendarDays.append(node('span',attrs,[String(day.getDate())]));
+      }
+      setText(calendarFooter,new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'numeric',month:'long'}).format(now));
+    }
+    function armIdle() {
+      clearTimeout(idleTimer);
+      if(active&&!document.hidden&&!ambient.open)idleTimer=setTimeout(checkIdle,Math.max(100,IDLE_DELAY-(Date.now()-lastActivity)));
+    }
+    function hasBlockingOverlay() {
+      if(document.querySelector('dialog[open]'))return true;
+      return [...document.querySelectorAll('.cdk-overlay-container .cdk-overlay-pane')].some(pane=>{
+        if(pane.matches('.mat-mdc-tooltip-panel')||pane.querySelector('[role="tooltip"],.mat-mdc-tooltip'))return false;
+        const bounds=pane.getBoundingClientRect();return bounds.width>0&&bounds.height>0;
+      });
+    }
+    function checkIdle() {
+      if(!active||document.hidden||ambient.open)return;
+      if(Date.now()-lastActivity<IDLE_DELAY){armIdle();return;}
+      if(hasBlockingOverlay()){lastActivity=Date.now();armIdle();return;}
+      showAmbient();
+    }
+    function showAmbient() {
+      if(!active||document.hidden||ambient.open||hasBlockingOverlay())return;
+      clearTimeout(idleTimer);tickClock();renderAmbientWeather();ambient.showModal();
+      document.documentElement.setAttribute('data-homehub-ambient','');
+    }
+    function closeAmbient() {
+      document.documentElement.removeAttribute('data-homehub-ambient');
+      if(ambient.open){lastActivity=Date.now();ambient.close();armIdle();}
+    }
+    function renderAmbientWeather() {
+      const {location,forecast}=lastState;
+      ambientWeather.replaceChildren();
+      if(!location){ambientWeather.append(node('span',{},['Configure o Tempo para exibir a temperatura']));setText(ambientLocation,'');return;}
+      if(!forecast){ambientWeather.append(node('span',{},['Tempo indisponível']));setText(ambientLocation,location.name);return;}
+      const current=forecast.current,description=condition(current.code,current.isDay);
+      ambientWeather.append(weatherIcon(current.code,current.isDay),node('span',{},[temp(current.temperature)+' · '+description.label]));
+      setText(ambientLocation,location.name+(forecast.stale?' · dados salvos':''));
+    }
     function tickClock() {
       clearTimeout(clockTimer);
       if(!active||document.hidden)return;
@@ -103,6 +183,8 @@
       hands.second.setAttribute('transform',`rotate(${seconds*6} 100 100)`);
       const time=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
       setText(digital,time);face.setAttribute('aria-label','Hora local: '+time);
+      setText(ambientTime,time);setText(ambientDate,new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'numeric',month:'long'}).format(now));
+      if(calendarToday!==`${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`)renderCalendar();
       clockTimer=setTimeout(tickClock,1000-Date.now()%1000);
     }
     async function api(action,values={}) {
@@ -122,6 +204,7 @@
       button.addEventListener('click',action);return button;
     }
     function renderWeather() {
+      renderAmbientWeather();
       const {location,forecast,error}=lastState;
       weather.replaceChildren();weather.setAttribute('aria-busy',String(pending));
       const city=node('button',{class:'hhw-city',type:'button',title:'Escolher cidade'},[node('span',{},[location?.name||'Tempo']),symbol('chevron')]);
@@ -193,19 +276,22 @@
     });
     function setActive(value) {
       if(active===value)return;active=value;
-      clearTimeout(clockTimer);clearTimeout(refreshTimer);
-      if(!active){if(dialog.open)dialog.close();return;}
-      tickClock();
+      clearTimeout(clockTimer);clearTimeout(refreshTimer);clearTimeout(idleTimer);
+      if(!active){if(dialog.open)dialog.close();closeAmbient();return;}
+      lastActivity=Date.now();tickClock();armIdle();
       if(!initialized){initialized=true;loadWeather('init');}
       else if(lastState.location&&(!lastState.forecast||Date.now()-lastState.forecast.fetchedAt>REFRESH))loadWeather('init');
       else scheduleRefresh();
     }
     document.addEventListener('visibilitychange',()=>{
-      clearTimeout(clockTimer);clearTimeout(refreshTimer);
-      if(active&&!document.hidden){tickClock();if(lastState.location&&(!lastState.forecast||Date.now()-lastState.forecast.fetchedAt>REFRESH))loadWeather('init');else scheduleRefresh();}
+      clearTimeout(clockTimer);clearTimeout(refreshTimer);clearTimeout(idleTimer);
+      if(active&&!document.hidden){lastActivity=Date.now();tickClock();armIdle();if(lastState.location&&(!lastState.forecast||Date.now()-lastState.forecast.fetchedAt>REFRESH))loadWeather('init');else scheduleRefresh();}
     });
-    renderWeather();
-    return {attach(parent){if(parent&&root.parentElement!==parent)parent.prepend(root);},setActive};
+    const noteActivity=()=>{if(active&&!ambient.open)lastActivity=Date.now();};
+    for(const event of ['pointermove','pointerdown','keydown','wheel'])document.addEventListener(event,noteActivity,{passive:true,capture:true});
+    document.addEventListener('scroll',noteActivity,{passive:true,capture:true});
+    renderCalendar();renderWeather();
+    return {attach(parent){if(parent&&root.parentElement!==parent)parent.prepend(root);},setActive,showAmbient};
   }
   globalThis.HomeHubWidgets={create};
 })();
