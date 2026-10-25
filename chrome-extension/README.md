@@ -14,4 +14,4 @@ Para remover o tema, desative a extensão em `chrome://extensions`.
 
 ## Limites
 
-O Google Home Web mantém sua própria estrutura e pode redesenhá-la. Este tema ajusta tokens de cores do Material, fontes, fundo, cantos e controles comuns. Componentes encapsulados em Shadow DOM podem ignorar algumas regras. Os aparelhos e os controles continuam pertencendo ao Google Home; o tema não os copia para o painel Home Hub.
+O Google Home Web mantém sua própria estrutura e pode redesenhá-la. Este tema preserva as cores do Google para manter o contraste e o estado dos aparelhos; ajusta fontes, cantos e sombras comuns. Componentes encapsulados em Shadow DOM podem ignorar algumas regras. Os aparelhos e os controles continuam pertencendo ao Google Home; o tema não os copia para o painel Home Hub.
