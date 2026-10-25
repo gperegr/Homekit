@@ -25,7 +25,8 @@
     sun:'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5',
     moon:'M20 15a8 8 0 0 1-11-11 8.5 8.5 0 1 0 11 11Z',
     external:'M14 3h7v7m0-7L10 14M10 3H3v18h18v-7',
-    sidebar:'M3 4h18v16H3zM9 4v16M5.5 8H7m-1.5 4H7m-1.5 4H7',
+    dock:'M3 4h18v16H3zM3 15h18M7 17.5h2m2 0h2m2 0h2',
+    ambient:'M18 15a7 7 0 0 1-9-9 7.5 7.5 0 1 0 9 9Zm.5-12 .6 1.5L21 5l-1.9.5-.6 1.5-.6-1.5L16 5l1.9-.5ZM15 9l.4.9 1.1.4-1.1.3-.4 1-.4-1-1.1-.3 1.1-.4Z',
     refresh:'M20 7v5h-5M4 17v-5h5M6.1 7a7 7 0 0 1 11.5-1L20 9M4 15l2.4 3a7 7 0 0 0 11.5-1',
     chevron:'m7 10 5 5 5-5',
     other:'M5 5h14v14H5zM9 9h6v6H9z'
@@ -34,8 +35,8 @@
     ['all','Todos','grid'],['light','Iluminação','light'],['plug','Tomadas','plug'],
     ['media','Mídia','media'],['security','Segurança','lock'],['climate','Clima','climate'],['other','Outros','other']
   ];
-  const memory = {enabled:true,theme:'light',sidebar:'expanded',room:null,category:'all',roomSignature:'',categorySignature:''};
-  try {memory.enabled=sessionStorage.getItem('homehub.original')!=='1';memory.theme=sessionStorage.getItem('homehub.theme')||'light';memory.sidebar=sessionStorage.getItem('homehub.sidebar')==='collapsed'?'collapsed':'expanded';} catch (_) {}
+  const memory = {enabled:true,theme:'light',dock:'expanded',room:null,category:'all',roomSignature:'',categorySignature:''};
+  try {memory.enabled=sessionStorage.getItem('homehub.original')!=='1';memory.theme=sessionStorage.getItem('homehub.theme')||'light';memory.dock=sessionStorage.getItem('homehub.dock')==='compact'?'compact':'expanded';} catch (_) {}
   let ui=null,refs={},queued=false,records=[],widgets=null;
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer=matchMedia('(hover: hover) and (pointer: fine)');
@@ -75,7 +76,7 @@
     const root=document.documentElement;
     root.style.setProperty('--hh-scene-x',((event.x/innerWidth-.5)*12).toFixed(2)+'px');
     root.style.setProperty('--hh-scene-y',((event.y/innerHeight-.5)*9).toFixed(2)+'px');
-    const surface=event.target?.closest('[data-homehub-card],#homehub-ui .hh-sidebar,#homehub-ui .hh-chip,#homehub-ui .hh-theme,#homehub-widgets .hhw-clock,#homehub-widgets .hhw-weather');
+    const surface=event.target?.closest('[data-homehub-card],#homehub-ui .hh-dock,#homehub-ui .hh-chip,#homehub-ui .hh-theme,#homehub-widgets .hhw-clock,#homehub-widgets .hhw-weather,#homehub-widgets .hhw-calendar');
     if(motion.surface!==surface){resetSurface();motion.surface=surface;}
     if(!surface)return;
     const rect=surface.getBoundingClientRect();
@@ -90,7 +91,7 @@
   }
   function startMotion() {
     document.addEventListener('pointermove',event=>{
-      if(event.pointerType!=='mouse'||!memory.enabled||!document.documentElement.hasAttribute('data-homehub-active')||reducedMotion.matches||!finePointer.matches||motion.pressed)return;
+      if(event.pointerType!=='mouse'||!memory.enabled||!document.documentElement.hasAttribute('data-homehub-active')||document.getElementById('homehub-ambient')?.open||reducedMotion.matches||!finePointer.matches||motion.pressed)return;
       motion.event={x:event.clientX,y:event.clientY,target:event.target};
       if(!motion.frame)motion.frame=requestAnimationFrame(moveGlass);
     },{passive:true});
@@ -134,30 +135,28 @@
   }
   function makeUi() {
     ui=node('div',{id:'homehub-ui'});
-    const sidebar=node('aside',{id:'homehub-sidebar',class:'hh-sidebar','aria-label':'Navegação da casa'});
-    const brandIcon=node('span',{class:'hh-brand-icon'},[symbol('home')]);
-    refs.house=node('div',{class:'hh-brand-name'},['Minha Casa']);
-    sidebar.append(node('div',{class:'hh-brand'},[brandIcon,node('div',{},[refs.house,node('div',{class:'hh-brand-sub'},['SEUS ACESSÓRIOS'])])]));
+    const dock=node('nav',{id:'homehub-dock',class:'hh-dock','aria-label':'Navegação dos cômodos'});
     refs.overview=button('hh-nav','Visão geral','grid',()=>{memory.room=null;memory.category='all';refreshView();});
-    sidebar.append(refs.overview,node('div',{class:'hh-section-label'},['CÔMODOS']));
-    refs.rooms=node('nav',{class:'hh-rooms','aria-label':'Cômodos'});sidebar.append(refs.rooms);
+    refs.rooms=node('div',{class:'hh-rooms'});dock.append(refs.overview,refs.rooms);
     const original=button('hh-original','Ver Google Home','external',()=>toggleOriginal(false));
-    sidebar.append(node('div',{class:'hh-sidebar-bottom'},[original]));
+    dock.append(node('div',{class:'hh-dock-actions'},[original]));
     const header=node('header',{class:'hh-header'});
     refs.date=node('div',{class:'hh-date'},[new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'numeric',month:'long'}).format(new Date())]);
+    refs.house=node('span',{class:'hh-home-name'},['Minha Casa']);
     refs.title=node('h1',{},['Visão geral']);refs.summary=node('div',{class:'hh-summary'});
-    refs.mobile=node('select',{class:'hh-mobile-room','aria-label':'Selecionar cômodo'});
-    refs.mobile.addEventListener('change',()=>{memory.room=refs.mobile.value||null;memory.category='all';refreshView();});
-    header.append(node('div',{class:'hh-heading'},[refs.date,refs.title,refs.summary,refs.mobile]));
-    refs.sidebarToggle=node('button',{class:'hh-sidebar-toggle',type:'button','aria-label':'Recolher barra de cômodos','aria-controls':'homehub-sidebar'},[symbol('sidebar')]);
-    refs.sidebarToggle.addEventListener('click',()=>{memory.sidebar=memory.sidebar==='collapsed'?'expanded':'collapsed';save('homehub.sidebar',memory.sidebar);render();});
-    header.append(refs.sidebarToggle);
+    const eyebrow=node('div',{class:'hh-eyebrow'},[symbol('home'),refs.house,node('span',{class:'hh-eyebrow-separator'},['·']),refs.date]);
+    header.append(node('div',{class:'hh-heading'},[eyebrow,refs.title,refs.summary]));
+    refs.dockToggle=node('button',{class:'hh-tool-button hh-dock-toggle',type:'button','aria-label':'Compactar barra de cômodos','aria-controls':'homehub-dock'},[symbol('dock')]);
+    refs.dockToggle.addEventListener('click',()=>{memory.dock=memory.dock==='compact'?'expanded':'compact';save('homehub.dock',memory.dock);render();});
+    refs.ambientToggle=node('button',{class:'hh-tool-button hh-ambient-toggle',type:'button','aria-label':'Ativar protetor de tela',title:'Protetor de tela · automático após 1 min sem interação'},[symbol('ambient')]);
+    refs.ambientToggle.addEventListener('click',()=>{resetMotion();widgets?.showAmbient();});
+    header.append(refs.dockToggle,refs.ambientToggle);
     refs.theme=node('button',{class:'hh-theme',type:'button','aria-label':'Alternar aparência'});
     refs.theme.addEventListener('click',()=>{memory.theme=memory.theme==='dark'?'light':'dark';save('homehub.theme',memory.theme);render();});header.append(refs.theme);
     refs.categories=node('nav',{class:'hh-categories','aria-label':'Categorias de acessórios'});
     refs.empty=node('div',{class:'hh-empty',role:'status'},['Nenhum acessório nesta categoria.']);refs.empty.hidden=true;
     const restore=node('button',{class:'hh-restore',type:'button'},['Ativar Home Hub']);restore.addEventListener('click',()=>toggleOriginal(true));
-    ui.append(sidebar,header,refs.categories,refs.empty,restore);document.body.append(ui);
+    ui.append(dock,header,refs.categories,refs.empty,restore);document.body.append(ui);
     widgets=globalThis.HomeHubWidgets?.create({node,symbol})||null;
   }
   function typeOf(card,iconText) {
@@ -212,19 +211,19 @@
     if(!ui)return;
     document.documentElement.toggleAttribute('data-homehub-active',memory.enabled);
     document.documentElement.dataset.homehubTheme=memory.theme;
-    document.documentElement.dataset.homehubSidebar=memory.sidebar;
+    document.documentElement.dataset.homehubDock=memory.dock;
     ui.dataset.original=String(!memory.enabled);
     widgets?.setActive(memory.enabled);
-    const sidebarLabel=memory.sidebar==='collapsed'?'Expandir barra de cômodos':'Recolher barra de cômodos';
-    refs.sidebarToggle.setAttribute('aria-label',sidebarLabel);refs.sidebarToggle.title=sidebarLabel;
-    refs.sidebarToggle.setAttribute('aria-expanded',String(memory.sidebar!=='collapsed'));
+    const dockLabel=memory.dock==='compact'?'Expandir barra de cômodos':'Compactar barra de cômodos';
+    refs.dockToggle.setAttribute('aria-label',dockLabel);refs.dockToggle.title=dockLabel;
+    refs.dockToggle.setAttribute('aria-expanded',String(memory.dock!=='compact'));
     if(!memory.enabled)return;
     const rooms=[...new Set(records.map(record=>record.room))];
     if(memory.room&&!rooms.includes(memory.room))memory.room=null;
     const roomSignature=JSON.stringify(rooms.map(name=>[name,records.filter(r=>r.room===name).length]));
     if(memory.roomSignature!==roomSignature) {
       memory.roomSignature=roomSignature;
-      refs.rooms.replaceChildren();refs.mobile.replaceChildren(node('option',{value:''},['Visão geral']));
+      refs.rooms.replaceChildren();
       for(const room of rooms) {
         const count=records.filter(record=>record.room===room).length;
         const kind=roomKind(room);
@@ -232,12 +231,10 @@
         const glyph=entry.querySelector('svg');
         const badge=node('span',{class:'hh-room-icon','data-room-kind':kind},[glyph]);entry.prepend(badge);
         entry.dataset.room=room;entry.append(node('span',{class:'hh-count'},[String(count)]));refs.rooms.append(entry);
-        refs.mobile.append(node('option',{value:room},[room]));
       }
     }
     refs.overview.setAttribute('aria-pressed',String(!memory.room));
     for(const entry of refs.rooms.children)entry.setAttribute('aria-pressed',String(entry.dataset.room===memory.room));
-    refs.mobile.value=memory.room||'';
     text(refs.title,memory.room||'Visão geral');
     const inRoom=records.filter(record=>!memory.room||record.room===memory.room);
     const inUse=inRoom.filter(record=>record.on).length;
@@ -279,7 +276,7 @@
     records=collect(app);render();
   }
   function schedule(changes) {
-    if(changes?.every(change=>{const el=change.target.nodeType===1?change.target:change.target.parentElement;return el?.closest('#homehub-ui,#homehub-widgets,#homehub-weather-dialog,.homehub-symbol,.homehub-room-label');}))return;
+    if(changes?.every(change=>{const el=change.target.nodeType===1?change.target:change.target.parentElement;return el?.closest('#homehub-ui,#homehub-widgets,#homehub-weather-dialog,#homehub-ambient,.homehub-symbol,.homehub-room-label');}))return;
     if(queued)return;queued=true;setTimeout(apply,100);
   }
   function start() {
