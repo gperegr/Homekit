@@ -20,7 +20,7 @@ O Safari remove extensões temporárias ao encerrar o navegador ou após 24 hora
 
 ## Instalar em iPhone, iPad e Mac com Xcode
 
-1. Instale o **Xcode completo** pela App Store, abra-o uma vez e conclua a instalação dos componentes. Apenas Command Line Tools não inclui o empacotador Safari.
+1. Use o **Xcode completo** e conclua a instalação dos componentes. O script reconhece tanto `/Applications/Xcode.app` quanto `/Volumes/Kingston/Aplicativos/Xcode.app`. Apenas Command Line Tools não inclui o empacotador Safari.
 2. Execute `scripts/Gerar projeto Apple.command` pelo Terminal, ou dê permissão de execução se tiver baixado os arquivos do GitHub: `chmod +x "scripts/Gerar projeto Apple.command"`.
 3. O script procura o packager atual e o converter antigo, gera `apple-build/HomeHub` com os destinos macOS e iOS e abre o projeto. Não sobrescreve projetos existentes. O projeto referencia os recursos desta pasta; alterações nela entram no próximo build.
 4. Configure sua equipe em **Signing & Capabilities** nos destinos de aplicativo e extensão. O identificador inicial é `com.gperegr.homehub`; ajuste-o se sua equipe precisar de outro identificador.
@@ -48,7 +48,7 @@ O script copia os recursos comuns para esta pasta e gera o ZIP em `dist`. Os aju
 
 O serviço de clima tem testes dos namespaces `browser` e `chrome`, cache, concorrência e restrições de origem. O pacote possui verificações de recursos e permissões. O teste de interface usa uma cópia anônima do HTML do Google Home, sem comandar aparelhos reais. Um teste em WKWebView usa o WebKit instalado no Mac para verificar módulos quadrados, calendário, resposta do widget por `browser.runtime` simulado abertura/saída do modo ambiente e cartões agrupados com seus eventos de clique preservados. Foram verificadas larguras de 1440, 1024, 834 e 390 px; isso usa o WebKit do Mac e não substitui teste físico em iOS.
 
-Este Mac não tem Xcode completo: o projeto nativo não foi gerado ou compilado, a extensão não foi instalada automaticamente no Safari e não houve teste em iPhone/iPad físico. A instalação temporária precisa ser ativada pelo usuário no Safari. O comportamento real dos controles depende do Google Home disponibilizar a tela Dispositivos naquele navegador; pode ser necessário solicitar o site para computador. A extensão não adiciona suporte a aparelhos que o Google não expõe na web.
+O Xcode completo deste Mac fica em `/Volumes/Kingston/Aplicativos/Xcode.app`. A extensão não foi instalada automaticamente no Safari e não houve teste em iPhone/iPad físico. A instalação temporária precisa ser ativada pelo usuário no Safari. O comportamento real dos controles depende do Google Home disponibilizar a tela Dispositivos naquele navegador; pode ser necessário solicitar o site para computador. A extensão não adiciona suporte a aparelhos que o Google não expõe na web.
 
 ## Fontes oficiais
 
@@ -56,3 +56,7 @@ Este Mac não tem Xcode completo: o projeto nativo não foi gerado ou compilado,
 - [Empacotamento e projeto Xcode](https://developer.apple.com/documentation/safariservices/packaging-a-web-extension-for-safari)
 - [Distribuição por App Store Connect](https://developer.apple.com/documentation/safariservices/packaging-and-distributing-safari-web-extensions-with-app-store-connect)
 - [Compatibilidade de APIs](https://developer.apple.com/documentation/safariservices/assessing-your-safari-web-extension-s-browser-compatibility)
+
+## Projeto local neste Mac
+
+O projeto foi gerado em `apple-build/HomeHub/HomeHub.xcodeproj` usando Xcode 27.1 do SSD Kingston, com os esquemas **HomeHub (macOS)** e **HomeHub (iOS)**. Para reabrir, use esse arquivo; não é necessário gerar novamente. O diretório `apple-build` é local e fica fora do controle de versão. Os recursos da extensão continuam referenciando `safari-extension`.
