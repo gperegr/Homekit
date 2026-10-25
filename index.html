@@ -276,7 +276,7 @@ function connectHa(url,token){return new Promise((resolve,reject)=>{let socket;t
  if(m.type==='event'&&m.event?.event_type==='state_changed'){const s=m.event.data.new_state;if(!s)return;
  const old=Object.values(D).flat().filter(d=>d[8]!==s.entity_id);const item=haState(s);if(item){item[8]=s.entity_id;old.push(item)}D.Sala=old;ref(0)}
  };});}
-$('#connectBtn').onclick=()=>{$('#connectionModal').classList.add('show');$('#disconnectBtn').hidden=!haLive;$('#connectionError').textContent='';$('#haUrl').focus()};
+$('#connectBtn').onclick=()=>{$('#connectionModal').classList.add('show');$('#disconnectBtn').hidden=!haLive;$('#connectionError').textContent='';if(location.pathname.startsWith('/local/')&&!$('#haUrl').value)$('#haUrl').value=location.origin;$('#haUrl').focus()};
 $('#connectionCancel').onclick=()=>$('#connectionModal').classList.remove('show');
 $('#connectionModal').onclick=e=>{if(e.target.id==='connectionModal')e.currentTarget.classList.remove('show')};
 $('#disconnectBtn').onclick=haDisconnect;
