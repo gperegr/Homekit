@@ -1,28 +1,240 @@
-/* Base typography and Apple-like geometry. Preserve Google Home color tokens. */
-:root,
-html,
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    Inter, "Segoe UI", sans-serif !important;
-  --md-sys-shape-corner-small: 12px;
-  --md-sys-shape-corner-medium: 18px;
-  --md-sys-shape-corner-large: 26px;
-  --md-sys-shape-corner-extra-large: 32px;
-  --mdc-shape-small: 12px;
-  --mdc-shape-medium: 18px;
-  --mdc-shape-large: 26px;
-  --mat-sys-corner-small: 12px;
-  --mat-sys-corner-medium: 18px;
-  --mat-sys-corner-large: 26px;
+/* Home Hub. All changes to the Google page are scoped to the devices view. */
+html[data-homehub-active] {
+  --hh-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif;
+  --hh-ink:#202938; --hh-muted:#718096; --hh-faint:#8a96a8;
+  --hh-sidebar:rgba(255,255,255,.50); --hh-card:rgba(255,255,255,.57);
+  --hh-on:#fff; --hh-line:rgba(255,255,255,.82); --hh-selected:rgba(255,255,255,.85);
+  --hh-chip:rgba(255,255,255,.22);
+  --hh-shadow:0 8px 28px rgba(58,79,116,.055); --hh-accent:#087aff;
+  color-scheme:light!important;
+  background:#eaf0fa!important;
 }
+html[data-homehub-active][data-homehub-theme="dark"] {
+  --hh-ink:#f1f4fc; --hh-muted:#a3afc5; --hh-faint:#91a0b8;
+  --hh-sidebar:rgba(23,31,51,.62); --hh-card:rgba(255,255,255,.075);
+  --hh-on:#fff; --hh-line:rgba(255,255,255,.10); --hh-selected:rgba(255,255,255,.12);
+  --hh-chip:rgba(255,255,255,.055);
+  --hh-shadow:0 8px 28px rgba(0,0,0,.10);
+  color-scheme:dark!important;
+  background:#101727!important;
+}
+html[data-homehub-active],html[data-homehub-active] body {
+  width:100%!important;height:100%!important;margin:0!important;overflow:hidden!important;
+  font-family:var(--hh-font)!important;
+}
+html[data-homehub-active] body {
+  background:
+    radial-gradient(ellipse at 5% 5%,rgba(255,188,212,.55),transparent 43%),
+    radial-gradient(ellipse at 95% 20%,rgba(163,200,255,.55),transparent 49%),
+    radial-gradient(ellipse at 55% 100%,rgba(239,221,192,.38),transparent 45%),#edf1f9!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] body {
+  background:
+    radial-gradient(ellipse at 0% 0%,rgba(111,67,153,.26),transparent 44%),
+    radial-gradient(ellipse at 100% 20%,rgba(36,90,153,.29),transparent 50%),
+    radial-gradient(ellipse at 40% 100%,rgba(129,66,108,.16),transparent 43%),#101727!important;
+}
+html[data-homehub-active] ghw-root,
+html[data-homehub-active] ghw-home,
+html[data-homehub-active] ghw-home > main,
+html[data-homehub-active] ghw-navigation-rail,
+html[data-homehub-active] ghw-navigation-rail > mat-sidenav-container,
+html[data-homehub-active] ghw-navigation-rail > mat-sidenav-container > mat-sidenav-content,
+html[data-homehub-active] .main-content-wrapper {
+  display:block!important;position:static!important;box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;min-width:0!important;height:100%!important;
+  margin:0!important;padding:0!important;transform:none!important;border:0!important;
+  border-radius:0!important;background:transparent!important;overflow:hidden!important;
+}
+html[data-homehub-active] ghw-toolbar,
+html[data-homehub-active] ghw-navigation-rail > mat-sidenav-container > mat-sidenav,
+html[data-homehub-active] ghw-navigation-rail .rail,
+html[data-homehub-active] ghw-devices > :not(.devices-container),
+html[data-homehub-active] ghw-devices .devices-container > mat-sidenav {
+  display:none!important;
+}
+html[data-homehub-active] ghw-devices {
+  display:block!important;position:fixed!important;inset:197px 36px 28px 264px!important;
+  width:auto!important;max-width:none!important;min-width:0!important;height:auto!important;
+  margin:0!important;padding:0!important;border:0!important;background:transparent!important;
+  z-index:2!important;overflow:hidden!important;
+}
+html[data-homehub-active] ghw-devices > .devices-container,
+html[data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;min-width:0!important;height:100%!important;
+  margin:0!important;padding:0!important;background:transparent!important;transform:none!important;
+  border:0!important;border-radius:0!important;
+}
+html[data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {
+  overflow:auto!important;overflow-x:hidden!important;scrollbar-width:thin;
+  scrollbar-color:rgba(100,118,149,.25) transparent;
+}
+html[data-homehub-active] ghw-devices .spaces-container {
+  display:grid!important;grid-template-columns:repeat(auto-fill,minmax(178px,1fr))!important;
+  align-content:start!important;align-items:stretch!important;gap:14px!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:none!important;
+  margin:0!important;padding:3px 5px 20px 2px!important;
+}
+html[data-homehub-active] ghw-devices .spaces-container > .space,
+html[data-homehub-active] ghw-devices .space > .tile-container,
+html[data-homehub-active] ghw-devices .tile-container > .tile-column {
+  display:contents!important;
+}
+html[data-homehub-active] ghw-devices .space > h2 {display:none!important;}
+html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:auto!important;min-width:0!important;max-width:none!important;height:154px!important;
+  min-height:0!important;margin:0!important;padding:0!important;grid-column:auto!important;
+}
+html[data-homehub-active] ghw-devices ghw-device-tile[data-homehub-hidden="true"] {display:none!important;}
+html[data-homehub-active] ghw-devices .device-tile,
+html[data-homehub-active] ghw-devices .device-tile > *,
+html[data-homehub-active] ghw-devices .on-off-tile-container {
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:100%!important;min-width:0!important;max-width:none!important;height:100%!important;
+  min-height:0!important;margin:0!important;padding:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card] {
+  --hh-tile-ink:var(--hh-ink);--hh-tile-muted:var(--hh-muted);--hh-device-accent:#367dd3;
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:space-between!important;gap:10px!important;position:relative!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:none!important;
+  height:100%!important;min-height:0!important;margin:0!important;padding:16px!important;
+  border:1px solid var(--hh-line)!important;border-radius:23px!important;overflow:hidden!important;
+  background:var(--hh-card)!important;color:var(--hh-tile-ink)!important;opacity:1!important;
+  box-shadow:var(--hh-shadow)!important;backdrop-filter:blur(20px) saturate(145%);
+  font-family:var(--hh-font)!important;text-align:left!important;
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card].active {
+  --hh-tile-ink:#273143;--hh-tile-muted:#788397;
+  background:var(--hh-on)!important;border-color:rgba(255,255,255,.96)!important;
+  box-shadow:0 9px 24px rgba(57,79,113,.075)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-kind="light"] {--hh-device-accent:#dca12a!important;}
+html[data-homehub-active] ghw-devices [data-homehub-kind="vacuum"] {--hh-device-accent:#39a48e!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card]:hover:not([aria-disabled="true"]) {
+  transform:translateY(-3px)!important;box-shadow:0 12px 30px rgba(50,70,110,.12)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card]:focus-visible {outline:3px solid #1686ff!important;outline-offset:2px!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card] .icon {
+  display:grid!important;place-items:center!important;position:relative!important;z-index:2!important;
+  flex:0 0 34px!important;box-sizing:border-box!important;width:34px!important;height:34px!important;
+  padding:0!important;margin:0!important;border-radius:50%!important;
+  background:rgba(121,141,168,.11)!important;color:var(--hh-tile-muted)!important;opacity:1!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card].active .icon {
+  color:#fff!important;background:var(--hh-device-accent)!important;
+  box-shadow:0 3px 12px color-mix(in srgb,var(--hh-device-accent) 22%,transparent)!important;
+}
+.homehub-symbol,.homehub-room-label {display:none;}
+html[data-homehub-active] ghw-devices .icon[data-homehub-symbol] > mat-icon {display:none!important;}
+html[data-homehub-active] .homehub-symbol {display:block!important;width:20px!important;height:20px!important;pointer-events:none!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card] .content {
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:flex-end!important;position:relative!important;z-index:2!important;
+  flex:none!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;
+  height:auto!important;margin:0!important;padding:0!important;gap:3px!important;
+  color:var(--hh-tile-ink)!important;opacity:1!important;text-align:left!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card] .content .title {
+  display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;margin:0!important;padding:0!important;overflow:hidden!important;
+  text-overflow:ellipsis!important;white-space:nowrap!important;font-family:var(--hh-font)!important;
+  font-size:14px!important;line-height:1.2!important;font-weight:600!important;
+  letter-spacing:-.025em!important;color:var(--hh-tile-ink)!important;opacity:1!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card] .content .subtitle,
+html[data-homehub-active] ghw-devices [data-homehub-card] .content > span,
+html[data-homehub-active] ghw-devices [data-homehub-card] .content .subtitle span {
+  margin:0!important;padding:0!important;font-family:var(--hh-font)!important;font-size:11.5px!important;
+  line-height:1.25!important;font-weight:450!important;color:var(--hh-tile-muted)!important;opacity:1!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card].offline .content .title {color:var(--hh-muted)!important;}
+html[data-homehub-active] ghw-devices .homehub-room-label {
+  display:block!important;position:absolute!important;top:20px!important;right:15px!important;
+  max-width:calc(100% - 70px)!important;z-index:2!important;font-family:var(--hh-font)!important;
+  font-size:10px!important;line-height:1.25!important;font-weight:500!important;
+  color:var(--hh-tile-muted)!important;text-align:right!important;pointer-events:none!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card] .state-overlay {opacity:0!important;pointer-events:none!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card] > .slider {background:rgba(220,161,42,.075)!important;}
+html[data-homehub-active] ghw-devices .fake-expand-button-container {display:none!important;}
+html[data-homehub-active] ghw-devices .expand-button-container {
+  position:absolute!important;right:6px!important;top:5px!important;bottom:auto!important;
+  width:28px!important;height:28px!important;padding:0!important;z-index:4!important;background:transparent!important;
+}
+html[data-homehub-active] ghw-devices .expand-button-container button {width:28px!important;height:28px!important;padding:2px!important;}
+html[data-homehub-active] ghw-devices .expand-button[data-homehub-symbol] > mat-icon {display:none!important;}
+html[data-homehub-active] ghw-devices .expand-button {display:grid!important;place-items:center!important;background:transparent!important;color:var(--hh-muted)!important;}
+html[data-homehub-active] ghw-devices [data-homehub-group="true"] .homehub-room-label {right:38px!important;}
+html[data-homehub-active] ghw-devices .homehub-native-status {font-family:var(--hh-font)!important;font-size:11px!important;line-height:1.25!important;color:var(--hh-tile-muted)!important;}
+html[data-homehub-active] ghw-devices .expand-button-container + .homehub-room-label {right:42px!important;}
 
-button,
-[role="button"] {
-  font-family: inherit !important;
-  transition: filter .18s ease, transform .18s ease !important;
+/* Extension navigation. Native dialogs remain above this layer. */
+#homehub-ui {font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif!important;color:var(--hh-ink,#202938);}
+#homehub-ui * {box-sizing:border-box;}
+#homehub-ui button,#homehub-ui select {font:inherit;cursor:pointer;color:inherit;}
+#homehub-ui button {border:0;background:none;}
+#homehub-ui button:focus-visible,#homehub-ui select:focus-visible {outline:3px solid #087aff;outline-offset:3px;}
+#homehub-ui svg {display:block;width:20px;height:20px;flex-shrink:0;}
+#homehub-ui .hh-sidebar {
+  position:fixed;z-index:20;left:20px;top:20px;bottom:20px;width:212px;padding:25px 14px 16px;
+  display:flex;flex-direction:column;border:1px solid var(--hh-line);border-radius:28px;
+  background:var(--hh-sidebar);box-shadow:var(--hh-shadow);backdrop-filter:blur(32px) saturate(145%);
 }
-
-:focus-visible {
-  outline: 2px solid #0a84ff !important;
-  outline-offset: 2px;
+#homehub-ui .hh-brand {display:flex;align-items:center;gap:11px;padding:0 9px 28px;min-width:0;}
+#homehub-ui .hh-brand-icon {display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(150deg,#ffbf69,#f39676);color:#fff;flex-shrink:0;}
+#homehub-ui .hh-brand-name {font-size:18px;font-weight:650;letter-spacing:-.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#homehub-ui .hh-brand-sub {font-size:10px;font-weight:500;color:var(--hh-muted);margin-top:2px;letter-spacing:.02em;}
+#homehub-ui .hh-section-label {padding:22px 12px 9px;font-size:10px;font-weight:650;letter-spacing:.09em;color:var(--hh-faint);}
+#homehub-ui .hh-rooms {display:flex;flex-direction:column;gap:4px;overflow:auto;min-height:0;scrollbar-width:none;}
+#homehub-ui .hh-nav {display:flex;align-items:center;gap:10px;width:100%;min-height:43px;padding:10px 12px;border-radius:13px;text-align:left;font-size:12px;font-weight:500;color:var(--hh-muted);transition:background .2s,color .2s;}
+#homehub-ui .hh-nav svg {width:18px;height:18px;opacity:.85;}
+#homehub-ui .hh-nav span:first-of-type {flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#homehub-ui .hh-nav[aria-pressed="true"] {background:var(--hh-selected);color:var(--hh-ink);box-shadow:0 2px 6px rgba(50,70,100,.025);font-weight:600;}
+#homehub-ui .hh-nav:hover {background:var(--hh-selected);}
+#homehub-ui .hh-nav[aria-pressed="true"] svg {color:#087aff;}
+#homehub-ui .hh-count {font-size:10px;font-weight:500;opacity:.65;}
+#homehub-ui .hh-sidebar-bottom {margin-top:auto;padding:20px 8px 0;}
+#homehub-ui .hh-original {display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;color:var(--hh-muted);padding:8px 0;}
+#homehub-ui .hh-original svg {width:15px;height:15px;}
+#homehub-ui .hh-header {position:fixed;left:266px;right:38px;top:38px;z-index:20;display:flex;align-items:center;gap:16px;}
+#homehub-ui .hh-heading {flex:1;min-width:0;}
+#homehub-ui .hh-date {font-size:11px;color:var(--hh-muted);font-weight:500;text-transform:none;}
+#homehub-ui h1 {margin:7px 0 6px;font-size:32px;font-weight:650;letter-spacing:-.055em;line-height:1.1;}
+#homehub-ui .hh-summary {font-size:12px;color:var(--hh-muted);line-height:1.4;}
+#homehub-ui .hh-theme {display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--hh-sidebar);border:1px solid var(--hh-line);backdrop-filter:blur(16px);}
+#homehub-ui .hh-theme svg {width:18px;height:18px;}
+#homehub-ui .hh-categories {position:fixed;left:266px;right:38px;top:143px;z-index:20;display:flex;gap:9px;overflow:auto;scrollbar-width:none;padding:2px 0 6px;}
+#homehub-ui .hh-chip {display:flex;align-items:center;gap:7px;flex-shrink:0;min-height:34px;border:1px solid transparent;padding:8px 13px;border-radius:18px;font-size:11px;font-weight:550;color:var(--hh-muted);background:var(--hh-chip);}
+#homehub-ui .hh-chip svg {width:15px;height:15px;}
+#homehub-ui .hh-chip[aria-pressed="true"] {background:var(--hh-selected);border-color:var(--hh-line);color:var(--hh-ink);box-shadow:0 3px 8px rgba(50,70,100,.025);}
+#homehub-ui .hh-chip-count {opacity:.55;font-size:10px;}
+#homehub-ui .hh-mobile-room {display:none;}
+#homehub-ui .hh-empty {position:fixed;left:264px;right:36px;top:290px;text-align:center;font-size:14px;color:var(--hh-muted);}
+#homehub-ui .hh-empty[hidden] {display:none;}
+#homehub-ui .hh-restore {display:none;position:fixed;right:20px;bottom:20px;z-index:9999;padding:12px 18px;background:#fff;color:#273143;border:1px solid #d9e0eb;border-radius:24px;font-size:13px;box-shadow:0 6px 25px rgba(0,0,0,.15);}
+#homehub-ui[data-original="true"] > :not(.hh-restore) {display:none!important;}
+#homehub-ui[data-original="true"] .hh-restore {display:block;}
+@media(max-width:1050px) {
+  #homehub-ui .hh-sidebar {width:184px;left:16px;}
+  #homehub-ui .hh-header,#homehub-ui .hh-categories {left:226px;right:26px;}
+  html[data-homehub-active] ghw-devices {left:224px!important;right:24px!important;}
+  #homehub-ui .hh-empty {left:224px;}
 }
+@media(max-width:760px) {
+  #homehub-ui .hh-sidebar {display:none;}
+  #homehub-ui .hh-header {left:22px;right:22px;top:25px;align-items:flex-start;}
+  #homehub-ui h1 {font-size:28px;}
+  #homehub-ui .hh-categories {left:22px;right:22px;top:150px;}
+  #homehub-ui .hh-mobile-room {display:block;max-width:145px;padding:7px 10px;margin-top:8px;border:1px solid var(--hh-line);border-radius:10px;background:var(--hh-sidebar);color:var(--hh-ink);font-size:11px;}
+  #homehub-ui .hh-summary {display:none;}
+  html[data-homehub-active] ghw-devices {inset:201px 20px 20px!important;}
+  html[data-homehub-active] ghw-devices .spaces-container {grid-template-columns:repeat(auto-fill,minmax(145px,1fr))!important;gap:11px!important;}
+  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {height:145px!important;}
+  #homehub-ui .hh-empty {left:20px;right:20px;}
+}
+@media(prefers-reduced-motion:reduce) {html[data-homehub-active] ghw-devices [data-homehub-card] {transition:none!important;} }
