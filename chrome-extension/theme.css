@@ -5,6 +5,7 @@ html[data-homehub-active] {
   --hh-sidebar:rgba(255,255,255,.50); --hh-card:rgba(255,255,255,.57);
   --hh-on:#fff; --hh-line:rgba(255,255,255,.82); --hh-selected:rgba(255,255,255,.85);
   --hh-chip:rgba(255,255,255,.22);
+  --hh-glint:rgba(255,255,255,.58);--hh-rim:rgba(255,255,255,.72);
   --hh-shadow:0 8px 28px rgba(58,79,116,.055); --hh-accent:#087aff;
   color-scheme:light!important;
   background:#eaf0fa!important;
@@ -14,6 +15,7 @@ html[data-homehub-active][data-homehub-theme="dark"] {
   --hh-sidebar:rgba(23,31,51,.62); --hh-card:rgba(255,255,255,.075);
   --hh-on:#fff; --hh-line:rgba(255,255,255,.10); --hh-selected:rgba(255,255,255,.12);
   --hh-chip:rgba(255,255,255,.055);
+  --hh-glint:rgba(230,241,255,.15);--hh-rim:rgba(255,255,255,.16);
   --hh-shadow:0 8px 28px rgba(0,0,0,.10);
   color-scheme:dark!important;
   background:#101727!important;
@@ -33,6 +35,15 @@ html[data-homehub-active][data-homehub-theme="dark"] body {
     radial-gradient(ellipse at 0% 0%,rgba(111,67,153,.26),transparent 44%),
     radial-gradient(ellipse at 100% 20%,rgba(36,90,153,.29),transparent 50%),
     radial-gradient(ellipse at 40% 100%,rgba(129,66,108,.16),transparent 43%),#101727!important;
+}
+html[data-homehub-active] body::before {
+  content:"";position:fixed;inset:-40px;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 18% 16%,rgba(255,196,224,.22),transparent 50%),radial-gradient(ellipse at 82% 55%,rgba(137,187,255,.20),transparent 48%);
+  transform:translate3d(var(--hh-scene-x,0px),var(--hh-scene-y,0px),0);
+  transition:transform .55s cubic-bezier(.2,.75,.25,1);
+}
+html[data-homehub-active][data-homehub-theme="dark"] body::before {
+  background:radial-gradient(ellipse at 18% 16%,rgba(153,100,204,.09),transparent 50%),radial-gradient(ellipse at 82% 55%,rgba(74,143,224,.11),transparent 48%);
 }
 html[data-homehub-active] ghw-root,
 html[data-homehub-active] ghw-home,
@@ -104,7 +115,7 @@ html[data-homehub-active] ghw-devices [data-homehub-card] {
   height:100%!important;min-height:0!important;margin:0!important;padding:16px!important;
   border:1px solid var(--hh-line)!important;border-radius:23px!important;overflow:hidden!important;
   background:var(--hh-card)!important;color:var(--hh-tile-ink)!important;opacity:1!important;
-  box-shadow:var(--hh-shadow)!important;backdrop-filter:blur(20px) saturate(145%);
+  box-shadow:var(--hh-shadow)!important;backdrop-filter:blur(24px) saturate(170%);
   font-family:var(--hh-font)!important;text-align:left!important;
   transition:transform .2s ease,box-shadow .2s ease,background .2s ease!important;
 }
@@ -116,7 +127,18 @@ html[data-homehub-active] ghw-devices [data-homehub-card].active {
 html[data-homehub-active] ghw-devices [data-homehub-kind="light"] {--hh-device-accent:#dca12a!important;}
 html[data-homehub-active] ghw-devices [data-homehub-kind="vacuum"] {--hh-device-accent:#39a48e!important;}
 html[data-homehub-active] ghw-devices [data-homehub-card]:hover:not([aria-disabled="true"]) {
-  transform:translateY(-3px)!important;box-shadow:0 12px 30px rgba(50,70,110,.12)!important;
+  box-shadow:0 12px 30px rgba(50,70,110,.12)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card]::before {
+  content:""!important;position:absolute!important;inset:0!important;z-index:1!important;
+  border-radius:inherit!important;pointer-events:none!important;
+  background:radial-gradient(240px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),var(--hh-glint),transparent 72%)!important;
+  opacity:var(--hh-glass-visible,0)!important;transition:opacity .25s ease!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card]::after {
+  content:""!important;position:absolute!important;inset:0!important;z-index:3!important;
+  border-radius:inherit!important;pointer-events:none!important;
+  box-shadow:inset 1px 1px 1px var(--hh-rim),inset -1px -1px 1px rgba(255,255,255,.09)!important;
 }
 html[data-homehub-active] ghw-devices [data-homehub-card]:focus-visible {outline:3px solid #1686ff!important;outline-offset:2px!important;}
 html[data-homehub-active] ghw-devices [data-homehub-card] .icon {
@@ -124,6 +146,8 @@ html[data-homehub-active] ghw-devices [data-homehub-card] .icon {
   flex:0 0 34px!important;box-sizing:border-box!important;width:34px!important;height:34px!important;
   padding:0!important;margin:0!important;border-radius:50%!important;
   background:rgba(121,141,168,.11)!important;color:var(--hh-tile-muted)!important;opacity:1!important;
+  transform:translate3d(var(--hh-depth-x,0px),var(--hh-depth-y,0px),0)!important;
+  transition:transform .22s cubic-bezier(.2,.75,.25,1)!important;
 }
 html[data-homehub-active] ghw-devices [data-homehub-card].active .icon {
   color:#fff!important;background:var(--hh-device-accent)!important;
@@ -138,7 +162,11 @@ html[data-homehub-active] ghw-devices [data-homehub-card] .content {
   flex:none!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;
   height:auto!important;margin:0!important;padding:0!important;gap:3px!important;
   color:var(--hh-tile-ink)!important;opacity:1!important;text-align:left!important;
+  transform:translate3d(calc(var(--hh-depth-x,0px) * .35),calc(var(--hh-depth-y,0px) * .35),0)!important;
+  transition:transform .28s cubic-bezier(.2,.75,.25,1)!important;
 }
+html[data-homehub-active] ghw-devices [data-homehub-interacting] .icon,
+html[data-homehub-active] ghw-devices [data-homehub-interacting] .content {transform:none!important;transition:none!important;}
 html[data-homehub-active] ghw-devices [data-homehub-card] .content .title {
   display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;
   min-width:0!important;margin:0!important;padding:0!important;overflow:hidden!important;
@@ -183,20 +211,45 @@ html[data-homehub-active] ghw-devices .expand-button-container + .homehub-room-l
 #homehub-ui .hh-sidebar {
   position:fixed;z-index:20;left:20px;top:20px;bottom:20px;width:212px;padding:25px 14px 16px;
   display:flex;flex-direction:column;border:1px solid var(--hh-line);border-radius:28px;
-  background:var(--hh-sidebar);box-shadow:var(--hh-shadow);backdrop-filter:blur(32px) saturate(145%);
+  background:linear-gradient(140deg,rgba(255,255,255,.16),transparent 48%),var(--hh-sidebar);
+  box-shadow:inset 1px 1px 1px var(--hh-rim),inset -1px -1px 1px rgba(255,255,255,.10),var(--hh-shadow);
+  backdrop-filter:blur(38px) saturate(175%);
 }
+#homehub-ui .hh-sidebar::before {
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(340px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),var(--hh-glint),transparent 75%);
+  opacity:calc(var(--hh-glass-visible,0) * .5);transition:opacity .3s;
+}
+#homehub-ui .hh-sidebar > * {position:relative;z-index:1;}
 #homehub-ui .hh-brand {display:flex;align-items:center;gap:11px;padding:0 9px 28px;min-width:0;}
 #homehub-ui .hh-brand-icon {display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(150deg,#ffbf69,#f39676);color:#fff;flex-shrink:0;}
 #homehub-ui .hh-brand-name {font-size:18px;font-weight:650;letter-spacing:-.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 #homehub-ui .hh-brand-sub {font-size:10px;font-weight:500;color:var(--hh-muted);margin-top:2px;letter-spacing:.02em;}
 #homehub-ui .hh-section-label {padding:22px 12px 9px;font-size:10px;font-weight:650;letter-spacing:.09em;color:var(--hh-faint);}
 #homehub-ui .hh-rooms {display:flex;flex-direction:column;gap:4px;overflow:auto;min-height:0;scrollbar-width:none;}
-#homehub-ui .hh-nav {display:flex;align-items:center;gap:10px;width:100%;min-height:43px;padding:10px 12px;border-radius:13px;text-align:left;font-size:12px;font-weight:500;color:var(--hh-muted);transition:background .2s,color .2s;}
+#homehub-ui .hh-nav {display:flex;align-items:center;gap:10px;width:100%;min-height:45px;padding:8px 10px;border-radius:13px;text-align:left;font-size:12px;font-weight:500;color:var(--hh-muted);transition:background .2s,color .2s;}
 #homehub-ui .hh-nav svg {width:18px;height:18px;opacity:.85;}
-#homehub-ui .hh-nav span:first-of-type {flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#homehub-ui .hh-nav .hh-button-label {flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#homehub-ui .hh-room-icon {
+  --hh-room-color:#70869f;display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;
+  border-radius:9px;color:var(--hh-room-color);background:color-mix(in srgb,var(--hh-room-color) 10%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4);transition:transform .2s ease,background .2s ease;
+}
+#homehub-ui .hh-room-icon svg {width:18px;height:18px;opacity:1;}
+#homehub-ui .hh-room-icon[data-room-kind="bathroom"] {--hh-room-color:#5d98b2;}
+#homehub-ui .hh-room-icon[data-room-kind="kitchen"] {--hh-room-color:#ba8b53;}
+#homehub-ui .hh-room-icon[data-room-kind="office"] {--hh-room-color:#708ac1;}
+#homehub-ui .hh-room-icon[data-room-kind="bedroom"] {--hh-room-color:#967bb5;}
+#homehub-ui .hh-room-icon[data-room-kind="guest"] {--hh-room-color:#aa83ab;}
+#homehub-ui .hh-room-icon[data-room-kind="living"] {--hh-room-color:#6a9a89;}
+#homehub-ui .hh-room-icon[data-room-kind="garden"] {--hh-room-color:#6a9b69;}
+#homehub-ui .hh-room-icon[data-room-kind="laundry"] {--hh-room-color:#629da6;}
+#homehub-ui .hh-nav:hover .hh-room-icon {transform:translateY(-1px);}
+#homehub-ui .hh-nav[aria-pressed="true"] .hh-room-icon {background:color-mix(in srgb,var(--hh-room-color) 17%,transparent);}
+html[data-homehub-theme="dark"] #homehub-ui .hh-room-icon {filter:brightness(1.23) saturate(.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.10);}
 #homehub-ui .hh-nav[aria-pressed="true"] {background:var(--hh-selected);color:var(--hh-ink);box-shadow:0 2px 6px rgba(50,70,100,.025);font-weight:600;}
 #homehub-ui .hh-nav:hover {background:var(--hh-selected);}
-#homehub-ui .hh-nav[aria-pressed="true"] svg {color:#087aff;}
+#homehub-ui .hh-nav[aria-pressed="true"] > svg {color:#087aff;}
 #homehub-ui .hh-count {font-size:10px;font-weight:500;opacity:.65;}
 #homehub-ui .hh-sidebar-bottom {margin-top:auto;padding:20px 8px 0;}
 #homehub-ui .hh-original {display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;color:var(--hh-muted);padding:8px 0;}
@@ -207,6 +260,12 @@ html[data-homehub-active] ghw-devices .expand-button-container + .homehub-room-l
 #homehub-ui h1 {margin:7px 0 6px;font-size:32px;font-weight:650;letter-spacing:-.055em;line-height:1.1;}
 #homehub-ui .hh-summary {font-size:12px;color:var(--hh-muted);line-height:1.4;}
 #homehub-ui .hh-theme {display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--hh-sidebar);border:1px solid var(--hh-line);backdrop-filter:blur(16px);}
+#homehub-ui .hh-theme,#homehub-ui .hh-chip {position:relative;isolation:isolate;box-shadow:inset 0 1px 0 var(--hh-rim);backdrop-filter:blur(16px) saturate(170%);}
+#homehub-ui .hh-theme::before,#homehub-ui .hh-chip::before {
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(100px circle at var(--hh-glass-x,50%) var(--hh-glass-y,0%),var(--hh-glint),transparent 80%);
+  opacity:var(--hh-glass-visible,0);transition:opacity .2s;
+}
 #homehub-ui .hh-theme svg {width:18px;height:18px;}
 #homehub-ui .hh-categories {position:fixed;left:266px;right:38px;top:143px;z-index:20;display:flex;gap:9px;overflow:auto;scrollbar-width:none;padding:2px 0 6px;}
 #homehub-ui .hh-chip {display:flex;align-items:center;gap:7px;flex-shrink:0;min-height:34px;border:1px solid transparent;padding:8px 13px;border-radius:18px;font-size:11px;font-weight:550;color:var(--hh-muted);background:var(--hh-chip);}
@@ -237,4 +296,12 @@ html[data-homehub-active] ghw-devices .expand-button-container + .homehub-room-l
   html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {height:145px!important;}
   #homehub-ui .hh-empty {left:20px;right:20px;}
 }
-@media(prefers-reduced-motion:reduce) {html[data-homehub-active] ghw-devices [data-homehub-card] {transition:none!important;} }
+@media(prefers-reduced-motion:reduce) {
+  html[data-homehub-active] body::before {transform:none!important;transition:none!important;}
+  html[data-homehub-active] ghw-devices [data-homehub-card],
+  html[data-homehub-active] ghw-devices [data-homehub-card] .icon,
+  html[data-homehub-active] ghw-devices [data-homehub-card] .content,
+  #homehub-ui .hh-room-icon {transform:none!important;transition:none!important;}
+  html[data-homehub-active] ghw-devices [data-homehub-card]::before,
+  #homehub-ui .hh-sidebar::before,#homehub-ui .hh-chip::before,#homehub-ui .hh-theme::before {opacity:0!important;transition:none!important;}
+}
