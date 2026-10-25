@@ -60,3 +60,5 @@ O Xcode completo deste Mac fica em `/Volumes/Kingston/Aplicativos/Xcode.app`. A 
 ## Projeto local neste Mac
 
 O projeto foi gerado em `apple-build/HomeHub/HomeHub.xcodeproj` usando Xcode 27.1 do SSD Kingston, com os esquemas **HomeHub (macOS)** e **HomeHub (iOS)**. Para reabrir, use esse arquivo; não é necessário gerar novamente. O diretório `apple-build` é local e fica fora do controle de versão. Os recursos da extensão continuam referenciando `safari-extension`.
+
+A compilação Debug do aplicativo e da extensão concluiu com sucesso para macOS e iOS Simulator, sem certificados (`CODE_SIGNING_ALLOWED=NO`). Os pacotes foram conferidos com os recursos Safari 0.8.0 presentes; o app de simulador declara suporte a iPhone e iPad. O aplicativo macOS foi aberto localmente. A ativação da extensão no Safari e a instalação em dispositivos físicos continuam dependendo das configurações do usuário e da equipe de assinatura.
