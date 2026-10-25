@@ -143,9 +143,9 @@ aside{width:320px;display:flex;flex-direction:column;gap:14px}
   <div id="amb"><div class="big" id="ac"></div><div class="sub" id="ad"></div><div class="sub" style="font-size:20px;opacity:.6">24° · Parcialmente nublado</div></div>
   <div id="connectionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="connectionTitle"><div class="dialog">
     <h2 id="connectionTitle">Conectar Home Assistant</h2>
-    <p>Exibe os aparelhos já cadastrados no Home Assistant. A conexão é direta do seu navegador; o token não é enviado ao GitHub nem salvo neste site.</p>
+    <p>Exibe os aparelhos já cadastrados no Home Assistant. A conexão é direta do seu navegador; o token não é enviado ao GitHub nem salvo neste site. Para testar com HTTP local, abra este painel dentro do próprio Home Assistant.</p>
     <form id="connectionForm">
-      <label for="haUrl">URL HTTPS do Home Assistant</label><input id="haUrl" type="url" placeholder="https://seu-endereco.ui.nabu.casa" required autocomplete="url">
+      <label for="haUrl">URL do Home Assistant</label><input id="haUrl" type="url" placeholder="https://seu-endereco.ui.nabu.casa" required autocomplete="url">
       <label for="haToken">Token de acesso de longa duração</label><input id="haToken" type="password" required autocomplete="off">
       <p id="connectionError" class="error" role="alert"></p>
       <div class="actions"><button type="button" id="connectionCancel">Cancelar</button><button type="button" id="disconnectBtn" hidden>Desconectar</button><button class="primary" type="submit">Conectar</button></div>
@@ -259,8 +259,9 @@ function haRender(states){const found=states.map(haState).filter(Boolean);D.Sala
 function haDisconnect(){if(haSocket){const socket=haSocket;haSocket=null;socket.close()}haLive=false;document.documentElement.classList.remove('live');
  document.querySelectorAll('.tab').forEach(b=>b.hidden=false);$('.demo').textContent='Demonstração';$('#connectBtn').textContent='C';
  location.reload()}
-function connectHa(url,token){return new Promise((resolve,reject)=>{let socket;try{const u=new URL(url);if(u.protocol!=='https:')throw Error('Use uma URL HTTPS válida.');
- u.protocol='wss:';u.pathname=u.pathname.replace(/\/$/,'')+'/api/websocket';u.search='';u.hash='';socket=new WebSocket(u.href)}catch(e){reject(e);return}
+function connectHa(url,token){return new Promise((resolve,reject)=>{let socket;try{const u=new URL(url);const localHttp=u.protocol==='http:'&&location.protocol==='http:'&&u.origin===location.origin;
+ if(u.protocol!=='https:'&&!localHttp)throw Error('Use HTTPS. HTTP só funciona quando o painel é servido pela mesma origem do Home Assistant.');
+ u.protocol=u.protocol==='https:'?'wss:':'ws:';u.pathname=u.pathname.replace(/\/$/,'')+'/api/websocket';u.search='';u.hash='';socket=new WebSocket(u.href)}catch(e){reject(e);return}
  let settled=false,authenticated=false;const timeout=setTimeout(()=>fail('Tempo esgotado. Verifique a URL e o acesso ao Home Assistant.'),15000);
  function fail(msg){if(!settled){settled=true;clearTimeout(timeout);socket.close();reject(Error(msg))}}
  socket.onerror=()=>fail('Não foi possível abrir a conexão segura com o Home Assistant.');
