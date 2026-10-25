@@ -18,7 +18,7 @@ O painel não precisa de compilação nem de dependências instaladas. Ele carre
 
 1. Instale o Home Assistant em um equipamento que possa ficar ligado.
 2. Cadastre os aparelhos nele. O fato de estarem no Google Home **não** os transfere automaticamente ao Home Assistant. A integração oficial Tuya do Home Assistant exige que os aparelhos estejam no aplicativo Tuya Smart ou Smart Life; uma conta somente no aplicativo Positivo não atende a esse requisito.
-3. Configure uma URL HTTPS acessível a partir do navegador em que abrirá o GitHub Pages. O [Home Assistant Cloud](https://www.home-assistant.io/docs/configuration/remote/) é uma opção; uma instalação local apenas por HTTP não pode ser usada por esta página HTTPS.
+3. Para testar no Mac sem acesso remoto, coloque uma cópia do `index.html` em `/config/www` e abra o painel pela URL `/local/index.html` do próprio Home Assistant. Assim, o painel e a API ficam na mesma origem HTTP. Para abrir a página do GitHub Pages, configure uma URL HTTPS acessível pelo navegador; o [Home Assistant Cloud](https://www.home-assistant.io/docs/configuration/remote/) é uma opção.
 4. No Home Assistant, abra **Perfil → Segurança → Tokens de acesso de longa duração** e crie um token. Não compartilhe o token no chat nem o coloque no repositório.
 5. Abra o painel publicado, clique no círculo **C**, informe a URL HTTPS e o token, e escolha **Conectar**.
 
