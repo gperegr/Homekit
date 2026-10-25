@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Home Hub — tema Apple para Google Home",
-  "version": "0.1.0",
-  "description": "Aplica um tema visual inspirado no Apple Home ao Google Home Web, apenas neste navegador.",
+  "version": "0.2.0",
+  "description": "Reorganiza e estiliza os cartões do Google Home Web com um visual inspirado no Apple Home, apenas neste navegador.",
   "content_scripts": [
     {
       "matches": ["https://home.google.com/*"],
       "css": ["theme.css"],
+      "js": ["content.js"],
       "run_at": "document_start"
     }
   ]
