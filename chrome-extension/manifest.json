@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Home Hub — tema Apple para Google Home",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Google Home Web com dock flutuante, relógio, calendário, previsão do tempo e modo ambiente.",
   "permissions": ["storage"],
   "host_permissions": ["https://api.open-meteo.com/*", "https://geocoding-api.open-meteo.com/*"],

@@ -12,11 +12,11 @@ function forecast() {
   const time=Math.floor(Date.now()/1000);
   return {timezone:'America/Sao_Paulo',current:{time,temperature_2m:24,apparent_temperature:25,is_day:1,weather_code:2,relative_humidity_2m:65,wind_speed_10m:11},hourly:{time:[time+3600],temperature_2m:[23],weather_code:[3],precipitation_probability:[20],is_day:[1]},daily:{time:[time],temperature_2m_max:[27],temperature_2m_min:[18],weather_code:[2]}};
 }
-function worker(fetcher=async()=>({ok:true,json:async()=>forecast()})) {
+function worker(fetcher=async()=>({ok:true,json:async()=>forecast()}),namespace="chrome") {
   let listener;const data={},requests=[];
   const context={URL,URLSearchParams,AbortSignal,Intl,Date,Map,Math,Number,Error,
     fetch:async(url,options)=>{requests.push({url:String(url),options});return fetcher(url,options);},
-    chrome:{runtime:{id:'homehub-test',onMessage:{addListener(fn){listener=fn;}}},storage:{local:{
+    [namespace]:{runtime:{id:'homehub-test',onMessage:{addListener(fn){listener=fn;}}},storage:{local:{
       async get(key){return {[key]:data[key]};},async set(values){Object.assign(data,values);}
     }}}
   };
@@ -68,4 +68,14 @@ test('recusa coordenadas inválidas e ações arbitrárias',async()=>{
   const app=worker();const bad=await app.send('select',{location:{...location,latitude:100}});
   assert.equal(bad.ok,false);assert.equal(app.data[locationKey],undefined);assert.equal(app.requests.length,0);
   const action=await app.send('fetch',{url:'https://example.com/'});assert.equal(action.ok,false);assert.equal(app.requests.length,0);
+});
+
+for(const namespace of ['browser','chrome'])test(`API ${namespace}: seleção, cache e validação de origem`,async()=>{
+  const app=worker(undefined,namespace);
+  assert.equal((await app.send('init')).data.location,null);
+  assert.equal((await app.send('select',{location})).data.forecast.current.temperature,24);
+  assert.equal((await app.send('init')).data.location.name,location.name);
+  assert.equal(app.requests.length,1);
+  assert.equal((await app.send('init',{}, {id:'other',url:'https://home.google.com/'})).ignored,true);
+  assert.equal((await app.send('init',{}, {id:'homehub-test',url:'https://evil.example/'})).ignored,true);
 });

@@ -1,0 +1,46 @@
+/* Safari/iOS: preserve glass and keep controls clear of the screen edges. */
+html[data-homehub-active] #homehub-ui .hh-dock {
+  bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  -webkit-backdrop-filter:blur(36px) saturate(185%);
+}
+html[data-homehub-active] ghw-devices [data-homehub-card],
+#homehub-widgets .hhw-calendar {
+  -webkit-backdrop-filter:blur(24px) saturate(170%);
+}
+#homehub-ambient[open] {-webkit-backdrop-filter:blur(48px) saturate(155%);}
+#homehub-ambient .hh-ambient-exit {
+  top:calc(24px + env(safe-area-inset-top,0px));
+  right:calc(24px + env(safe-area-inset-right,0px));
+}
+#homehub-ambient .hh-ambient-hint {bottom:calc(38px + env(safe-area-inset-bottom,0px));}
+html[data-homehub-active] ghw-devices .spaces-container {
+  padding-bottom:calc(136px + env(safe-area-inset-bottom,0px))!important;
+}
+@media(max-width:760px) {
+  html[data-homehub-active] #homehub-ui .hh-dock {bottom:calc(18px + env(safe-area-inset-bottom,0px));}
+  html[data-homehub-active] ghw-devices .spaces-container {padding-bottom:calc(124px + env(safe-area-inset-bottom,0px))!important;}
+}
+@media(pointer:coarse) {
+  html[data-homehub-active] ghw-devices .expand-button-container {
+    width:44px!important;height:44px!important;top:2px!important;right:2px!important;
+  }
+  html[data-homehub-active] ghw-devices .expand-button-container button {width:44px!important;height:44px!important;}
+  html[data-homehub-active] ghw-devices [data-homehub-group="true"] .homehub-room-label {right:50px!important;}
+}
+/* WebKit needs an explicit inline size for aspect-ratio grid items behind display:contents. */
+html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {width:100%!important;}
+html[data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {scrollbar-gutter:stable;}
+#homehub-widgets .hhw-weather {height:auto;align-self:stretch;}
+/* Independent tracks avoid stale subgrid row heights when rotating/resizing Safari. */
+html[data-homehub-active] #homehub-widgets {grid-template-columns:repeat(4,minmax(0,1fr));}
+@media(max-width:900px) {
+  html[data-homehub-active] #homehub-widgets {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+html[data-homehub-active] ghw-devices .spaces-container {container-type:inline-size;}
+html[data-homehub-active] #homehub-widgets {
+  height:calc((100cqw - 42px)/4);
+  grid-template-rows:minmax(0,1fr);
+}
+@media(max-width:900px) {
+  html[data-homehub-active] #homehub-widgets {height:100cqw;grid-template-rows:repeat(2,minmax(0,1fr));}
+}

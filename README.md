@@ -1,6 +1,6 @@
 # Home Hub
 
-O projeto contém duas experiências: um mockup estático publicado no GitHub Pages e uma extensão local do Chrome que aplica um tema inspirado no Apple Home diretamente no Google Home Web.
+O projeto contém duas experiências: um mockup estático publicado no GitHub Pages e uma extensão para Safari e Chrome que aplica um tema inspirado no Apple Home diretamente no Google Home Web.
 
 ## Estado atual
 
@@ -19,6 +19,12 @@ O painel não precisa de compilação nem de dependências instaladas. Ele carre
 Para usar a ideia atual, carregue sem compactação a pasta `chrome-extension` em `chrome://extensions` com o Modo do desenvolvedor ligado. A extensão se aplica a `home.google.com` e não acessa credenciais nem copia dados de aparelhos.
 
 A versão atual inclui dock de cômodos flutuante, ícones maiores, relógio analógico, calendário mensal e previsão externa do Open-Meteo. O modo ambiente mostra hora, data e temperatura. Veja as instruções e permissões em [chrome-extension/README.md](chrome-extension/README.md).
+
+## Safari no Mac, iPhone e iPad
+
+A distribuição Safari 0.8.0 fica em [`safari-extension`](safari-extension/README.md). No Safari atual do Mac, é possível carregar essa pasta como extensão temporária em Ajustes > Desenvolvedor > Adicionar Extensão Temporária. Ela é removida ao encerrar o Safari ou após 24 horas.
+
+Execute `node scripts/build-safari.mjs` para gerar `dist/HomeHub-Safari-0.8.0.zip`. Para instalar nos dispositivos móveis, use o empacotamento pelo App Store Connect/TestFlight ou execute `scripts/Gerar projeto Apple.command` com Xcode completo instalado. A pasta e o ZIP contêm recursos de extensão, não um aplicativo Apple já assinado. Consulte o guia Safari para assinatura, permissões e limitações dos testes.
 
 ## Experimento anterior: Home Assistant
 

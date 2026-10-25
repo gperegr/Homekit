@@ -1,0 +1,354 @@
+/* Home Hub. All changes to the Google page are scoped to the devices view. */
+html[data-homehub-active] {
+  --hh-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif;
+  --hh-ink:#202938; --hh-muted:#718096; --hh-faint:#8a96a8;
+  --hh-sidebar:rgba(255,255,255,.50); --hh-card:rgba(255,255,255,.57);
+  --hh-on:#fff; --hh-line:rgba(255,255,255,.82); --hh-selected:rgba(255,255,255,.85);
+  --hh-chip:rgba(255,255,255,.22);
+  --hh-glint:rgba(255,255,255,.58);--hh-rim:rgba(255,255,255,.72);
+  --hh-shadow:0 8px 28px rgba(58,79,116,.055); --hh-accent:#087aff;
+  color-scheme:light!important;
+  background:#eaf0fa!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] {
+  --hh-ink:#f1f4fc; --hh-muted:#a3afc5; --hh-faint:#91a0b8;
+  --hh-sidebar:rgba(23,31,51,.62); --hh-card:rgba(255,255,255,.075);
+  --hh-on:#fff; --hh-line:rgba(255,255,255,.10); --hh-selected:rgba(255,255,255,.12);
+  --hh-chip:rgba(255,255,255,.055);
+  --hh-glint:rgba(230,241,255,.15);--hh-rim:rgba(255,255,255,.16);
+  --hh-shadow:0 8px 28px rgba(0,0,0,.10);
+  color-scheme:dark!important;
+  background:#101727!important;
+}
+html[data-homehub-active],html[data-homehub-active] body {
+  width:100%!important;height:100%!important;margin:0!important;overflow:hidden!important;
+  font-family:var(--hh-font)!important;
+}
+html[data-homehub-active] body {
+  background:
+    radial-gradient(ellipse at 5% 5%,rgba(255,188,212,.55),transparent 43%),
+    radial-gradient(ellipse at 95% 20%,rgba(163,200,255,.55),transparent 49%),
+    radial-gradient(ellipse at 55% 100%,rgba(239,221,192,.38),transparent 45%),#edf1f9!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] body {
+  background:
+    radial-gradient(ellipse at 0% 0%,rgba(111,67,153,.26),transparent 44%),
+    radial-gradient(ellipse at 100% 20%,rgba(36,90,153,.29),transparent 50%),
+    radial-gradient(ellipse at 40% 100%,rgba(129,66,108,.16),transparent 43%),#101727!important;
+}
+html[data-homehub-active] body::before {
+  content:"";position:fixed;inset:-40px;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 18% 16%,rgba(255,196,224,.22),transparent 50%),radial-gradient(ellipse at 82% 55%,rgba(137,187,255,.20),transparent 48%);
+  transform:translate3d(var(--hh-scene-x,0px),var(--hh-scene-y,0px),0);
+  transition:transform .55s cubic-bezier(.2,.75,.25,1);
+}
+html[data-homehub-active][data-homehub-theme="dark"] body::before {
+  background:radial-gradient(ellipse at 18% 16%,rgba(153,100,204,.09),transparent 50%),radial-gradient(ellipse at 82% 55%,rgba(74,143,224,.11),transparent 48%);
+}
+html[data-homehub-active] ghw-root,
+html[data-homehub-active] ghw-home,
+html[data-homehub-active] ghw-home > main,
+html[data-homehub-active] ghw-navigation-rail,
+html[data-homehub-active] ghw-navigation-rail > mat-sidenav-container,
+html[data-homehub-active] ghw-navigation-rail > mat-sidenav-container > mat-sidenav-content,
+html[data-homehub-active] .main-content-wrapper {
+  display:block!important;position:static!important;box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;min-width:0!important;height:100%!important;
+  margin:0!important;padding:0!important;transform:none!important;border:0!important;
+  border-radius:0!important;background:transparent!important;overflow:hidden!important;
+}
+html[data-homehub-active] ghw-toolbar,
+html[data-homehub-active] ghw-navigation-rail > mat-sidenav-container > mat-sidenav,
+html[data-homehub-active] ghw-navigation-rail .rail,
+html[data-homehub-active] ghw-devices > :not(.devices-container),
+html[data-homehub-active] ghw-devices .devices-container > mat-sidenav {
+  display:none!important;
+}
+html[data-homehub-active] ghw-devices {
+  display:block!important;position:fixed!important;inset:194px 36px 16px!important;
+  width:auto!important;max-width:none!important;min-width:0!important;height:auto!important;
+  margin:0!important;padding:0!important;border:0!important;background:transparent!important;
+  z-index:2!important;overflow:hidden!important;
+}
+html[data-homehub-active] ghw-devices > .devices-container,
+html[data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:100%!important;max-width:none!important;min-width:0!important;height:100%!important;
+  margin:0!important;padding:0!important;background:transparent!important;transform:none!important;
+  border:0!important;border-radius:0!important;
+}
+html[data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {
+  overflow:auto!important;overflow-x:hidden!important;scrollbar-width:thin;
+  scrollbar-color:rgba(100,118,149,.25) transparent;
+}
+html[data-homehub-active] ghw-devices .spaces-container {
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-content:start!important;align-items:stretch!important;gap:14px!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:none!important;
+  margin:0!important;padding:3px 5px 136px 2px!important;
+}
+html[data-homehub-active] ghw-devices .spaces-container > .space,
+html[data-homehub-active] ghw-devices .space > .tile-container,
+html[data-homehub-active] ghw-devices .tile-container > .tile-column {
+  display:contents!important;
+}
+html[data-homehub-active] ghw-devices .space > h2 {display:none!important;}
+html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:auto!important;min-width:0!important;max-width:none!important;height:auto!important;aspect-ratio:1;
+  min-height:0!important;margin:0!important;padding:0!important;grid-column:auto!important;
+}
+html[data-homehub-active] ghw-devices ghw-device-tile[data-homehub-hidden="true"] {display:none!important;}
+html[data-homehub-active] ghw-devices .device-tile,
+html[data-homehub-active] ghw-devices .device-tile > *,
+html[data-homehub-active] ghw-devices .on-off-tile-container {
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:100%!important;min-width:0!important;max-width:none!important;height:100%!important;
+  min-height:0!important;margin:0!important;padding:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card] {
+  --hh-tile-ink:var(--hh-ink);--hh-tile-muted:var(--hh-muted);--hh-device-accent:#367dd3;
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:space-between!important;gap:10px!important;position:relative!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:none!important;
+  height:100%!important;min-height:0!important;margin:0!important;padding:16px!important;
+  border:1px solid var(--hh-line)!important;border-radius:23px!important;overflow:hidden!important;
+  background:var(--hh-card)!important;color:var(--hh-tile-ink)!important;opacity:1!important;
+  box-shadow:var(--hh-shadow)!important;backdrop-filter:blur(24px) saturate(170%);
+  font-family:var(--hh-font)!important;text-align:left!important;
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card].active {
+  --hh-tile-ink:#273143;--hh-tile-muted:#788397;
+  background:var(--hh-on)!important;border-color:rgba(255,255,255,.96)!important;
+  box-shadow:0 9px 24px rgba(57,79,113,.075)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-kind="light"] {--hh-device-accent:#dca12a!important;}
+html[data-homehub-active] ghw-devices [data-homehub-kind="vacuum"] {--hh-device-accent:#39a48e!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card]:hover:not([aria-disabled="true"]) {
+  box-shadow:0 12px 30px rgba(50,70,110,.12)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card]::before {
+  content:""!important;position:absolute!important;inset:0!important;z-index:1!important;
+  border-radius:inherit!important;pointer-events:none!important;
+  background:radial-gradient(240px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),var(--hh-glint),transparent 72%)!important;
+  opacity:var(--hh-glass-visible,0)!important;transition:opacity .25s ease!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card]::after {
+  content:""!important;position:absolute!important;inset:0!important;z-index:3!important;
+  border-radius:inherit!important;pointer-events:none!important;
+  box-shadow:inset 1px 1px 1px var(--hh-rim),inset -1px -1px 1px rgba(255,255,255,.09)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card]:focus-visible {outline:3px solid #1686ff!important;outline-offset:2px!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card] .icon {
+  display:grid!important;place-items:center!important;position:relative!important;z-index:2!important;
+  flex:0 0 58px!important;box-sizing:border-box!important;width:58px!important;height:58px!important;
+  padding:0!important;margin:0!important;border-radius:50%!important;
+  background:rgba(121,141,168,.11)!important;color:var(--hh-tile-muted)!important;opacity:1!important;
+  transform:translate3d(var(--hh-depth-x,0px),var(--hh-depth-y,0px),0)!important;
+  transition:transform .22s cubic-bezier(.2,.75,.25,1)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card].active .icon {
+  color:#fff!important;background:var(--hh-device-accent)!important;
+  box-shadow:0 3px 12px color-mix(in srgb,var(--hh-device-accent) 22%,transparent)!important;
+}
+.homehub-symbol,.homehub-room-label {display:none;}
+html[data-homehub-active] ghw-devices .icon[data-homehub-symbol] > mat-icon {display:none!important;}
+html[data-homehub-active] .homehub-symbol {display:block!important;width:38px!important;height:38px!important;pointer-events:none!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card] .content {
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:flex-end!important;position:relative!important;z-index:2!important;
+  flex:none!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;
+  height:auto!important;margin:0!important;padding:0!important;gap:3px!important;
+  color:var(--hh-tile-ink)!important;opacity:1!important;text-align:left!important;
+  transform:translate3d(calc(var(--hh-depth-x,0px) * .35),calc(var(--hh-depth-y,0px) * .35),0)!important;
+  transition:transform .28s cubic-bezier(.2,.75,.25,1)!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-interacting] .icon,
+html[data-homehub-active] ghw-devices [data-homehub-interacting] .content {transform:none!important;transition:none!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card] .content .title {
+  display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+  min-width:0!important;margin:0!important;padding:0!important;overflow:hidden!important;
+  text-overflow:ellipsis!important;white-space:nowrap!important;font-family:var(--hh-font)!important;
+  font-size:14px!important;line-height:1.2!important;font-weight:600!important;
+  letter-spacing:-.025em!important;color:var(--hh-tile-ink)!important;opacity:1!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card] .content .subtitle,
+html[data-homehub-active] ghw-devices [data-homehub-card] .content > span,
+html[data-homehub-active] ghw-devices [data-homehub-card] .content .subtitle span {
+  margin:0!important;padding:0!important;font-family:var(--hh-font)!important;font-size:11.5px!important;
+  line-height:1.25!important;font-weight:450!important;color:var(--hh-tile-muted)!important;opacity:1!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card].offline .content .title {color:var(--hh-muted)!important;}
+html[data-homehub-active] ghw-devices .homehub-room-label {
+  display:block!important;position:absolute!important;top:20px!important;right:15px!important;
+  max-width:calc(100% - 94px)!important;z-index:2!important;font-family:var(--hh-font)!important;
+  font-size:10px!important;line-height:1.25!important;font-weight:500!important;
+  color:var(--hh-tile-muted)!important;text-align:right!important;pointer-events:none!important;
+}
+html[data-homehub-active] ghw-devices [data-homehub-card] .state-overlay {opacity:0!important;pointer-events:none!important;}
+html[data-homehub-active] ghw-devices [data-homehub-card] > .slider {background:rgba(220,161,42,.075)!important;}
+html[data-homehub-active] ghw-devices .fake-expand-button-container {display:none!important;}
+html[data-homehub-active] ghw-devices .expand-button-container {
+  position:absolute!important;right:6px!important;top:5px!important;bottom:auto!important;
+  width:28px!important;height:28px!important;padding:0!important;z-index:4!important;background:transparent!important;
+}
+html[data-homehub-active] ghw-devices .expand-button-container button {width:28px!important;height:28px!important;padding:2px!important;}
+html[data-homehub-active] ghw-devices .expand-button[data-homehub-symbol] > mat-icon {display:none!important;}
+html[data-homehub-active] ghw-devices .expand-button {display:grid!important;place-items:center!important;background:transparent!important;color:var(--hh-muted)!important;}
+html[data-homehub-active] ghw-devices .expand-button .homehub-symbol {width:18px!important;height:18px!important;}
+html[data-homehub-active] ghw-devices [data-homehub-group="true"] .homehub-room-label {right:38px!important;}
+html[data-homehub-active] ghw-devices .homehub-native-status {font-family:var(--hh-font)!important;font-size:11px!important;line-height:1.25!important;color:var(--hh-tile-muted)!important;}
+html[data-homehub-active] ghw-devices .expand-button-container + .homehub-room-label {right:42px!important;}
+
+/* Extension navigation. Native dialogs remain above this layer. */
+#homehub-ui {font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif!important;color:var(--hh-ink,#202938);}
+#homehub-ui * {box-sizing:border-box;}
+#homehub-ui button {font:inherit;cursor:pointer;color:inherit;border:0;background:none;}
+#homehub-ui button:focus-visible {outline:3px solid #087aff;outline-offset:3px;}
+#homehub-ui svg {display:block;width:20px;height:20px;flex-shrink:0;}
+#homehub-ui .hh-dock {
+  position:fixed;z-index:40;left:50%;bottom:24px;transform:translateX(-50%);
+  display:flex;align-items:center;gap:5px;width:max-content;max-width:calc(100vw - 48px);
+  padding:7px;border:1px solid var(--hh-line);border-radius:36px;
+  background:linear-gradient(140deg,rgba(255,255,255,.16),transparent 48%),var(--hh-sidebar);
+  box-shadow:inset 1px 1px 1px var(--hh-rim),inset -1px -1px 1px rgba(255,255,255,.10),0 16px 44px rgba(31,51,85,.18),0 3px 10px rgba(31,51,85,.06);
+  backdrop-filter:blur(36px) saturate(185%);
+}
+#homehub-ui .hh-dock::before {
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(340px circle at var(--hh-glass-x,50%) var(--hh-glass-y,10%),var(--hh-glint),transparent 75%);
+  opacity:calc(var(--hh-glass-visible,0) * .5);transition:opacity .3s;
+}
+#homehub-ui .hh-dock > * {position:relative;z-index:1;}
+#homehub-ui .hh-rooms {display:flex;align-items:center;gap:4px;overflow:auto;min-width:0;scrollbar-width:none;}
+#homehub-ui .hh-nav {
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  flex:0 0 103px;min-width:88px;height:68px;padding:7px 9px;border-radius:28px;
+  text-align:center;font-size:11px;font-weight:500;color:var(--hh-muted);
+  transition:background .2s,color .2s,height .2s;
+}
+#homehub-ui .hh-dock > .hh-nav {flex:0 0 103px;}
+#homehub-ui .hh-nav > svg {width:27px;height:27px;opacity:.9;}
+#homehub-ui .hh-nav .hh-button-label {display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#homehub-ui .hh-room-icon {
+  --hh-room-color:#70869f;display:grid;place-items:center;flex:0 0 31px;width:35px;height:31px;
+  border-radius:11px;color:var(--hh-room-color);background:color-mix(in srgb,var(--hh-room-color) 9%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);transition:transform .2s ease,background .2s ease;
+}
+#homehub-ui .hh-room-icon svg {width:27px;height:27px;opacity:1;}
+#homehub-ui .hh-room-icon[data-room-kind="bathroom"] {--hh-room-color:#5d98b2;}
+#homehub-ui .hh-room-icon[data-room-kind="kitchen"] {--hh-room-color:#ba8b53;}
+#homehub-ui .hh-room-icon[data-room-kind="office"] {--hh-room-color:#708ac1;}
+#homehub-ui .hh-room-icon[data-room-kind="bedroom"] {--hh-room-color:#967bb5;}
+#homehub-ui .hh-room-icon[data-room-kind="guest"] {--hh-room-color:#aa83ab;}
+#homehub-ui .hh-room-icon[data-room-kind="living"] {--hh-room-color:#6a9a89;}
+#homehub-ui .hh-room-icon[data-room-kind="garden"] {--hh-room-color:#6a9b69;}
+#homehub-ui .hh-room-icon[data-room-kind="laundry"] {--hh-room-color:#629da6;}
+#homehub-ui .hh-nav:hover .hh-room-icon {transform:translateY(-2px);}
+#homehub-ui .hh-nav[aria-pressed="true"] .hh-room-icon {background:color-mix(in srgb,var(--hh-room-color) 15%,transparent);}
+html[data-homehub-theme="dark"] #homehub-ui .hh-room-icon {filter:brightness(1.23) saturate(.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.10);}
+#homehub-ui .hh-nav[aria-pressed="true"] {background:var(--hh-selected);color:var(--hh-ink);box-shadow:inset 0 1px 1px var(--hh-rim),0 2px 7px rgba(50,70,100,.04);font-weight:600;}
+#homehub-ui .hh-nav:hover {background:var(--hh-selected);}
+#homehub-ui .hh-nav[aria-pressed="true"] > svg {color:#087aff;}
+#homehub-ui .hh-count {display:none;}
+#homehub-ui .hh-dock-actions {display:flex;align-items:center;flex-shrink:0;margin-left:2px;padding-left:6px;border-left:1px solid color-mix(in srgb,var(--hh-muted) 16%,transparent);}
+#homehub-ui .hh-original {display:grid;place-items:center;width:42px;height:52px;border-radius:22px;color:var(--hh-muted);}
+#homehub-ui .hh-original:hover {background:var(--hh-selected);}
+#homehub-ui .hh-original svg {width:19px;height:19px;}
+#homehub-ui .hh-original .hh-button-label {display:none;}
+#homehub-ui .hh-header {position:fixed;left:38px;right:38px;top:32px;z-index:20;display:flex;align-items:center;gap:12px;}
+#homehub-ui .hh-heading {flex:1;min-width:0;}
+#homehub-ui .hh-eyebrow {display:flex;align-items:center;gap:8px;min-width:0;color:var(--hh-muted);}
+#homehub-ui .hh-eyebrow > svg {width:16px;height:16px;color:#df9c65;}
+#homehub-ui .hh-home-name {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:600;max-width:200px;}
+#homehub-ui .hh-eyebrow-separator {opacity:.45;}
+#homehub-ui .hh-date {font-size:11px;font-weight:450;text-transform:none;}
+#homehub-ui h1 {margin:7px 0 6px;font-size:34px;font-weight:650;letter-spacing:-.055em;line-height:1.1;}
+#homehub-ui .hh-summary {font-size:12px;color:var(--hh-muted);line-height:1.4;}
+#homehub-ui .hh-theme,#homehub-ui .hh-tool-button {
+  display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:50%;
+  background:var(--hh-sidebar);border:1px solid var(--hh-line);box-shadow:inset 0 1px 0 var(--hh-rim);
+  backdrop-filter:blur(16px) saturate(170%);
+}
+#homehub-ui .hh-theme,#homehub-ui .hh-chip {position:relative;isolation:isolate;}
+#homehub-ui .hh-theme::before,#homehub-ui .hh-chip::before {
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(100px circle at var(--hh-glass-x,50%) var(--hh-glass-y,0%),var(--hh-glint),transparent 80%);
+  opacity:var(--hh-glass-visible,0);transition:opacity .2s;
+}
+#homehub-ui .hh-theme svg,#homehub-ui .hh-tool-button svg {width:18px;height:18px;}
+#homehub-ui .hh-categories {position:fixed;left:38px;right:38px;top:140px;z-index:20;display:flex;gap:9px;overflow:auto;scrollbar-width:none;padding:2px 0 6px;}
+#homehub-ui .hh-chip {display:flex;align-items:center;gap:7px;flex-shrink:0;min-height:36px;border:1px solid transparent;padding:8px 14px;border-radius:19px;font-size:12px;font-weight:550;color:var(--hh-muted);background:var(--hh-chip);backdrop-filter:blur(16px) saturate(170%);box-shadow:inset 0 1px 0 var(--hh-rim);}
+#homehub-ui .hh-chip svg {width:18px;height:18px;}
+#homehub-ui .hh-chip[aria-pressed="true"] {background:var(--hh-selected);border-color:var(--hh-line);color:var(--hh-ink);box-shadow:0 3px 8px rgba(50,70,100,.025);}
+#homehub-ui .hh-chip-count {opacity:.55;font-size:10px;}
+#homehub-ui .hh-empty {position:fixed;left:36px;right:36px;top:530px;text-align:center;font-size:14px;color:var(--hh-muted);}
+#homehub-ui .hh-empty[hidden] {display:none;}
+#homehub-ui .hh-restore {display:none;position:fixed;right:20px;bottom:20px;z-index:9999;padding:12px 18px;background:#fff;color:#273143;border:1px solid #d9e0eb;border-radius:24px;font-size:13px;box-shadow:0 6px 25px rgba(0,0,0,.15);}
+#homehub-ui[data-original="true"] > :not(.hh-restore) {display:none!important;}
+#homehub-ui[data-original="true"] .hh-restore {display:block;}
+html[data-homehub-dock="compact"] #homehub-ui .hh-dock {border-radius:31px;}
+html[data-homehub-dock="compact"] #homehub-ui .hh-nav {flex-basis:58px;min-width:58px;height:50px;padding:7px;border-radius:24px;}
+html[data-homehub-dock="compact"] #homehub-ui .hh-nav .hh-button-label {display:none;}
+html[data-homehub-dock="compact"] #homehub-ui .hh-dock > .hh-nav {flex-basis:58px;}
+html[data-homehub-dock="compact"] #homehub-ui .hh-original {height:44px;}
+@media(max-width:1050px) {
+  #homehub-ui .hh-header,#homehub-ui .hh-categories {left:26px;right:26px;}
+  html[data-homehub-active] ghw-devices {left:24px!important;right:24px!important;}
+  #homehub-ui .hh-empty {left:24px;right:24px;}
+}
+@media(max-width:760px) {
+  #homehub-ui .hh-header {left:20px;right:20px;top:24px;gap:7px;}
+  #homehub-ui h1 {font-size:26px;}
+  #homehub-ui .hh-date,#homehub-ui .hh-eyebrow-separator {display:none;}
+  #homehub-ui .hh-home-name {font-size:11px;max-width:145px;}
+  #homehub-ui .hh-summary {font-size:10px;}
+  #homehub-ui .hh-theme,#homehub-ui .hh-tool-button {width:34px;height:34px;flex-basis:34px;}
+  #homehub-ui .hh-categories {left:20px;right:20px;top:130px;}
+  html[data-homehub-active] ghw-devices {inset:184px 18px 12px!important;}
+  html[data-homehub-active] ghw-devices .spaces-container {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important;padding-bottom:124px!important;}
+  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {height:auto!important;aspect-ratio:1;}
+  html[data-homehub-active] ghw-devices [data-homehub-card] .icon {width:52px!important;height:52px!important;flex-basis:52px!important;}
+  html[data-homehub-active] .homehub-symbol {width:34px!important;height:34px!important;}
+  #homehub-ui .hh-dock {bottom:18px;max-width:calc(100vw - 28px);padding:6px;gap:3px;}
+  #homehub-ui .hh-nav,#homehub-ui .hh-dock > .hh-nav {flex-basis:82px;min-width:82px;height:62px;padding:6px;font-size:10px;}
+  #homehub-ui .hh-original {width:32px;height:46px;}
+  #homehub-ui .hh-original svg {width:17px;height:17px;}
+  #homehub-ui .hh-empty {left:18px;right:18px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-homehub-active] body::before {transform:none!important;transition:none!important;}
+  html[data-homehub-active] ghw-devices [data-homehub-card],
+  html[data-homehub-active] ghw-devices [data-homehub-card] .icon,
+  html[data-homehub-active] ghw-devices [data-homehub-card] .content,
+  #homehub-ui .hh-room-icon,#homehub-ui .hh-nav {transform:none!important;transition:none!important;}
+  html[data-homehub-active] ghw-devices [data-homehub-card]::before,
+  #homehub-ui .hh-dock::before,#homehub-ui .hh-chip::before,#homehub-ui .hh-theme::before {opacity:0!important;transition:none!important;}
+}
+
+/* Expanded groups keep their native controls and join the square grid as one band. */
+html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) {
+  display:grid!important;grid-template-columns:subgrid!important;grid-column:1/-1!important;
+  gap:14px!important;height:auto!important;aspect-ratio:auto!important;
+  border-radius:26px;background:color-mix(in srgb,var(--hh-card) 45%,transparent);
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--hh-card) 45%,transparent);
+}
+html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile,
+html[data-homehub-active] ghw-devices .expanded-group .group-child {
+  width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:1!important;
+  min-width:0!important;margin:0!important;padding:0!important;display:block!important;
+}
+html[data-homehub-active] ghw-devices .expanded-group {
+  display:contents!important;
+}
+@media (min-width:761px) and (max-width:900px) {
+  html[data-homehub-active] ghw-devices .spaces-container {grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
+
+html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile .expand-button .homehub-symbol {transform:rotate(180deg);}
+
+@media(max-width:760px) {
+  html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) {gap:11px!important;}
+}

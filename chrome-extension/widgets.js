@@ -188,8 +188,9 @@
       clockTimer=setTimeout(tickClock,1000-Date.now()%1000);
     }
     async function api(action,values={}) {
-      if(!globalThis.chrome?.runtime?.id||!chrome.runtime.sendMessage)throw Error('Recarregue a extensão para ativar o Tempo.');
-      const response=await chrome.runtime.sendMessage({namespace:'homehub-weather',action,...values});
+      const runtime=(globalThis.browser||globalThis.chrome)?.runtime;
+      if(!runtime?.id||!runtime.sendMessage)throw Error('Recarregue a extensão para ativar o Tempo.');
+      const response=await runtime.sendMessage({namespace:'homehub-weather',action,...values});
       if(!response?.ok)throw Error(response?.error||'Não foi possível consultar o serviço de previsão.');
       return response.data;
     }

@@ -1,5 +1,7 @@
 'use strict';
 
+const extensionApi=globalThis.browser||globalThis.chrome;
+
 const WEATHER_KEY='homehub.weather.location';
 const CACHE_KEY='homehub.weather.cache';
 const CACHE_TTL=20*60*1000;
@@ -61,7 +63,7 @@ function sanitizeForecast(data) {
 }
 async function forecastFor(location,force=false) {
   const key=locationKey(location);
-  const stored=await chrome.storage.local.get(CACHE_KEY);
+  const stored=await extensionApi.storage.local.get(CACHE_KEY);
   const cache=stored[CACHE_KEY];
   const matching=cache?.key===key&&cache.forecast?.current&&Number.isFinite(cache.forecast.fetchedAt)?cache.forecast:null;
   const age=matching?Date.now()-matching.fetchedAt:Infinity;
@@ -78,7 +80,7 @@ async function forecastFor(location,force=false) {
         timezone:'auto',timeformat:'unixtime',forecast_days:'5',temperature_unit:'celsius',wind_speed_unit:'kmh'
       });
       const forecast=sanitizeForecast(await requestJson(url));
-      await chrome.storage.local.set({[CACHE_KEY]:{key,forecast}});return forecast;
+      await extensionApi.storage.local.set({[CACHE_KEY]:{key,forecast}});return forecast;
     } catch(error) {
       if(matching)return {...matching,stale:true};
       throw error;
@@ -88,7 +90,7 @@ async function forecastFor(location,force=false) {
   try{return await task;}finally{pendingForecasts.delete(key);}
 }
 async function weatherState(force=false) {
-  const saved=await chrome.storage.local.get(WEATHER_KEY);
+  const saved=await extensionApi.storage.local.get(WEATHER_KEY);
   if(!saved[WEATHER_KEY])return {location:null,forecast:null};
   const location=validLocation(saved[WEATHER_KEY]);
   try{return {location,forecast:await forecastFor(location,force)};}
@@ -101,13 +103,13 @@ async function handleWeather(message) {
     case 'search':return {locations:await searchCities(message.query)};
     case 'select': {
       const location=validLocation(message.location);
-      await chrome.storage.local.set({[WEATHER_KEY]:location});return weatherState();
+      await extensionApi.storage.local.set({[WEATHER_KEY]:location});return weatherState();
     }
     default:throw Error('Consulta inválida.');
   }
 }
-chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
-  if(message?.namespace!=='homehub-weather'||sender.id!==chrome.runtime.id)return false;
+extensionApi.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+  if(message?.namespace!=='homehub-weather'||sender.id!==extensionApi.runtime.id)return false;
   try{if(new URL(sender.url).origin!=='https://home.google.com')return false;}catch(_){return false;}
   handleWeather(message).then(data=>sendResponse({ok:true,data})).catch(error=>sendResponse({
     ok:false,error:error?.name==='TimeoutError'?'A consulta demorou mais que o esperado. Tente novamente.':['TypeError','SyntaxError','AbortError'].includes(error?.name)?'Não foi possível acessar o serviço de previsão. Verifique sua conexão e tente novamente.':error?.message||'Não foi possível consultar o tempo.'
