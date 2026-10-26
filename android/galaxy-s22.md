@@ -1,6 +1,6 @@
 # Galaxy S22 / Android 16 como painel HomeHub
 
-O Firefox com Tampermonkey e HomeHub continua sendo o navegador do painel. O userscript Android 0.8.2.10 oferece tela cheia no menu de três pontos e desativa a entrada automática no protetor de tela interno. O relógio em tela cheia continua disponível manualmente. Ao retornar de uma aba/tela oculta, o protetor interno é fechado para mostrar o painel.
+O Firefox com Tampermonkey e HomeHub continua sendo o navegador do painel. O userscript Android 0.8.2.11 oferece tela cheia no menu de três pontos e desativa a entrada automática no protetor de tela interno. O relógio em tela cheia continua disponível manualmente. Ao retornar de uma aba/tela oculta, o protetor interno é fechado para mostrar o painel.
 
 [Atualizar o HomeHub](https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js) no Firefox; confirme Atualizar no Tampermonkey e recarregue o Google Home. Abra os três pontos e toque em Entrar em tela cheia. O Firefox exige um toque para iniciar esse modo e pode sair dele por gesto, troca de app ou suspensão; o script não tenta forçar a reentrada nem interceptar comandos do sistema.
 
@@ -94,3 +94,6 @@ Comparação controlada em Chromium móvel, CPU desacelerada em 4×, HTML anonim
 A proteção de gestos deixa passar pointerdown/pointerup e touchstart/touchend de um toque normal, para que o Google reconheça sua sequência nativa completa. Só o movimento já reconhecido como arraste bloqueia a propagação e o click subsequente. A tolerância inicial é de 12 px de deslocamento, aceitando pequenos movimentos naturais do dedo. Os listeners permanecem passivos; as otimizações de reconciliação e feedback imediato são mantidas.
 
 Teste em Chromium móvel com CPU desacelerada em 4×: três toques intencionais (um com deslocamento de 5×3 px) produziram três cliques; a rolagem de 153 px iniciada sobre o cartão e o click de compatibilidade posterior não produziram comando. Os handlers nativos receberam quatro inícios e três finais de toque, com o quarto gesto reservado à rolagem. Isso cobre a sequência nativa que o teste anterior, baseado apenas em click, não verificava. O Firefox físico ainda deve ser confirmado no aparelho.
+
+
+Na 0.8.2.11 o cabeçalho recebe uma faixa de vidro translúcido com blur de 14 px e borda inferior em degradê. Os aparelhos rolam por trás dessa faixa; o espaço inicial do cabeçalho pertence ao conteúdo rolável, inclusive com categorias ocultas. O efeito respeita Reduzir efeitos e é suspenso durante o arraste horizontal. Nenhum listener de rolagem é usado para atualizar o vidro.

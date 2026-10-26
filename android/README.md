@@ -15,7 +15,7 @@ Se o Google Home não exibir Dispositivos na versão móvel, experimente Site pa
 
 ## Como funciona
 
-Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.10 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
+Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.11 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
 
 O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. A interface Android agrupa opções num menu, ajusta a grade à orientação e separa os widgets e os aparelhos em duas telas. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
 
@@ -87,3 +87,6 @@ Comparação controlada em Chromium móvel, CPU desacelerada em 4×, HTML anonim
 A proteção de gestos deixa passar pointerdown/pointerup e touchstart/touchend de um toque normal, para que o Google reconheça sua sequência nativa completa. Só o movimento já reconhecido como arraste bloqueia a propagação e o click subsequente. A tolerância inicial é de 12 px de deslocamento, aceitando pequenos movimentos naturais do dedo. Os listeners permanecem passivos; as otimizações de reconciliação e feedback imediato são mantidas.
 
 Teste em Chromium móvel com CPU desacelerada em 4×: três toques intencionais (um com deslocamento de 5×3 px) produziram três cliques; a rolagem de 153 px iniciada sobre o cartão e o click de compatibilidade posterior não produziram comando. Os handlers nativos receberam quatro inícios e três finais de toque, com o quarto gesto reservado à rolagem. Isso cobre a sequência nativa que o teste anterior, baseado apenas em click, não verificava. O Firefox físico ainda deve ser confirmado no aparelho.
+
+
+Na 0.8.2.11 o cabeçalho recebe uma faixa de vidro translúcido com blur de 14 px e borda inferior em degradê. Os aparelhos rolam por trás dessa faixa; o espaço inicial do cabeçalho pertence ao conteúdo rolável, inclusive com categorias ocultas. O efeito respeita Reduzir efeitos e é suspenso durante o arraste horizontal. Nenhum listener de rolagem é usado para atualizar o vidro.

@@ -351,3 +351,27 @@ html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card][
 html[data-homehub-android][data-homehub-dragging] #homehub-ui .hh-dock {
   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
 }
+/* Devices scroll behind a small, fixed glass header rather than being clipped below it. */
+html[data-homehub-android][data-homehub-active] ghw-devices {top:0!important;}
+html[data-homehub-android][data-homehub-active] #homehub-scroll-heading {
+  padding-top:calc(64px + env(safe-area-inset-top,0px))!important;
+}
+html[data-homehub-android][data-homehub-active][data-homehub-hide-categories="true"] ghw-devices .spaces-container {
+  padding-top:calc(64px + env(safe-area-inset-top,0px))!important;
+}
+html[data-homehub-android][data-homehub-active] #homehub-ui .hh-header::before {
+  content:"";position:absolute;top:calc(-10px - env(safe-area-inset-top,0px));bottom:-14px;left:-18px;right:-18px;
+  z-index:0;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(246,249,255,.7),rgba(246,249,255,.38));
+  backdrop-filter:blur(14px) saturate(125%);-webkit-backdrop-filter:blur(14px) saturate(125%);
+  mask-image:linear-gradient(to bottom,#000 72%,transparent);-webkit-mask-image:linear-gradient(to bottom,#000 72%,transparent);
+}
+html[data-homehub-android][data-homehub-active][data-homehub-theme="dark"] #homehub-ui .hh-header::before {
+  background:linear-gradient(to bottom,rgba(18,24,34,.75),rgba(18,24,34,.4));
+}
+html[data-homehub-android][data-homehub-active] #homehub-ui .hh-header > button {position:relative;z-index:1;backdrop-filter:none;-webkit-backdrop-filter:none;}
+html[data-homehub-android][data-homehub-effects="reduced"] #homehub-ui .hh-header::before {
+  backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(246,249,255,.94);
+}
+html[data-homehub-android][data-homehub-effects="reduced"][data-homehub-theme="dark"] #homehub-ui .hh-header::before {background:rgba(18,24,34,.94);}
+html[data-homehub-android][data-homehub-dragging] #homehub-ui .hh-header::before {backdrop-filter:none;-webkit-backdrop-filter:none;}
