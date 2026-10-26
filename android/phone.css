@@ -233,11 +233,11 @@ html[data-homehub-android][data-homehub-active] #homehub-dashboard {
   touch-action:pan-y;transform:translateX(0);transition:transform .38s cubic-bezier(.2,.85,.25,1.08);
 }
 html[data-homehub-android][data-homehub-active] ghw-devices {
-  transform:translateX(-110vw);transition:transform .38s cubic-bezier(.2,.85,.25,1.08)!important;
+  transform:translateX(-100vw);transition:transform .38s cubic-bezier(.2,.85,.25,1.08)!important;
   top:calc(64px + env(safe-area-inset-top,0px))!important;touch-action:pan-y;
 }
 html[data-homehub-android][data-homehub-screen="devices"] ghw-devices {transform:translateX(0);}
-html[data-homehub-android][data-homehub-screen="devices"] #homehub-dashboard {transform:translateX(110vw);pointer-events:none;}
+html[data-homehub-android][data-homehub-screen="devices"] #homehub-dashboard {transform:translateX(100vw);pointer-events:none;}
 html[data-homehub-android][data-homehub-active] #homehub-ui .hh-header {
   position:fixed!important;top:calc(10px + env(safe-area-inset-top,0px))!important;
   left:18px!important;right:18px!important;width:auto!important;max-width:none!important;
@@ -308,3 +308,19 @@ html[data-homehub-android] #homehub-dashboard #homehub-widgets .hhw-weather-top 
 @media (orientation:landscape) and (min-width:601px) {
   html[data-homehub-android] #homehub-dashboard #homehub-widgets .hhw-calendar-day {width:20px;height:20px;line-height:20px;justify-self:center;}
 }
+
+/* Quiet page indicators retain a generous invisible touch target. */
+html[data-homehub-android] #homehub-pages {
+  gap:0;padding:0;border:0;background:none;box-shadow:none;backdrop-filter:none;
+}
+html[data-homehub-android] #homehub-pages button {
+  display:grid;place-items:center;width:36px;min-width:36px;height:36px;min-height:36px;
+  padding:0;background:none;box-shadow:none;border:0;
+}
+#homehub-pages button::before {
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--hh-ink);opacity:.25;
+  transition:opacity .15s;
+}
+#homehub-pages button[aria-current="true"]::before {opacity:.9;}
+html[data-homehub-android][data-homehub-dragging] #homehub-dashboard,
+html[data-homehub-android][data-homehub-dragging] ghw-devices {transition:none!important;will-change:transform;}
