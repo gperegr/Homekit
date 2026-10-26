@@ -338,3 +338,8 @@ html[data-homehub-android][data-homehub-hide-rooms="true"] #homehub-ui .hh-dock,
 html[data-homehub-android][data-homehub-hide-categories="true"] #homehub-scroll-heading {display:none!important;}
 html[data-homehub-android][data-homehub-hide-rooms="true"] #homehub-pages {bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;}
 html[data-homehub-android][data-homehub-active][data-homehub-hide-rooms="true"] ghw-devices .spaces-container {padding-bottom:64px!important;}
+/* The browser owns vertical panning, even when the touch starts on a device button. */
+html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card],
+html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] * {
+  touch-action:pan-y!important;
+}

@@ -15,7 +15,7 @@ Se o Google Home não exibir Dispositivos na versão móvel, experimente Site pa
 
 ## Como funciona
 
-Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.7 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
+Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.8 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
 
 O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. A interface Android agrupa opções num menu, ajusta a grade à orientação e separa os widgets e os aparelhos em duas telas. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
 
@@ -64,3 +64,10 @@ Validação do arraste: eventos reais de toque no navegador com CPU desacelerada
 Na versão 0.8.2.6, os ícones dos cômodos usam glifos de 18 px centralizados em contornos de 30×28 px, com margem interna e limite de tamanho em ambas as orientações.
 
 Na versão 0.8.2.7, o menu de três pontos permite ocultar ou mostrar separadamente as barras de cômodos e categorias. As escolhas ficam salvas no Tampermonkey. As opções para mostrar novamente continuam no menu, e ocultar os cômodos libera o espaço inferior sem remover os indicadores de página.
+
+
+### Rolagem sobre aparelhos — 0.8.2.8
+
+A rolagem vertical pode começar sobre o cartão de um aparelho: pan-y tem prioridade em toda a superfície do cartão. Os handlers de arraste por touch/pointer do Google não recebem esses gestos, enquanto o click original continua sendo usado para toques intencionais. A partir de 8 px de movimento, o gesto deixa de ser um toque; a direção fica travada em vertical ou horizontal até terminar. Arrastes verticais, horizontais e cancelamentos impedem o click de compatibilidade que poderia ativar um aparelho. Um novo toque limpa essa proteção temporária para continuar permitindo comandos intencionais.
+
+Verificação com Chromium móvel, HTML anonimizado e CPU desacelerada em 4×: rolagem iniciada no botão de um aparelho avançou 153 px; o gesto e um click atrasado não ativaram o aparelho, e os dois toques intencionais de controle ativaram uma vez cada. Handlers simulados que tentavam consumir o toque foram bloqueados. A troca horizontal entre telas também é verificada separadamente. O teste físico no Firefox continua dependendo do aparelho.
