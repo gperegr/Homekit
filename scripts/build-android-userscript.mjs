@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=file=>readFile(path.join(root,file),'utf8');
 const manifest=JSON.parse(await read('chrome-extension/manifest.json'));
-const version=manifest.version+'.2';
+const version=manifest.version+'.3';
 const download='https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js';
 const metadata=`// ==UserScript==
 // @name         HomeHub — Google Home
@@ -40,8 +40,14 @@ const armLine='if(active&&!document.hidden&&!ambient.open)idleTimer=';
 if(!widgets.includes(idleLine)||!widgets.includes(armLine))throw Error('O temporizador comum mudou; revise o modo Android.');
 widgets=widgets.replace(idleLine,'const IDLE_DELAY=0;')
   .replace(armLine,'if(IDLE_DELAY>0&&active&&!document.hidden&&!ambient.open)idleTimer=');
+let content=await read('chrome-extension/content.js');
+const motionStartup='});startMotion();apply();';
+if(!content.includes(motionStartup))throw Error('O início dos efeitos mudou; revise o perfil Android.');
+content=content.replace(motionStartup,'});apply();')
+  .replace('#homehub-ui,#homehub-widgets','#homehub-ui,#homehub-scroll-heading,#homehub-widgets');
 const css=(await Promise.all(['theme.css','widgets.css','ambient.css'].map(file=>read('chrome-extension/'+file))))
-  .concat(await read('safari-extension/safari.css'),await read('android/phone.css')).join('\n');
+  .concat(await read('safari-extension/safari.css'),await read('android/phone.css'))
+  .join('\n').replaceAll('#homehub-ui',':is(#homehub-ui,#homehub-scroll-heading)');
 const bundle=metadata+`\n(async()=>{\n'use strict';
 if(location.origin!=='https://home.google.com'||window.top!==window.self)return;
 if(globalThis.__homeHubUserscriptLoaded)return;
@@ -51,7 +57,7 @@ ${await read('scripts/userscript-phone.js')}
 ${await read('scripts/userscript-runtime.js')}
 (()=>{\n${worker}\n})();
 ${widgets}
-${await read('chrome-extension/content.js')}
+${content}
 ${await read('scripts/userscript-fullscreen.js')}
 homeHubStartPhoneUi();
 })();\n`;

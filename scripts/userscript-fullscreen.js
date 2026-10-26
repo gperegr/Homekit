@@ -11,7 +11,7 @@
   }
   function attach(){
     if(button?.isConnected)return;
-    const header=document.querySelector('#homehub-ui .hh-header');
+    const header=document.querySelector('#homehub-ui .hh-header,#homehub-scroll-heading .hh-header');
     if(!header)return;
     button=document.createElement('button');button.className='hh-tool-button hh-fullscreen-toggle';button.type='button';
     const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');
