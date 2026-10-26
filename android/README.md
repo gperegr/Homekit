@@ -15,7 +15,7 @@ Se o Google Home não exibir Dispositivos na versão móvel, experimente Site pa
 
 ## Como funciona
 
-Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.5 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
+Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.6 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
 
 O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. A interface Android agrupa opções num menu, ajusta a grade à orientação e separa os widgets e os aparelhos em duas telas. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
 
@@ -60,3 +60,5 @@ Validação: seis tamanhos entre 320×680 e 1280×800, CPU reduzida em 4×, clim
 A navegação inferior mostra só duas bolinhas, com nomes acessíveis e áreas de toque de 36 px. As telas acompanham o dedo durante o movimento horizontal, com uma atualização de transform por frame apenas enquanto há movimento. Ao soltar, distância e velocidade decidem a troca; movimentos curtos voltam à posição inicial. Nos limites há resistência elástica. O gesto vertical permanece com a rolagem nativa, controles e faixas horizontais são preservados e o clique gerado depois de um arraste é suprimido para evitar acionar aparelhos. Cancelamento do toque, múltiplos dedos, rotação e ocultação da página encerram o arraste. Não há loop de animação ocioso.
 
 Validação do arraste: eventos reais de toque no navegador com CPU desacelerada em 4×; deslocamentos de 50 e 140 px medidos antes de soltar o dedo, navegação nos dois sentidos, cancelamento, gesto curto, intenção vertical e resistência de borda, sem disparar o listener nativo de aparelho. A fluidez física no Firefox do tablet precisa ser confirmada no dispositivo.
+
+Na versão 0.8.2.6, os ícones dos cômodos usam glifos de 18 px centralizados em contornos de 30×28 px, com margem interna e limite de tamanho em ambas as orientações.

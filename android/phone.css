@@ -324,3 +324,13 @@ html[data-homehub-android] #homehub-pages button {
 #homehub-pages button[aria-current="true"]::before {opacity:.9;}
 html[data-homehub-android][data-homehub-dragging] #homehub-dashboard,
 html[data-homehub-android][data-homehub-dragging] ghw-devices {transition:none!important;will-change:transform;}
+/* Keep room glyphs comfortably inside their rounded badge at every dock size. */
+html[data-homehub-android] #homehub-ui .hh-room-icon {
+  box-sizing:border-box;display:grid;place-items:center;width:30px;height:28px;
+  min-width:30px;min-height:28px;max-width:30px;max-height:28px;flex:0 0 28px;
+  padding:4px;border-radius:9px;overflow:hidden;line-height:0;
+}
+html[data-homehub-android] #homehub-ui .hh-room-icon > svg {
+  display:block;box-sizing:border-box;width:18px;height:18px;max-width:100%;max-height:100%;
+  margin:0;flex:none;transform:none!important;
+}
