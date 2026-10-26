@@ -18,7 +18,7 @@ Somente o módulo Tempo faz consultas externas, limitadas aos domínios de previ
 2. Clique em **Carregar sem compactação** e selecione esta pasta `chrome-extension`.
 3. Abra ou recarregue `https://home.google.com/` e entre na tela **Dispositivos**.
 
-Se a extensão já estava carregada desta pasta, clique em **Recarregar** no cartão da extensão e atualize a aba do Google Home. A versão deve ser **0.8.0**.
+Se a extensão já estava carregada desta pasta, clique em **Recarregar** no cartão da extensão e atualize a aba do Google Home. A versão deve ser **0.8.1**.
 
 O ícone **Ver Google Home**, na ponta direita do dock, restaura a interface original na aba. **Ativar Home Hub** volta ao tema. O botão de lua/sol alterna a aparência.
 
@@ -40,6 +40,6 @@ Os testes do serviço de previsão não dependem de pacotes externos: `node --te
 
 Essa verificação não aciona aparelhos reais. Os recursos disponíveis continuam sendo os que o Google Home Web oferece para cada aparelho. A extensão depende dos componentes Angular atuais (`ghw-devices`, `.spaces-container`, `.space`, `.tile-container`, `.tile-column` e os cartões nativos); mudanças do Google podem exigir atualização.
 
-A grade usa módulos quadrados: relógio, calendário e acessórios ocupam um módulo, e o Tempo ocupa dois módulos com a mesma altura. Grupos expandidos formam uma faixa própria com o cartão principal e os controles internos quadrados; os elementos e eventos nativos do Google são preservados. As proporções foram verificadas em larguras de 320, 390, 800, 1024 e 1440 px, incluindo a inserção e remoção dinâmica dos controles de grupo.
+A grade limita cada módulo a 256 px. Relógio e calendário são quadrados; o Tempo ocupa dois módulos com a mesma altura. Os cartões de acessórios têm a mesma largura de um módulo e altura de 164 px (148 px no celular). Grupos expandidos formam uma faixa própria com o cartão principal e os controles internos retangulares; os elementos e eventos nativos do Google são preservados. As proporções foram verificadas em larguras de 320, 390, 800, 1024 e 1440 px, incluindo a inserção e remoção dinâmica dos controles de grupo.
 
 Também há uma distribuição para Safari em [safari-extension](../safari-extension/README.md), gerada desta mesma base.

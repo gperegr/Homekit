@@ -35,12 +35,12 @@
       svg.append(group);
     };
     if(kind==='clear')sun(32,31,12);
-    else if(kind==='night')svg.append(svgNode('path',{d:'M43 44A21 21 0 0 1 22 13a21 21 0 1 0 21 31Z',fill:'#f7e5b8'}));
+    else if(kind==='night')svg.append(svgNode('path',{d:'M43 44A21 21 0 0 1 22 13a21 21 0 1 0 21 31Z',fill:'#f6f7fa'}));
     else {
       if(kind==='partly'&&isDay)sun(22,22,9);
-      if(kind==='partly'&&!isDay)svg.append(svgNode('path',{d:'M32 28A14 14 0 0 1 19 10a14 14 0 1 0 13 18Z',fill:'#f7e5b8'}));
+      if(!isDay&&['partly','rain','storm'].includes(kind))svg.append(svgNode('path',{d:'M32 28A14 14 0 0 1 19 10a14 14 0 1 0 13 18Z',fill:'#f6f7fa'}));
       svg.append(svgNode('path',{d:'M17 44a10 10 0 0 1-1-20 15 15 0 0 1 29-2 11 11 0 1 1 3 22Z',fill:kind==='storm'?'#d9e5f2':'#f1f6fc'}));
-      if(kind==='rain')for(const x of [22,33,44])svg.append(svgNode('path',{d:`m${x} 49-3 7`,stroke:'#a9d5ff','stroke-width':'2.7','stroke-linecap':'round'}));
+      if(kind==='rain')for(const x of [22,33,44])svg.append(svgNode('path',{d:`m${x} 49-3 7`,stroke:'#38d3f4','stroke-width':'2.7','stroke-linecap':'round'}));
       if(kind==='snow')for(const x of [22,33,44])svg.append(svgNode('path',{d:`M${x} 49v8m-3-6 6 4m-6 0 6-4`,stroke:'#d5e8ff','stroke-width':'1.6','stroke-linecap':'round'}));
       if(kind==='storm')svg.append(svgNode('path',{d:'m34 43-8 12h7l-1 7 10-13h-7l2-6Z',fill:'#ffe08a'}));
       if(kind==='fog')svg.append(svgNode('path',{d:'M14 50h36M19 56h26',stroke:'#e1eaf4','stroke-width':'3','stroke-linecap':'round'}));
@@ -208,7 +208,8 @@
       renderAmbientWeather();
       const {location,forecast,error}=lastState;
       weather.replaceChildren();weather.setAttribute('aria-busy',String(pending));
-      const city=node('button',{class:'hhw-city',type:'button',title:'Escolher cidade'},[node('span',{},[location?.name||'Tempo']),symbol('chevron')]);
+      const city=node('button',{class:'hhw-city',type:'button',title:'Escolher cidade'},[node('span',{},[location?.name||'Tempo']),svgNode('svg',{viewBox:'0 0 24 24','aria-hidden':'true',class:'hhw-location-arrow'})]);
+      city.querySelector('svg').append(svgNode('path',{d:'M21 3 14 21l-3-8-8-3Z',fill:'currentColor'}));
       city.addEventListener('click',showCityDialog);
       const refresh=weatherButton('hhw-refresh','Atualizar previsão','refresh',()=>loadWeather('refresh'));
       refresh.disabled=pending||!location;
@@ -226,18 +227,18 @@
         weather.append(node('div',{class:'hhw-weather-setup'},[weatherIcon(3,true),node('div',{},[node('h3',{},[pending?'Buscando a previsão':'Tempo indisponível']),node('p',{},[error||'Aguardando a consulta ao serviço de previsão.']),retry])]));return;
       }
       weather.dataset.state='ready';
-      const current=forecast.current,description=condition(current.code,current.isDay),today=forecast.daily[0];
+      const current=forecast.current,description=condition(current.code,current.isDay);
       weather.dataset.weather=description.kind;weather.dataset.day=current.isDay?'day':'night';
       weather.setAttribute('aria-label',`Previsão externa em ${location.name}: ${temp(current.temperature)}, ${description.label}`);
       const now=node('div',{class:'hhw-now'},[
-        node('div',{class:'hhw-current'},[node('div',{class:'hhw-temperature'},[temp(current.temperature)]),node('div',{class:'hhw-condition'},[description.label]),node('div',{class:'hhw-range'},[`Máx. ${temp(today?.max)} · Mín. ${temp(today?.min)}`])]),
-        node('div',{class:'hhw-current-sky'},[weatherIcon(current.code,current.isDay),node('div',{class:'hhw-feels-like'},[`Sensação de ${temp(current.feelsLike)}`])])
+        node('div',{class:'hhw-current'},[node('div',{class:'hhw-temperature'},[temp(current.temperature)])]),
+        node('div',{class:'hhw-current-sky'},[weatherIcon(current.code,current.isDay),node('div',{class:'hhw-condition'},[description.label])])
       ]);
       weather.append(now);
       const hours=node('div',{class:'hhw-hours','aria-label':'Previsão para as próximas horas'});
       const upcoming=forecast.hourly.filter(hour=>hour.time>current.time).slice(0,5);
       for(const hour of [{...current,now:true},...upcoming]) {
-        const label=hour.now?'Agora':new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',hourCycle:'h23',timeZone:forecast.timeZone}).format(new Date(hour.time*1000))+'h';
+        const label=hour.now?'Agora':new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',hourCycle:'h23',timeZone:forecast.timeZone}).format(new Date(hour.time*1000));
         hours.append(node('div',{class:'hhw-hour'},[node('span',{class:'hhw-hour-label'},[label]),weatherIcon(hour.code,hour.isDay),node('b',{},[temp(hour.temperature)])]));
       }
       const updated=pending?'Atualizando…':forecast.stale?'Dados salvos · '+new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:forecast.timeZone}).format(new Date(forecast.fetchedAt)):'Atualizado às '+localTime(forecast.fetchedAt,forecast.timeZone);

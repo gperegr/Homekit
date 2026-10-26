@@ -84,8 +84,8 @@ html[data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {
 html[data-homehub-active] ghw-devices .spaces-container {
   display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
   align-content:start!important;align-items:stretch!important;gap:14px!important;
-  box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:none!important;
-  margin:0!important;padding:3px 5px 136px 2px!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:1073px!important;
+  margin:0 auto!important;padding:3px 5px 136px 2px!important;
 }
 html[data-homehub-active] ghw-devices .spaces-container > .space,
 html[data-homehub-active] ghw-devices .space > .tile-container,
@@ -95,7 +95,7 @@ html[data-homehub-active] ghw-devices .tile-container > .tile-column {
 html[data-homehub-active] ghw-devices .space > h2 {display:none!important;}
 html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {
   display:block!important;position:relative!important;box-sizing:border-box!important;
-  width:auto!important;min-width:0!important;max-width:none!important;height:auto!important;aspect-ratio:1;
+  width:auto!important;min-width:0!important;max-width:none!important;height:164px!important;aspect-ratio:auto;
   min-height:0!important;margin:0!important;padding:0!important;grid-column:auto!important;
 }
 html[data-homehub-active] ghw-devices ghw-device-tile[data-homehub-hidden="true"] {display:none!important;}
@@ -309,7 +309,7 @@ html[data-homehub-dock="compact"] #homehub-ui .hh-original {height:44px;}
   #homehub-ui .hh-categories {left:20px;right:20px;top:130px;}
   html[data-homehub-active] ghw-devices {inset:184px 18px 12px!important;}
   html[data-homehub-active] ghw-devices .spaces-container {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important;padding-bottom:124px!important;}
-  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {height:auto!important;aspect-ratio:1;}
+  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile {height:164px!important;aspect-ratio:auto;}
   html[data-homehub-active] ghw-devices [data-homehub-card] .icon {width:52px!important;height:52px!important;flex-basis:52px!important;}
   html[data-homehub-active] .homehub-symbol {width:34px!important;height:34px!important;}
   #homehub-ui .hh-dock {bottom:18px;max-width:calc(100vw - 28px);padding:6px;gap:3px;}
@@ -337,7 +337,7 @@ html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *)
 }
 html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile,
 html[data-homehub-active] ghw-devices .expanded-group .group-child {
-  width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:1!important;
+  width:100%!important;height:164px!important;min-height:0!important;aspect-ratio:auto!important;
   min-width:0!important;margin:0!important;padding:0!important;display:block!important;
 }
 html[data-homehub-active] ghw-devices .expanded-group {
@@ -351,4 +351,21 @@ html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *)
 
 @media(max-width:760px) {
   html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) {gap:11px!important;}
+}
+
+/* Keep the dashboard at a comfortable size even on wide/fullscreen displays. */
+#homehub-ui .hh-header,#homehub-ui .hh-categories {max-width:1066px;margin-left:auto;margin-right:auto;}
+@media(max-width:760px) {
+  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile,
+  html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile,
+  html[data-homehub-active] ghw-devices .expanded-group .group-child {height:148px!important;aspect-ratio:auto!important;}
+  html[data-homehub-active] ghw-devices .spaces-container ghw-device-tile:has(> .expanded-group > *) {height:auto!important;}
+}
+@media(max-width:900px) {
+  html[data-homehub-active] ghw-devices .spaces-container {max-width:533px!important;}
+  #homehub-ui .hh-header,#homehub-ui .hh-categories {max-width:526px;}
+}
+@media(max-width:760px) {
+  html[data-homehub-active] ghw-devices .spaces-container {max-width:530px!important;}
+  #homehub-ui .hh-header,#homehub-ui .hh-categories {max-width:523px;}
 }
