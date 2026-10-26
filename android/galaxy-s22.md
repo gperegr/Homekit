@@ -1,6 +1,6 @@
 # Galaxy S22 / Android 16 como painel HomeHub
 
-O Firefox com Tampermonkey e HomeHub continua sendo o navegador do painel. O userscript Android 0.8.2.6 oferece tela cheia no menu de três pontos e desativa a entrada automática no protetor de tela interno. O relógio em tela cheia continua disponível manualmente. Ao retornar de uma aba/tela oculta, o protetor interno é fechado para mostrar o painel.
+O Firefox com Tampermonkey e HomeHub continua sendo o navegador do painel. O userscript Android 0.8.2.7 oferece tela cheia no menu de três pontos e desativa a entrada automática no protetor de tela interno. O relógio em tela cheia continua disponível manualmente. Ao retornar de uma aba/tela oculta, o protetor interno é fechado para mostrar o painel.
 
 [Atualizar o HomeHub](https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js) no Firefox; confirme Atualizar no Tampermonkey e recarregue o Google Home. Abra os três pontos e toque em Entrar em tela cheia. O Firefox exige um toque para iniciar esse modo e pode sair dele por gesto, troca de app ou suspensão; o script não tenta forçar a reentrada nem interceptar comandos do sistema.
 
@@ -69,3 +69,5 @@ Referência de implementação: [animações eficientes e controle de camadas](h
 A versão 0.8.2.4 separa o painel de widgets dos aparelhos. Deslize para a direita para abrir aparelhos e para a esquerda para voltar; as duas bolinhas inferiores também alternam as telas. O relógio em tela cheia e a aparência ficam visíveis; a tela cheia do Firefox fica nos três pontos. As seções anteriores documentam a evolução do layout, substituída pela navegação em duas telas.
 
 Na 0.8.2.5 o gesto acompanha o dedo, com encaixe ao soltar e resistência nas bordas. As bolinhas indicam a tela atual e mantêm nomes acessíveis.
+
+Na versão 0.8.2.7, o menu de três pontos permite ocultar ou mostrar separadamente as barras de cômodos e categorias. As escolhas ficam salvas no Tampermonkey. As opções para mostrar novamente continuam no menu, e ocultar os cômodos libera o espaço inferior sem remover os indicadores de página.

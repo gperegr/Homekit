@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=file=>readFile(path.join(root,file),'utf8');
 const manifest=JSON.parse(await read('chrome-extension/manifest.json'));
-const version=manifest.version+'.6';
+const version=manifest.version+'.7';
 const download='https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js';
 const metadata=`// ==UserScript==
 // @name         HomeHub — Google Home

@@ -14,6 +14,8 @@ document.body.append(homeHubDashboard);
 
 function homeHubStartPhoneUi(){
   const root=document.documentElement;
+  const hiddenBars={rooms:homeHubPhonePreferences?.hiddenBars?.rooms===true,categories:homeHubPhonePreferences?.hiddenBars?.categories===true};
+  const barButtons={};
   let effects=homeHubPhonePreferences?.effects==='reduced'?'reduced':'balanced';
   let ui,dialog,menu,effectsButton,header,categories,scrollHeading,frame=0,lastSaved='';
   const ns='http://www.w3.org/2000/svg';
@@ -28,7 +30,7 @@ function homeHubStartPhoneUi(){
     if(span.textContent!==text)span.textContent=text;
   }
   function save(){
-    const value={theme:root.dataset.homehubTheme,dock:root.dataset.homehubDock,effects};
+    const value={theme:root.dataset.homehubTheme,dock:root.dataset.homehubDock,effects,hiddenBars};
     const signature=JSON.stringify(value);
     if(signature===lastSaved)return;lastSaved=signature;
     GM.setValue('homehub.android.preferences',value).catch(()=>{});
@@ -36,6 +38,13 @@ function homeHubStartPhoneUi(){
   function applyEffects(){
     root.dataset.homehubEffects=effects;
     if(effectsButton)effectsButton.setAttribute('aria-pressed',String(effects==='reduced'));
+  }
+  function applyBars(){
+    for(const [key,name] of [['rooms','cômodos'],['categories','categorias']]){
+      root.setAttribute('data-homehub-hide-'+key,String(hiddenBars[key]));
+      const button=barButtons[key];
+      if(button){label(button,(hiddenBars[key]?'Mostrar':'Ocultar')+' barra de '+name);button.setAttribute('aria-pressed',String(hiddenBars[key]));}
+    }
   }
   let screen='dashboard',pager;
   function showScreen(next){
@@ -70,7 +79,14 @@ function homeHubStartPhoneUi(){
     effectsButton.append(svg('m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3Z'));
     label(effectsButton,'Reduzir efeitos visuais');
     effectsButton.addEventListener('click',()=>{effects=effects==='reduced'?'balanced':'reduced';applyEffects();save();});
-    dialog.append(effectsButton);ui.append(dialog);
+    dialog.append(effectsButton);
+    for(const [key,path] of [['rooms','M3 10 12 3l9 7M5 9v12h14V9M9 21v-8h6v8'],['categories','M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z']]){
+      const button=document.createElement('button');button.type='button';button.className='hh-phone-action hh-hide-'+key;
+      button.setAttribute('aria-controls',key==='rooms'?'homehub-dock':'homehub-scroll-heading');
+      button.append(svg(path));button.addEventListener('click',()=>{hiddenBars[key]=!hiddenBars[key];applyBars();save();});
+      barButtons[key]=button;dialog.append(button);
+    }
+    applyBars();ui.append(dialog);
     pager=document.createElement('nav');pager.id='homehub-pages';pager.setAttribute('aria-label','Telas da casa');
     for(const [name,text] of [['dashboard','Painel'],['devices','Aparelhos']]){
       const button=document.createElement('button');button.type='button';button.dataset.screen=name;
@@ -112,7 +128,7 @@ function homeHubStartPhoneUi(){
       }
     }
     if((host.hidden||!root.hasAttribute('data-homehub-active'))&&dialog.open)dialog.close();
-    applyEffects();save();
+    applyEffects();applyBars();save();
   }
   function schedule(){if(!frame)frame=requestAnimationFrame(sync);}
   new MutationObserver(changes=>{
