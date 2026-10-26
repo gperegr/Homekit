@@ -177,3 +177,26 @@ html[data-homehub-theme="dark"] #homehub-weather-dialog {background:rgba(30,42,6
   #homehub-widgets .hhw-hour-label {font-size:9px;}
   #homehub-widgets .hhw-hour b {font-size:12px;}
 }
+
+/* Widgets share the same night palette as the accessories. */
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-clock,
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-calendar {
+  background:linear-gradient(145deg,rgba(42,48,62,.96),rgba(28,33,43,.96));
+  border-color:var(--hh-line);box-shadow:inset 0 1px 0 var(--hh-rim),var(--hh-shadow);color:var(--hh-ink);
+}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-clock-tick {stroke:#4f596d;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-clock-tick-major {stroke:#8893a9;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-clock-number {fill:#c2c9da;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-hand-hour,
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-hand-minute {stroke:#f1f3fa;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-hand-second {stroke:#eea49c;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-clock-caption {color:#a8b3c9;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-clock-digital {color:#e0e5f2;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-calendar-month {color:#ffa095;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-calendar-day.is-today {background:#e6a198;color:#241e20;box-shadow:none;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-calendar-day.is-outside {opacity:.4;}
+html[data-homehub-theme="dark"] #homehub-widgets .hhw-weather {border-color:rgba(187,205,233,.2);box-shadow:inset 0 1px 0 rgba(225,235,255,.09),var(--hh-shadow);}
+html[data-homehub-theme="dark"] #homehub-weather-dialog {background:#202631;border-color:var(--hh-line);box-shadow:0 28px 90px rgba(0,0,0,.5);}
+html[data-homehub-theme="dark"] #homehub-weather-dialog input {background:#171d27;border-color:#4c5c74;}
+html[data-homehub-theme="dark"] #homehub-weather-dialog .hhw-city-result {background:rgba(146,167,197,.06);}
+html[data-homehub-theme="dark"] #homehub-weather-dialog .hhw-city-result:hover {background:rgba(146,177,223,.14);}

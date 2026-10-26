@@ -11,14 +11,14 @@ html[data-homehub-active] {
   background:#eaf0fa!important;
 }
 html[data-homehub-active][data-homehub-theme="dark"] {
-  --hh-ink:#f1f4fc; --hh-muted:#a3afc5; --hh-faint:#91a0b8;
-  --hh-sidebar:rgba(23,31,51,.62); --hh-card:rgba(255,255,255,.075);
-  --hh-on:#fff; --hh-line:rgba(255,255,255,.10); --hh-selected:rgba(255,255,255,.12);
-  --hh-chip:rgba(255,255,255,.055);
-  --hh-glint:rgba(230,241,255,.15);--hh-rim:rgba(255,255,255,.16);
-  --hh-shadow:0 8px 28px rgba(0,0,0,.10);
+  --hh-ink:#f2f3f7; --hh-muted:#b0b7c6; --hh-faint:#929dad;
+  --hh-sidebar:rgba(23,27,35,.88); --hh-card:rgba(35,41,53,.88);
+  --hh-on:#293442; --hh-line:rgba(207,219,244,.12); --hh-selected:rgba(134,169,221,.14);
+  --hh-chip:rgba(37,43,55,.72);
+  --hh-glint:rgba(214,230,255,.085);--hh-rim:rgba(226,235,255,.12);
+  --hh-shadow:0 8px 24px rgba(0,0,0,.18);--hh-accent:#8bbaff;
   color-scheme:dark!important;
-  background:#101727!important;
+  background:#101217!important;
 }
 html[data-homehub-active],html[data-homehub-active] body {
   width:100%!important;height:100%!important;margin:0!important;overflow:hidden!important;
@@ -32,9 +32,9 @@ html[data-homehub-active] body {
 }
 html[data-homehub-active][data-homehub-theme="dark"] body {
   background:
-    radial-gradient(ellipse at 0% 0%,rgba(111,67,153,.26),transparent 44%),
-    radial-gradient(ellipse at 100% 20%,rgba(36,90,153,.29),transparent 50%),
-    radial-gradient(ellipse at 40% 100%,rgba(129,66,108,.16),transparent 43%),#101727!important;
+    radial-gradient(ellipse at 8% 0%,rgba(102,82,130,.15),transparent 48%),
+    radial-gradient(ellipse at 100% 30%,rgba(53,86,126,.17),transparent 52%),
+    radial-gradient(ellipse at 48% 100%,rgba(94,75,96,.08),transparent 46%),#101217!important;
 }
 html[data-homehub-active] body::before {
   content:"";position:fixed;inset:-40px;z-index:0;pointer-events:none;
@@ -43,7 +43,7 @@ html[data-homehub-active] body::before {
   transition:transform .55s cubic-bezier(.2,.75,.25,1);
 }
 html[data-homehub-active][data-homehub-theme="dark"] body::before {
-  background:radial-gradient(ellipse at 18% 16%,rgba(153,100,204,.09),transparent 50%),radial-gradient(ellipse at 82% 55%,rgba(74,143,224,.11),transparent 48%);
+  background:radial-gradient(ellipse at 18% 16%,rgba(153,127,184,.035),transparent 50%),radial-gradient(ellipse at 82% 55%,rgba(101,146,195,.045),transparent 48%);
 }
 html[data-homehub-active] ghw-root,
 html[data-homehub-active] ghw-home,
@@ -369,3 +369,36 @@ html[data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *)
   html[data-homehub-active] ghw-devices .spaces-container {max-width:530px!important;}
   #homehub-ui .hh-header,#homehub-ui .hh-categories {max-width:523px;}
 }
+
+/* Night appearance: quiet graphite surfaces, readable labels and tinted active states. */
+html[data-homehub-active][data-homehub-theme="dark"] ghw-devices [data-homehub-card].active {
+  --hh-tile-ink:#f3f6fb;--hh-tile-muted:#b6c7de;
+  background:linear-gradient(145deg,#2b3b51,#25303f)!important;
+  border-color:rgba(147,183,235,.27)!important;
+  box-shadow:inset 0 1px 0 rgba(210,228,255,.07),0 8px 24px rgba(0,0,0,.2)!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] ghw-devices [data-homehub-kind="light"].active {
+  --hh-tile-muted:#dbcba7;
+  background:linear-gradient(145deg,#3d372b,#2f3031)!important;
+  border-color:rgba(235,197,119,.29)!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] ghw-devices [data-homehub-kind="light"].active .icon {
+  background:#e9c579!important;color:#262115!important;
+  box-shadow:0 3px 18px rgba(233,197,121,.14)!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] ghw-devices [data-homehub-kind="vacuum"].active {
+  --hh-tile-muted:#b2d4c9;
+  background:linear-gradient(145deg,#263f3b,#253133)!important;
+  border-color:rgba(118,194,168,.24)!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] ghw-devices [data-homehub-card]:hover:not([aria-disabled="true"]) {
+  box-shadow:0 10px 30px rgba(0,0,0,.26),inset 0 0 0 1px rgba(198,215,243,.1)!important;
+}
+html[data-homehub-active][data-homehub-theme="dark"] ghw-devices [data-homehub-card].offline .icon {color:#919baa!important;background:rgba(158,174,201,.07)!important;}
+html[data-homehub-active][data-homehub-theme="dark"] #homehub-ui .hh-dock {
+  background:linear-gradient(145deg,rgba(255,255,255,.045),transparent 55%),var(--hh-sidebar);
+  box-shadow:inset 0 1px 0 rgba(225,235,255,.1),0 18px 50px rgba(0,0,0,.38);
+}
+html[data-homehub-active][data-homehub-theme="dark"] #homehub-ui .hh-nav[aria-pressed="true"] {color:#edf4ff;}
+html[data-homehub-active][data-homehub-theme="dark"] #homehub-ui .hh-nav[aria-pressed="true"] > svg {color:#8bbaff;}
+html[data-homehub-active][data-homehub-theme="dark"] #homehub-ui .hh-chip[aria-pressed="true"] {color:#dfebff;border-color:rgba(149,183,235,.24);}

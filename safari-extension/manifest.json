@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Home Hub — Safari",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Sua casa no Safari: acessórios, cômodos, relógio, calendário e previsão do tempo.",
   "permissions": [
     "storage"

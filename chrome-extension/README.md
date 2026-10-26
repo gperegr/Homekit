@@ -18,7 +18,7 @@ Somente o módulo Tempo faz consultas externas, limitadas aos domínios de previ
 2. Clique em **Carregar sem compactação** e selecione esta pasta `chrome-extension`.
 3. Abra ou recarregue `https://home.google.com/` e entre na tela **Dispositivos**.
 
-Se a extensão já estava carregada desta pasta, clique em **Recarregar** no cartão da extensão e atualize a aba do Google Home. A versão deve ser **0.8.1**.
+Se a extensão já estava carregada desta pasta, clique em **Recarregar** no cartão da extensão e atualize a aba do Google Home. A versão deve ser **0.8.2**.
 
 O ícone **Ver Google Home**, na ponta direita do dock, restaura a interface original na aba. **Ativar Home Hub** volta ao tema. O botão de lua/sol alterna a aparência.
 

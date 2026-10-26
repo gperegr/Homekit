@@ -22,9 +22,9 @@ A versão atual inclui dock de cômodos flutuante, ícones maiores, relógio ana
 
 ## Safari no Mac, iPhone e iPad
 
-A distribuição Safari 0.8.1 fica em [`safari-extension`](safari-extension/README.md). No Safari atual do Mac, é possível carregar essa pasta como extensão temporária em Ajustes > Desenvolvedor > Adicionar Extensão Temporária. Ela é removida ao encerrar o Safari ou após 24 horas.
+A distribuição Safari 0.8.2 fica em [`safari-extension`](safari-extension/README.md). No Safari atual do Mac, é possível carregar essa pasta como extensão temporária em Ajustes > Desenvolvedor > Adicionar Extensão Temporária. Ela é removida ao encerrar o Safari ou após 24 horas.
 
-Execute `node scripts/build-safari.mjs` para gerar `dist/HomeHub-Safari-0.8.1.zip`. Para instalar nos dispositivos móveis, use o empacotamento pelo App Store Connect/TestFlight ou execute `scripts/Gerar projeto Apple.command` com Xcode completo instalado. A pasta e o ZIP contêm recursos de extensão, não um aplicativo Apple já assinado. Consulte o guia Safari para assinatura, permissões e limitações dos testes.
+Execute `node scripts/build-safari.mjs` para gerar `dist/HomeHub-Safari-0.8.2.zip`. Para instalar nos dispositivos móveis, use o empacotamento pelo App Store Connect/TestFlight ou execute `scripts/Gerar projeto Apple.command` com Xcode completo instalado. A pasta e o ZIP contêm recursos de extensão, não um aplicativo Apple já assinado. Consulte o guia Safari para assinatura, permissões e limitações dos testes.
 
 ## Experimento anterior: Home Assistant
 

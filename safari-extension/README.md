@@ -1,8 +1,8 @@
-# Home Hub para Safari — 0.8.1
+# Home Hub para Safari — 0.8.2
 
 Distribuição Safari Web Extension para Mac, iPhone e iPad. Reaproveita a interface e os controles reais do Google Home; os ajustes de Safari incluem APIs `browser`, áreas seguras da tela, vidro com prefixo WebKit e botão de grupo com alvo de toque de 44 px. O manifesto exige Safari/iOS/iPadOS 17 ou posterior.
 
-Baixe o [ZIP Safari 0.8.1](../dist/HomeHub-Safari-0.8.1.zip) para o teste temporário no Mac ou empacotamento no App Store Connect.
+Baixe o [ZIP Safari 0.8.2](../dist/HomeHub-Safari-0.8.2.zip) para o teste temporário no Mac ou empacotamento no App Store Connect.
 
 O pacote de recursos está pronto; não é um aplicativo assinado nem uma instalação concluída no iPhone. A validação de interface e APIs é descrita abaixo. O código comum fica em `chrome-extension`; evite editar as cópias geradas de JS/CSS nesta pasta. `safari.css`, os ícones e este guia são específicos do Safari.
 
@@ -31,7 +31,7 @@ O script não instala Xcode, não configura credenciais, não assina e não publ
 
 ## Alternativa sem Xcode: App Store Connect e TestFlight
 
-A Apple oferece o Safari Web Extension Packager no App Store Connect. Com participação no Apple Developer Program, crie um registro de app para macOS e iOS, abra **Xcode Cloud > Safari Web Extension Packager** e envie `dist/HomeHub-Safari-0.8.1.zip`. Depois que o processamento concluir, distribua o build por TestFlight aos seus dispositivos. O app iOS também atende iPadOS. Esse ZIP contém apenas manifesto, scripts, estilos e ícones; não contém contas, senhas ou a captura do Google Home.
+A Apple oferece o Safari Web Extension Packager no App Store Connect. Com participação no Apple Developer Program, crie um registro de app para macOS e iOS, abra **Xcode Cloud > Safari Web Extension Packager** e envie `dist/HomeHub-Safari-0.8.2.zip`. Depois que o processamento concluir, distribua o build por TestFlight aos seus dispositivos. O app iOS também atende iPadOS. Esse ZIP contém apenas manifesto, scripts, estilos e ícones; não contém contas, senhas ou a captura do Google Home.
 
 ## Atualizar o pacote
 
@@ -61,10 +61,12 @@ O Xcode completo deste Mac fica em `/Volumes/Kingston/Aplicativos/Xcode.app`. A 
 
 O projeto foi gerado em `apple-build/HomeHub/HomeHub.xcodeproj` usando Xcode 27.1 do SSD Kingston, com os esquemas **HomeHub (macOS)** e **HomeHub (iOS)**. Para reabrir, use esse arquivo; não é necessário gerar novamente. O diretório `apple-build` é local e fica fora do controle de versão. Os recursos da extensão continuam referenciando `safari-extension`.
 
-A compilação Debug do aplicativo e da extensão concluiu com sucesso para macOS e iOS Simulator, sem certificados (`CODE_SIGNING_ALLOWED=NO`). Os pacotes foram conferidos com os recursos Safari 0.8.1 presentes; o app de simulador declara suporte a iPhone e iPad. O aplicativo macOS foi aberto localmente. A ativação da extensão no Safari e a instalação em dispositivos físicos continuam dependendo das configurações do usuário e da equipe de assinatura.
+A compilação Debug do aplicativo e da extensão concluiu com sucesso para macOS e iOS Simulator, sem certificados (`CODE_SIGNING_ALLOWED=NO`). Os pacotes foram conferidos com os recursos Safari 0.8.2 presentes; o app de simulador declara suporte a iPhone e iPad. O aplicativo macOS foi aberto localmente. A ativação da extensão no Safari e a instalação em dispositivos físicos continuam dependendo das configurações do usuário e da equipe de assinatura.
 
-## Visual 0.8.1 e atualização local
+## Visual 0.8.2 e atualização local
 
 Módulos limitados a 256 px, relógio de no máximo 180 px e cartões de aparelhos com 164 px de altura (148 px no celular). O widget Tempo traz cidade e temperatura à esquerda, ícone e condição à direita e seis colunas de previsão abaixo. O serviço de clima e a cidade escolhida continuam sendo a fonte dos dados. Os tamanhos e controles agrupados foram conferidos em Chromium e WebKit, incluindo tela de 2560 px.
 
 Na instalação local já assinada em `~/Applications/HomeHub.app`, execute `node scripts/build-safari.mjs` e depois `python3 scripts/update-installed-safari.py`. O atualizador copia apenas os recursos do manifesto, incrementa o build nativo, preserva os entitlements existentes ao renovar a assinatura local e registra o app novamente. O pacote é verificado com `codesign --verify --deep --strict`. Isso não exige um certificado da conta Apple e não instala nada em iPhone/iPad.
+
+O modo escuro 0.8.2 usa superfícies em grafite, relógio e calendário escuros, ponteiros claros, realces por tipo de aparelho e dock com reflexos suaves. O visual foi conferido nas prévias de desktop e celular.
