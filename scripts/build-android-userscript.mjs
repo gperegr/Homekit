@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=file=>readFile(path.join(root,file),'utf8');
 const manifest=JSON.parse(await read('chrome-extension/manifest.json'));
-const version=manifest.version+'.1';
+const version=manifest.version+'.2';
 const download='https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js';
 const metadata=`// ==UserScript==
 // @name         HomeHub — Google Home
@@ -41,17 +41,19 @@ if(!widgets.includes(idleLine)||!widgets.includes(armLine))throw Error('O tempor
 widgets=widgets.replace(idleLine,'const IDLE_DELAY=0;')
   .replace(armLine,'if(IDLE_DELAY>0&&active&&!document.hidden&&!ambient.open)idleTimer=');
 const css=(await Promise.all(['theme.css','widgets.css','ambient.css'].map(file=>read('chrome-extension/'+file))))
-  .concat(await read('safari-extension/safari.css')).join('\n');
+  .concat(await read('safari-extension/safari.css'),await read('android/phone.css')).join('\n');
 const bundle=metadata+`\n(async()=>{\n'use strict';
 if(location.origin!=='https://home.google.com'||window.top!==window.self)return;
 if(globalThis.__homeHubUserscriptLoaded)return;
 await GM.addStyle(${JSON.stringify(css)});
 globalThis.__homeHubUserscriptLoaded=true;
+${await read('scripts/userscript-phone.js')}
 ${await read('scripts/userscript-runtime.js')}
 (()=>{\n${worker}\n})();
 ${widgets}
 ${await read('chrome-extension/content.js')}
 ${await read('scripts/userscript-fullscreen.js')}
+homeHubStartPhoneUi();
 })();\n`;
 await mkdir(path.join(root,'dist'),{recursive:true});
 await writeFile(path.join(root,'dist/HomeHub-Android.user.js'),bundle);

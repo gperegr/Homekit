@@ -15,11 +15,11 @@ Se o Google Home não exibir Dispositivos na versão móvel, experimente Site pa
 
 ## Como funciona
 
-Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.1 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
+Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.2 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
 
-O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
+O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. A interface Android agrupa opções num menu, ajusta a grade à orientação e permite recolher os widgets. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
 
-O clima usa a mesma lógica de validação, cache e erro da extensão. As chamadas são feitas por `GM.xmlHttpRequest`, com requisições anônimas e acesso limitado aos dois domínios Open-Meteo. Cidade e cache ficam no armazenamento do Tampermonkey; a cidade selecionada em Safari/Chrome não é transferida automaticamente. As opções de aparência e dock continuam sendo mantidas na sessão da página, como nas versões existentes.
+O clima usa a mesma lógica de validação, cache e erro da extensão. As chamadas são feitas por `GM.xmlHttpRequest`, com requisições anônimas e acesso limitado aos dois domínios Open-Meteo. Cidade e cache ficam no armazenamento do Tampermonkey; a cidade selecionada em Safari/Chrome não é transferida automaticamente. A versão Android salva aparência, dock e preferência do resumo no Tampermonkey, além da sessão da página.
 
 O arquivo HTML é apenas um instalador/guia com links. Um HTML local ou uma página do GitHub Pages não pode ler ou modificar a página autenticada do Google por causa da política de mesma origem. O código precisa executar nela, através da extensão/gerenciador de scripts.
 

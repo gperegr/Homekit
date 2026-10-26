@@ -1,0 +1,114 @@
+/* Android-only layout. CSS pixels follow the browser viewport, not the panel's physical resolution. */
+html[data-homehub-android][data-homehub-active] {
+  --hh-a-top:env(safe-area-inset-top,0px);--hh-a-bottom:env(safe-area-inset-bottom,0px);
+}
+html[data-homehub-android][data-homehub-active] ghw-devices .devices-container > mat-sidenav-content {overscroll-behavior-y:contain;scroll-padding-bottom:110px;}
+html[data-homehub-android][data-homehub-active] #homehub-ui .hh-header {display:flex;gap:8px;}
+html[data-homehub-android] #homehub-ui .hh-tools-toggle,
+html[data-homehub-android] #homehub-ui .hh-fullscreen-toggle {width:48px;height:48px;flex:0 0 48px;touch-action:manipulation;}
+html[data-homehub-android][data-homehub-summary="collapsed"] #homehub-widgets {display:none!important;}
+html[data-homehub-android][data-homehub-active][data-homehub-theme="dark"] ghw-devices [data-homehub-card]:not(.active) {background:#222833!important;}
+html[data-homehub-android][data-homehub-active][data-homehub-theme="light"] ghw-devices [data-homehub-card]:not(.active) {background:#f6f7fb!important;}
+html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] {backdrop-filter:none;-webkit-backdrop-filter:none;}
+html[data-homehub-android] #homehub-ui button {touch-action:manipulation;}
+html[data-homehub-android] #homehub-phone-tools {
+  width:min(420px,calc(100vw - 24px));max-height:calc(100dvh - 32px - env(safe-area-inset-bottom,0px));
+  margin:auto auto calc(12px + env(safe-area-inset-bottom,0px));padding:18px;
+  border:1px solid var(--hh-line);border-radius:28px;background:#f4f6fc;color:var(--hh-ink);
+  font-family:var(--hh-font);box-shadow:0 24px 80px #0005;overflow:auto;overscroll-behavior:contain;
+}
+html[data-homehub-android][data-homehub-theme="dark"] #homehub-phone-tools {background:#202631;}
+html[data-homehub-android] #homehub-phone-tools::backdrop {background:#11182780;backdrop-filter:blur(8px);}
+html[data-homehub-android] #homehub-phone-tools .hh-phone-tools-heading {display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+html[data-homehub-android] #homehub-phone-tools h2 {font-size:19px;font-weight:650;letter-spacing:-.03em;margin:0;}
+html[data-homehub-android] #homehub-phone-tools .hh-phone-close {width:48px;height:48px;border-radius:50%;font-size:26px;color:var(--hh-muted);}
+html[data-homehub-android] #homehub-phone-tools .hh-phone-action {
+  display:flex!important;align-items:center;justify-content:flex-start;gap:14px;
+  width:100%!important;height:54px!important;min-height:54px;flex:none;padding:0 14px!important;margin:5px 0;
+  border-radius:16px!important;border:1px solid var(--hh-line);background:var(--hh-chip);color:var(--hh-ink);text-align:left;
+  font-size:14px;font-weight:550;box-shadow:none;
+}
+html[data-homehub-android] #homehub-phone-tools .hh-phone-action > svg {width:22px;height:22px;flex-shrink:0;}
+html[data-homehub-android] #homehub-phone-tools :focus-visible {outline:3px solid var(--hh-accent);outline-offset:2px;}
+html[data-homehub-android] #homehub-weather-dialog {border-radius:26px;width:min(430px,calc(100vw - 24px));max-height:calc(100dvh - 32px - env(safe-area-inset-bottom,0px));padding:24px;}
+html[data-homehub-android] #homehub-weather-dialog input {font-size:16px;min-height:48px;}
+html[data-homehub-android] #homehub-weather-dialog .hhw-primary {min-height:48px;}
+html[data-homehub-android] #homehub-weather-dialog .hhw-dialog-close {width:44px;height:44px;top:8px;right:8px;}
+html[data-homehub-android] #homehub-weather-dialog .hhw-city-result {min-height:60px;}
+
+@media(max-width:600px) {
+  html[data-homehub-android] #homehub-ui .hh-header {left:16px;right:16px;top:calc(10px + var(--hh-a-top,0px));max-width:520px;}
+  html[data-homehub-android] #homehub-ui .hh-home-name {font-size:11px;max-width:145px;}
+  html[data-homehub-android] #homehub-ui h1 {font-size:27px;line-height:1.1;margin:4px 0;}
+  html[data-homehub-android] #homehub-ui .hh-summary {font-size:11px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  html[data-homehub-android] #homehub-ui .hh-categories {left:16px;right:16px;top:calc(84px + var(--hh-a-top,0px));gap:7px;}
+  html[data-homehub-android] #homehub-ui .hh-chip {min-height:44px;padding:9px 12px;font-size:12px;}
+  html[data-homehub-android][data-homehub-active] ghw-devices {inset:calc(138px + var(--hh-a-top,0px)) 12px 0!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices .spaces-container {gap:10px!important;max-width:530px!important;padding:0 2px calc(106px + var(--hh-a-bottom,0px))!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices .spaces-container ghw-device-tile,
+  html[data-homehub-android][data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile,
+  html[data-homehub-android][data-homehub-active] ghw-devices .expanded-group .group-child {height:138px!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices .spaces-container ghw-device-tile:has(> .expanded-group > *) {height:auto!important;gap:10px!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] {border-radius:22px!important;padding:13px!important;gap:8px!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] .icon {width:46px!important;height:46px!important;flex-basis:46px!important;}
+  html[data-homehub-android][data-homehub-active] .homehub-symbol {width:30px!important;height:30px!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] .content .title {font-size:14px!important;line-height:1.2!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] .content .subtitle,
+  html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] .content > span {font-size:12px!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices .homehub-room-label {top:14px!important;right:12px!important;font-size:10px!important;}
+  html[data-homehub-android][data-homehub-active] #homehub-widgets {height:auto!important;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto 164px;gap:10px;margin-bottom:2px;}
+  html[data-homehub-android] #homehub-widgets .hhw-clock,
+  html[data-homehub-android] #homehub-widgets .hhw-calendar {grid-row:1;height:auto;aspect-ratio:1;border-radius:24px;padding:9px;}
+  html[data-homehub-android] #homehub-widgets .hhw-clock {gap:3px;}
+  html[data-homehub-android] #homehub-widgets .hhw-clock-face {width:86%;max-width:128px;}
+  html[data-homehub-android] #homehub-widgets .hhw-clock-caption {font-size:9px;width:100%;gap:5px;}
+  html[data-homehub-android] #homehub-widgets .hhw-clock-digital {font-size:12px;}
+  html[data-homehub-android] #homehub-widgets .hhw-calendar-header {min-height:28px;margin-bottom:3px;gap:2px;}
+  html[data-homehub-android] #homehub-widgets .hhw-calendar-month {font-size:11px;white-space:normal;text-align:left;line-height:1.15;}
+  html[data-homehub-android] #homehub-widgets .hhw-calendar-arrow {width:28px;height:28px;}
+  html[data-homehub-android] #homehub-widgets .hhw-calendar-day {width:18px;height:18px;line-height:18px;font-size:10.5px;}
+  html[data-homehub-android] #homehub-widgets .hhw-calendar-footer {display:none;}
+  html[data-homehub-android] #homehub-widgets .hhw-weather {grid-row:2;grid-column:1/-1;height:164px;min-height:0;aspect-ratio:auto;padding:11px 15px 8px;gap:3px;border-radius:24px;}
+  html[data-homehub-android] #homehub-widgets .hhw-city {font-size:17px;max-width:calc(100% - 110px);}
+  html[data-homehub-android] #homehub-widgets .hhw-temperature {font-size:44px;}
+  html[data-homehub-android] #homehub-widgets .hhw-condition {font-size:14px;}
+  html[data-homehub-android] #homehub-widgets .hhw-hour-label {font-size:10px;}
+  html[data-homehub-android] #homehub-widgets .hhw-hour b {font-size:15px;}
+  html[data-homehub-android] #homehub-widgets .hhw-hour .hhw-weather-icon {width:24px;height:24px;}
+  html[data-homehub-android] #homehub-widgets .hhw-weather-top .hhw-refresh {width:44px;height:44px;top:-8px;right:36px;transform:none;background:none;opacity:.65;}
+  html[data-homehub-android] #homehub-ui .hh-dock {bottom:calc(10px + var(--hh-a-bottom,0px));max-width:calc(100vw - 16px);border-radius:29px;padding:6px;gap:3px;}
+  html[data-homehub-android] #homehub-ui .hh-nav,
+  html[data-homehub-android] #homehub-ui .hh-dock > .hh-nav {flex-basis:66px;min-width:66px;height:56px;padding:5px;font-size:10px;gap:3px;border-radius:23px;}
+  html[data-homehub-android] #homehub-ui .hh-dock > .hh-nav {flex-basis:60px;min-width:60px;}
+  html[data-homehub-android] #homehub-ui .hh-nav > svg {width:24px;height:24px;}
+  html[data-homehub-android] #homehub-ui .hh-room-icon {width:28px;height:26px;flex-basis:26px;}
+  html[data-homehub-android] #homehub-ui .hh-room-icon svg {width:24px;height:24px;}
+  html[data-homehub-android] #homehub-ui .hh-rooms {scroll-snap-type:x proximity;overscroll-behavior-x:contain;}
+  html[data-homehub-android] #homehub-ui .hh-rooms > * {scroll-snap-align:start;}
+  html[data-homehub-android] #homehub-ui .hh-original {width:44px;height:48px;}
+  html[data-homehub-android][data-homehub-dock="compact"] #homehub-ui .hh-nav {flex-basis:48px;min-width:48px;height:48px;}
+}
+@media(orientation:landscape) and (max-height:500px) and (min-width:601px) {
+  html[data-homehub-android] #homehub-ui .hh-header {left:max(18px,env(safe-area-inset-left,0px));right:max(18px,env(safe-area-inset-right,0px));top:calc(6px + var(--hh-a-top,0px));max-width:1066px;}
+  html[data-homehub-android] #homehub-ui .hh-eyebrow {display:none;}
+  html[data-homehub-android] #homehub-ui h1 {font-size:23px;margin:0 0 4px;}
+  html[data-homehub-android] #homehub-ui .hh-summary {font-size:11px;}
+  html[data-homehub-android] #homehub-ui .hh-categories {left:18px;right:18px;top:calc(61px + var(--hh-a-top,0px));max-width:1066px;}
+  html[data-homehub-android] #homehub-ui .hh-chip {min-height:40px;padding:8px 12px;}
+  html[data-homehub-android][data-homehub-active] ghw-devices {inset:calc(110px + var(--hh-a-top,0px)) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px))!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices .spaces-container {max-width:1073px!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding-bottom:calc(92px + var(--hh-a-bottom,0px))!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices .spaces-container ghw-device-tile,
+  html[data-homehub-android][data-homehub-active] ghw-devices ghw-device-tile:has(> .expanded-group > *) > .device-tile,
+  html[data-homehub-android][data-homehub-active] ghw-devices .expanded-group .group-child {height:132px!important;}
+  html[data-homehub-android][data-homehub-active] ghw-devices .spaces-container ghw-device-tile:has(> .expanded-group > *) {height:auto!important;gap:10px!important;}
+  html[data-homehub-android][data-homehub-active] #homehub-widgets {grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:10px;height:calc((100cqw - 30px)/4);}
+  html[data-homehub-android] #homehub-widgets .hhw-clock {grid-column:1;grid-row:1;}
+  html[data-homehub-android] #homehub-widgets .hhw-weather {grid-column:2/4;grid-row:1;}
+  html[data-homehub-android] #homehub-widgets .hhw-calendar {grid-column:4;grid-row:1;}
+  html[data-homehub-android] #homehub-ui .hh-dock {bottom:calc(6px + var(--hh-a-bottom,0px));padding:5px;border-radius:26px;}
+  html[data-homehub-android] #homehub-ui .hh-nav,
+  html[data-homehub-android] #homehub-ui .hh-dock > .hh-nav {flex-basis:72px;min-width:72px;height:48px;padding:4px;font-size:10px;gap:2px;}
+  html[data-homehub-android] #homehub-ui .hh-room-icon {height:22px;flex-basis:22px;}
+  html[data-homehub-android] #homehub-ui .hh-room-icon svg {width:23px;height:23px;}
+  html[data-homehub-android] #homehub-ui .hh-original {width:44px;height:44px;}
+}
