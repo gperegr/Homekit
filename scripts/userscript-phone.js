@@ -194,20 +194,19 @@ function homeHubStartPhoneUi(){
       (event.target.closest('button')&&!event.target.closest('[data-homehub-card]')))return;
     for(const animation of settling)animation.cancel();settling.clear();
     const card=event.target.closest('[data-homehub-card]');
-    if(card){event.stopPropagation();card.setAttribute('data-homehub-pressed','');}
+    if(card)card.setAttribute('data-homehub-pressed','');
     homeHubInteraction.active=true;
     touch={id:event.pointerId,x:event.clientX,y:event.clientY,lastX:event.clientX,lastTime:performance.now(),
       velocity:0,dx:0,offset:0,card,moved:false,vertical:false,width:innerWidth,screen,devices:document.querySelector('ghw-devices')};
   },{passive:true,capture:true});
   document.addEventListener('pointermove',event=>{
     if(!touch||event.pointerId!==touch.id)return;
-    if(touch.card)event.stopPropagation();
     const dx=event.clientX-touch.x,dy=event.clientY-touch.y;
-    if(touch.vertical)return;
+    if(touch.vertical){event.stopPropagation();return;}
     if(!touch.horizontal){
-      if(Math.max(Math.abs(dx),Math.abs(dy))<8)return;
+      if(Math.hypot(dx,dy)<12)return;
       touch.moved=true;touch.card?.removeAttribute('data-homehub-pressed');suppressClickUntil=performance.now()+500;
-      if(Math.abs(dx)<Math.abs(dy)*1.25){touch.vertical=true;return;}
+      if(Math.abs(dx)<Math.abs(dy)*1.25){touch.vertical=true;event.stopPropagation();return;}
       touch.horizontal=true;root.setAttribute('data-homehub-dragging','');
     }
     event.stopPropagation();
@@ -220,13 +219,13 @@ function homeHubStartPhoneUi(){
   },{passive:true,capture:true});
   document.addEventListener('pointerup',event=>{
     if(!touch||event.pointerId!==touch.id)return;
-    if(touch.card||touch.horizontal)event.stopPropagation();finishDrag();
+    if(touch.moved)event.stopPropagation();finishDrag();
   },{passive:true,capture:true});
   document.addEventListener('pointercancel',event=>{if(event.pointerId===touch?.id)finishDrag(true);},{passive:true,capture:true});
-  // All touch listeners are passive: native vertical scrolling never waits for a cancellable JS handler.
-  for(const type of ['touchstart','touchmove','touchend'])document.addEventListener(type,event=>{
+  // Let a genuine tap reach Google's complete start/end sequence. Only claimed drags are blocked.
+  for(const type of ['touchmove','touchend'])document.addEventListener(type,event=>{
     if(root.hasAttribute('data-homehub-active')&&event.target.closest('[data-homehub-card]')&&
-      !event.target.closest('input,textarea,select,[contenteditable=true]'))event.stopPropagation();
+      (touch?.moved||performance.now()<suppressClickUntil))event.stopPropagation();
   },{passive:true,capture:true});
   document.addEventListener('scroll',event=>{
     if(event.target?.closest?.('ghw-devices'))homeHubInteraction.until=performance.now()+100;
