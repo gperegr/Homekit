@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HomeHub — Google Home
 // @namespace    https://github.com/gperegr/Homekit
-// @version      0.8.2
+// @version      0.8.2.1
 // @description  Interface HomeHub com relógio, calendário, Tempo e aparelhos do Google Home.
 // @match        https://home.google.com/*
 // @run-at       document-end
