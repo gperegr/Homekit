@@ -15,9 +15,9 @@ Se o Google Home não exibir Dispositivos na versão móvel, experimente Site pa
 
 ## Como funciona
 
-Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.3 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
+Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.4 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
 
-O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. A interface Android agrupa opções num menu, ajusta a grade à orientação e permite recolher os widgets. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
+O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. A interface Android agrupa opções num menu, ajusta a grade à orientação e separa os widgets e os aparelhos em duas telas. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
 
 O clima usa a mesma lógica de validação, cache e erro da extensão. As chamadas são feitas por `GM.xmlHttpRequest`, com requisições anônimas e acesso limitado aos dois domínios Open-Meteo. Cidade e cache ficam no armazenamento do Tampermonkey; a cidade selecionada em Safari/Chrome não é transferida automaticamente. A versão Android salva aparência, dock e preferência do resumo no Tampermonkey, além da sessão da página.
 
@@ -42,3 +42,14 @@ O pacote pode ser validado localmente com DOM anônimo, APIs GM simuladas e test
 - [Tampermonkey para Firefox Android](https://addons.mozilla.org/en-US/android/addon/tampermonkey/)
 - [Documentação Tampermonkey](https://www.tampermonkey.net/documentation.php)
 - [Isolamento entre origens](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Same-origin_policy)
+
+
+## Duas telas — 0.8.2.4
+
+A abertura mostra um painel com relógio, Tempo e calendário, em composição horizontal inspirada em painéis automotivos. Deslizar para a direita abre os aparelhos; deslizar para a esquerda volta ao painel. Os botões Painel/Aparelhos oferecem a mesma navegação sem gesto. Gestos iniciados em controles e faixas horizontais não trocam de tela, e um gesto reconhecido sobre um cartão não envia um comando ao aparelho.
+
+O relógio em tela cheia e a troca de aparência permanecem visíveis. A tela cheia do navegador fica em Opções da casa (três pontos). O cabeçalho de contagem foi removido. Barras de rolagem ficam ocultas, mantendo a rolagem por toque. Barras e avisos do sistema Android/Firefox continuam sob controle do navegador e do sistema.
+
+As transições entre telas usam apenas transformações breves, com retorno elástico nos limites; não há animação contínua nem acompanhamento de cada movimento do dedo. Reduzir efeitos e a preferência do sistema por movimento reduzido desativam essas transições. Os cartões e seus eventos originais permanecem no DOM do Google Home.
+
+Validação: seis tamanhos entre 320×680 e 1280×800, CPU reduzida em 4×, clima simulado e HTML anonimizado; navegação em ambos os sentidos, troca de tema, relógio em tela cheia, menu de tela cheia e preservação do evento nativo de um aparelho. O desempenho no Firefox físico ainda depende do aparelho.

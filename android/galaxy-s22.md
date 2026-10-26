@@ -1,8 +1,8 @@
 # Galaxy S22 / Android 16 como painel HomeHub
 
-O Firefox com Tampermonkey e HomeHub continua sendo o navegador do painel. O userscript Android 0.8.2.3 adiciona o botão de tela cheia no topo e desativa a entrada automática no protetor de tela interno. O relógio em tela cheia continua disponível manualmente. Ao retornar de uma aba/tela oculta, o protetor interno é fechado para mostrar o painel.
+O Firefox com Tampermonkey e HomeHub continua sendo o navegador do painel. O userscript Android 0.8.2.4 oferece tela cheia no menu de três pontos e desativa a entrada automática no protetor de tela interno. O relógio em tela cheia continua disponível manualmente. Ao retornar de uma aba/tela oculta, o protetor interno é fechado para mostrar o painel.
 
-[Atualizar o HomeHub](https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js) no Firefox; confirme Atualizar no Tampermonkey e recarregue o Google Home. Toque no botão de quatro cantos no topo para entrar em tela cheia. O Firefox exige um toque para iniciar esse modo e pode sair dele por gesto, troca de app ou suspensão; o script não tenta forçar a reentrada nem interceptar comandos do sistema.
+[Atualizar o HomeHub](https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js) no Firefox; confirme Atualizar no Tampermonkey e recarregue o Google Home. Abra os três pontos e toque em Entrar em tela cheia. O Firefox exige um toque para iniciar esse modo e pode sair dele por gesto, troca de app ou suspensão; o script não tenta forçar a reentrada nem interceptar comandos do sistema.
 
 ## Desligar o painel após 5 minutos e acordar na página
 
@@ -39,7 +39,7 @@ O próprio fabricante aponta restrições de proteção sem provisionamento Devi
 - [Fully Single App Kiosk e restrições](https://www.fully-kiosk.com/docs/en/other-kiosk-apps/fully-single-app-kiosk)
 - [Despertar por toque](https://www.fully-kiosk.com/docs/en/faq/tap2wake)
 
-## Interface adaptada ao S22 — 0.8.2.3
+## Interface adaptada ao S22 — 0.8.2.4
 
 - Cabeçalho com ações de tela cheia e opções de 48 px. Aparência, relógio e dock ficam no menu de opções, com linhas de ação de 54 px.
 - Dois cartões por linha em retrato, com altura de 138 px, ícones de 30 px e superfícies opacas para melhorar contraste e reduzir o custo de blur no celular. O dock continua com vidro e permite rolar os cômodos horizontalmente.
@@ -51,7 +51,7 @@ O próprio fabricante aponta restrições de proteção sem provisionamento Devi
 
 As verificações locais usaram uma página anônima, APIs GM simuladas e viewports de 320 a 412 px em retrato e de 780 a 854 px em paisagem, incluindo escala de pixels 3. Isso representa condições de layout do S22; a confirmação física no Firefox do seu aparelho continua sendo um teste separado. Se estiver usando Site para computador e tudo aparecer reduzido, teste a visualização móvel do Firefox para que a largura responsiva siga a tela.
 
-## Rolagem e desempenho — 0.8.2.3
+## Rolagem e desempenho — 0.8.2.4
 
 Cabeçalho, categorias, widgets e cartões compartilham o contêiner de rolagem nativo do Google Home. Ao deslizar, o cabeçalho sai junto com os itens; a extensão não instala um handler para reposicionar elementos a cada scroll. Ao usar o botão de retornar ao Google Home original, os elementos da interface são retirados desse contêiner e reaproveitados ao reativar HomeHub.
 
@@ -64,3 +64,6 @@ Em Opções da casa, **Reduzir efeitos visuais** desliga o desfoque do dock e as
 O teste local cobriu rolagem real de 220 px do cabeçalho e filtros, transparência e blur do dock, alternância do modo leve, restauração da interface original e reativação em seis viewports de celular/tablet. Foi executado em Chromium com APIs GM simuladas e CPU desacelerada em 4×. A medição ociosa não encontrou solicitações contínuas de frame da camada de interface em 3,5 segundos; não há loop contínuo de animação. Isso não mede a RAM ou a GPU de um tablet físico de 4 GB nem garante uma taxa de quadros para qualquer aparelho: a página original do Google e o hardware também participam do custo.
 
 Referência de implementação: [animações eficientes e controle de camadas](https://web.dev/articles/animations-guide).
+
+
+A versão 0.8.2.4 separa o painel de widgets dos aparelhos. Deslize para a direita para abrir aparelhos e para a esquerda para voltar; os botões Painel/Aparelhos também alternam as telas. O relógio em tela cheia e a aparência ficam visíveis; a tela cheia do Firefox fica nos três pontos. As seções anteriores documentam a evolução do layout, substituída pela navegação em duas telas.

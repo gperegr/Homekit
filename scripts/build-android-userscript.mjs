@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=file=>readFile(path.join(root,file),'utf8');
 const manifest=JSON.parse(await read('chrome-extension/manifest.json'));
-const version=manifest.version+'.3';
+const version=manifest.version+'.4';
 const download='https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js';
 const metadata=`// ==UserScript==
 // @name         HomeHub — Google Home
@@ -38,13 +38,14 @@ widgets=widgets.replace(runtimeLine,'const runtime=homeHubUserscriptApi.runtime;
 const idleLine='const IDLE_DELAY=60*1000;';
 const armLine='if(active&&!document.hidden&&!ambient.open)idleTimer=';
 if(!widgets.includes(idleLine)||!widgets.includes(armLine))throw Error('O temporizador comum mudou; revise o modo Android.');
+widgets=widgets.replace('attach(parent){','attach(parent){parent=document.querySelector("#homehub-dashboard")||parent;');
 widgets=widgets.replace(idleLine,'const IDLE_DELAY=0;')
   .replace(armLine,'if(IDLE_DELAY>0&&active&&!document.hidden&&!ambient.open)idleTimer=');
 let content=await read('chrome-extension/content.js');
 const motionStartup='});startMotion();apply();';
 if(!content.includes(motionStartup))throw Error('O início dos efeitos mudou; revise o perfil Android.');
 content=content.replace(motionStartup,'});apply();')
-  .replace('#homehub-ui,#homehub-widgets','#homehub-ui,#homehub-scroll-heading,#homehub-widgets');
+  .replace('#homehub-ui,#homehub-widgets','#homehub-ui,#homehub-dashboard,#homehub-scroll-heading,#homehub-widgets');
 const css=(await Promise.all(['theme.css','widgets.css','ambient.css'].map(file=>read('chrome-extension/'+file))))
   .concat(await read('safari-extension/safari.css'),await read('android/phone.css'))
   .join('\n').replaceAll('#homehub-ui',':is(#homehub-ui,#homehub-scroll-heading)');

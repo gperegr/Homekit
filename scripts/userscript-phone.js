@@ -8,12 +8,14 @@ try{
   }
 }catch(_){}
 document.documentElement.setAttribute('data-homehub-android','');
+const homeHubDashboard=document.createElement('main');
+homeHubDashboard.id='homehub-dashboard';homeHubDashboard.setAttribute('aria-label','Painel da casa');
+document.body.append(homeHubDashboard);
+
 function homeHubStartPhoneUi(){
   const root=document.documentElement;
-  const shortLandscape=matchMedia('(orientation:landscape) and (max-height:500px) and (min-width:601px)');
-  let summary=['expanded','collapsed'].includes(homeHubPhonePreferences?.summary)?homeHubPhonePreferences.summary:'auto';
   let effects=homeHubPhonePreferences?.effects==='reduced'?'reduced':'balanced';
-  let ui,dialog,menu,summaryButton,effectsButton,header,categories,scrollHeading,frame=0,lastSaved='';
+  let ui,dialog,menu,effectsButton,header,categories,scrollHeading,frame=0,lastSaved='';
   const ns='http://www.w3.org/2000/svg';
   function svg(path){
     const image=document.createElementNS(ns,'svg');image.setAttribute('viewBox','0 0 24 24');image.setAttribute('aria-hidden','true');
@@ -26,33 +28,34 @@ function homeHubStartPhoneUi(){
     if(span.textContent!==text)span.textContent=text;
   }
   function save(){
-    const value={theme:root.dataset.homehubTheme,dock:root.dataset.homehubDock,summary,effects};
+    const value={theme:root.dataset.homehubTheme,dock:root.dataset.homehubDock,effects};
     const signature=JSON.stringify(value);
     if(signature===lastSaved)return;lastSaved=signature;
     GM.setValue('homehub.android.preferences',value).catch(()=>{});
-  }
-  function applySummary(){
-    const collapsed=summary==='collapsed'||(summary==='auto'&&shortLandscape.matches);
-    root.dataset.homehubSummary=collapsed?'collapsed':'expanded';
-    if(summaryButton){
-      summaryButton.setAttribute('aria-expanded',String(!collapsed));
-      label(summaryButton,collapsed?'Mostrar relógio, calendário e Tempo':'Recolher relógio, calendário e Tempo');
-    }
   }
   function applyEffects(){
     root.dataset.homehubEffects=effects;
     if(effectsButton)effectsButton.setAttribute('aria-pressed',String(effects==='reduced'));
   }
+  let screen='dashboard',pager;
+  function showScreen(next){
+    screen=next;root.dataset.homehubScreen=screen;
+    const devices=document.querySelector('ghw-devices');
+    for(const [element,hidden] of [[homeHubDashboard,screen!=='dashboard'],[devices,screen!=='devices']]){
+      if(element){element.inert=hidden&&root.hasAttribute('data-homehub-active');element.setAttribute('aria-hidden',String(hidden&&root.hasAttribute('data-homehub-active')));}
+    }
+    categories?.toggleAttribute('inert',screen!=='devices');
+    if(pager)for(const button of pager.children)button.setAttribute('aria-current',String(button.dataset.screen===screen));
+  }
   function moveHeading(){
     const scroller=document.querySelector('ghw-devices .devices-container > mat-sidenav-content');
+    if(header&&header.parentElement!==ui)ui.append(header);
     if(root.hasAttribute('data-homehub-active')&&scroller){
       if(!scrollHeading){scrollHeading=document.createElement('div');scrollHeading.id='homehub-scroll-heading';}
       if(scrollHeading.parentElement!==scroller)scroller.prepend(scrollHeading);
-      for(const item of [header,categories])if(item&&item.parentElement!==scrollHeading)scrollHeading.append(item);
-    }else{
-      for(const item of [header,categories])if(item&&item.parentElement!==ui)ui.append(item);
-      scrollHeading?.remove();
-    }
+      if(categories&&categories.parentElement!==scrollHeading)scrollHeading.append(categories);
+    }else{if(categories&&categories.parentElement!==ui)ui.append(categories);scrollHeading?.remove();}
+    showScreen(screen);
   }
   function mount(host){
     ui=host;
@@ -63,16 +66,21 @@ function homeHubStartPhoneUi(){
     const title=document.createElement('h2');title.id='homehub-phone-tools-title';title.textContent='Opções da casa';
     const close=document.createElement('button');close.type='button';close.className='hh-phone-close';close.setAttribute('aria-label','Fechar opções');close.textContent='×';close.addEventListener('click',()=>dialog.close());
     heading.append(title,close);dialog.append(heading);
-    summaryButton=document.createElement('button');summaryButton.type='button';summaryButton.className='hh-phone-action hh-summary-toggle';summaryButton.setAttribute('aria-controls','homehub-widgets');
-    summaryButton.append(svg('M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'));
-    summaryButton.addEventListener('click',()=>{summary=root.dataset.homehubSummary==='collapsed'?'expanded':'collapsed';applySummary();save();});
     effectsButton=document.createElement('button');effectsButton.type='button';effectsButton.className='hh-phone-action hh-effects-toggle';
     effectsButton.append(svg('m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3Z'));
     label(effectsButton,'Reduzir efeitos visuais');
     effectsButton.addEventListener('click',()=>{effects=effects==='reduced'?'balanced':'reduced';applyEffects();save();});
-    dialog.append(summaryButton,effectsButton);ui.append(dialog);
+    dialog.append(effectsButton);ui.append(dialog);
+    pager=document.createElement('nav');pager.id='homehub-pages';pager.setAttribute('aria-label','Telas da casa');
+    for(const [name,text] of [['dashboard','Painel'],['devices','Aparelhos']]){
+      const button=document.createElement('button');button.type='button';button.dataset.screen=name;
+      button.textContent=text;button.addEventListener('click',()=>showScreen(name));pager.append(button);
+    }
+    ui.append(pager);
+    ui.querySelector('.hh-dock')?.addEventListener('click',()=>showScreen('devices'));
+
     menu=document.createElement('button');menu.type='button';menu.className='hh-tool-button hh-tools-toggle';menu.setAttribute('aria-label','Opções da casa');menu.setAttribute('aria-haspopup','dialog');menu.setAttribute('aria-controls',dialog.id);
-    menu.append(svg('M5 12h.01M12 12h.01M19 12h.01'));menu.addEventListener('click',()=>{applySummary();if(!dialog.open)dialog.showModal();});header.append(menu);
+    menu.append(svg('M5 12h.01M12 12h.01M19 12h.01'));menu.addEventListener('click',()=>{if(!dialog.open)dialog.showModal();});header.append(menu);
     // Close before the existing action handler runs, especially before opening the ambient dialog.
     dialog.addEventListener('click',event=>{if(event.target.closest('.hh-phone-action'))dialog.close();},true);
     dialog.addEventListener('click',event=>{
@@ -89,10 +97,13 @@ function homeHubStartPhoneUi(){
     moveHeading();
     const overviewLabel=ui.querySelector('.hh-dock > .hh-nav .hh-button-label');
     if(overviewLabel&&overviewLabel.textContent!=='Casa')overviewLabel.textContent='Casa';
-    for(const selector of ['.hh-theme','.hh-ambient-toggle','.hh-dock-toggle']){
+    for(const selector of ['.hh-theme','.hh-ambient-toggle','.hh-dock-toggle','.hh-fullscreen-toggle']){
       const button=ui.querySelector(selector)||header?.querySelector(selector);if(!button)continue;
-      button.classList.add('hh-phone-action');
-      if(button.parentElement!==dialog)dialog.append(button);
+      const visible=selector==='.hh-theme'||selector==='.hh-ambient-toggle';
+      button.classList.toggle('hh-phone-action',!visible);
+      const parent=visible?header:dialog;if(button.parentElement!==parent)parent.append(button);
+      if(selector==='.hh-fullscreen-toggle')label(button,document.fullscreenElement?'Sair da tela cheia':'Entrar em tela cheia');
+
       if(selector==='.hh-theme')label(button,root.dataset.homehubTheme==='dark'?'Usar aparência clara':'Usar aparência escura');
       if(selector==='.hh-dock-toggle')label(button,root.dataset.homehubDock==='compact'?'Mostrar nomes dos cômodos':'Compactar barra de cômodos');
       if(selector==='.hh-ambient-toggle'){
@@ -101,7 +112,7 @@ function homeHubStartPhoneUi(){
       }
     }
     if((host.hidden||!root.hasAttribute('data-homehub-active'))&&dialog.open)dialog.close();
-    applySummary();applyEffects();save();
+    applyEffects();save();
   }
   function schedule(){if(!frame)frame=requestAnimationFrame(sync);}
   new MutationObserver(changes=>{
@@ -112,7 +123,6 @@ function homeHubStartPhoneUi(){
     }))return;
     schedule();
   }).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['data-homehub-active','data-homehub-theme','data-homehub-dock','hidden']});
-  shortLandscape.addEventListener('change',applySummary);
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden||!root.hasAttribute('data-homehub-active'))return;
     schedule();
@@ -124,5 +134,30 @@ function homeHubStartPhoneUi(){
       }
     }).catch(()=>{});
   });
+  let touch,suppressClickUntil=0;
+  document.addEventListener('touchstart',event=>{
+    if(!root.hasAttribute('data-homehub-active')||event.touches.length!==1||document.querySelector('dialog[open]'))return;
+    if(event.target.closest('button,input,a,.hh-rooms,.hh-categories'))return;
+    const point=event.touches[0];touch={x:point.clientX,y:point.clientY,time:performance.now()};
+  },{passive:true});
+  document.addEventListener('touchend',event=>{
+    if(!touch)return;const start=touch;touch=null;const point=event.changedTouches[0];if(!point)return;
+    const dx=point.clientX-start.x,dy=point.clientY-start.y;
+    if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.5||performance.now()-start.time>800)return;
+    suppressClickUntil=performance.now()+400;
+    if(dx>0&&screen==='dashboard')showScreen('devices');
+    else if(dx<0&&screen==='devices')showScreen('dashboard');
+    else if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&effects!=='reduced'){
+      const panel=screen==='dashboard'?homeHubDashboard:document.querySelector('ghw-devices');
+      panel?.animate([{translate:'0'},{translate:(Math.sign(dx)*18)+'px'},{translate:'0'}],{duration:260,easing:'ease-out'});
+    }
+  },{passive:true});
+  document.addEventListener('click',event=>{if(performance.now()<suppressClickUntil){event.preventDefault();event.stopImmediatePropagation();}},true);
+  document.addEventListener('touchcancel',()=>{touch=null;},{passive:true});
+  document.addEventListener('keydown',event=>{
+    if(event.target.closest('input,textarea,button')||document.querySelector('dialog[open]'))return;
+    if(event.key==='ArrowRight')showScreen('devices');if(event.key==='ArrowLeft')showScreen('dashboard');
+  });
   sync();
 }
+

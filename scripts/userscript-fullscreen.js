@@ -8,6 +8,7 @@
     const label=active?'Sair da tela cheia':'Entrar em tela cheia';
     button.title=label;button.setAttribute('aria-label',label);
     button.setAttribute('aria-pressed',String(active));
+    const text=button.querySelector('.hh-phone-action-label');if(text)text.textContent=label;
   }
   function attach(){
     if(button?.isConnected)return;
