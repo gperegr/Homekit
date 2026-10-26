@@ -15,7 +15,7 @@ Se o Google Home não exibir Dispositivos na versão móvel, experimente Site pa
 
 ## Como funciona
 
-Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.8 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
+Para o Galaxy S22 com Android 16, veja o [guia de painel com tela cheia, suspensão de cinco minutos e bloqueio de saída](galaxy-s22.md). A versão Android 0.8.2.9 inclui o botão de tela cheia e deixa a suspensão física por conta do Android; o protetor de tela interno passa a ser apenas manual.
 
 O userscript aplica os mesmos estilos e controles da extensão diretamente à página do Google Home, dentro da sessão normal do Firefox. O gerenciador mantém o script instalado entre reinicializações. A interface Android agrupa opções num menu, ajusta a grade à orientação e separa os widgets e os aparelhos em duas telas. O script não roda em `accounts.google.com`, não automatiza login e não copia dados de aparelhos para um servidor.
 
@@ -71,3 +71,12 @@ Na versão 0.8.2.7, o menu de três pontos permite ocultar ou mostrar separadame
 A rolagem vertical pode começar sobre o cartão de um aparelho: pan-y tem prioridade em toda a superfície do cartão. Os handlers de arraste por touch/pointer do Google não recebem esses gestos, enquanto o click original continua sendo usado para toques intencionais. A partir de 8 px de movimento, o gesto deixa de ser um toque; a direção fica travada em vertical ou horizontal até terminar. Arrastes verticais, horizontais e cancelamentos impedem o click de compatibilidade que poderia ativar um aparelho. Um novo toque limpa essa proteção temporária para continuar permitindo comandos intencionais.
 
 Verificação com Chromium móvel, HTML anonimizado e CPU desacelerada em 4×: rolagem iniciada no botão de um aparelho avançou 153 px; o gesto e um click atrasado não ativaram o aparelho, e os dois toques intencionais de controle ativaram uma vez cada. Handlers simulados que tentavam consumir o toque foram bloqueados. A troca horizontal entre telas também é verificada separadamente. O teste físico no Firefox continua dependendo do aparelho.
+
+
+### Prioridade de resposta — 0.8.2.9
+
+A interface usa Pointer Events passivos para acompanhar o dedo. Os handlers de touch são apenas guardas passivos: a rolagem vertical não precisa aguardar cancelamento por JavaScript. O clique nativo permanece responsável pelo comando real; a pressão no cartão recebe feedback visual imediato sem antecipar o estado ligado/desligado. O encaixe ao soltar usa uma animação de transform de 220 ms com posições explícitas, sem leitura forçada de layout no encerramento do gesto. Não há requestAnimationFrame contínuo: só há atualização quando o dedo muda de posição.
+
+A reconciliação ignora mutações fora dos aparelhos e da estrutura da casa. Mudanças nativas são agrupadas; a varredura fica adiada durante o toque e a rolagem e volta após a interação. O menu só sincroniza mudanças estruturais ou de preferências, e o observador de instalação de tela cheia se desconecta depois de instalar o botão. Durante o arraste horizontal o dock deixa de aplicar blur.
+
+Comparação controlada em Chromium móvel, CPU desacelerada em 4×, HTML anonimizado e clima simulado: 40 alterações de classe em um elemento fora dos aparelhos causaram 7 varreduras completas na 0.8.2.8 e zero na 0.8.2.9. Uma mudança nativa durante um toque causou uma varredura imediata na anterior; na nova, zero durante o toque e uma após soltar. O clique foi entregue cerca de 5,5 ms após pointerup na execução nova, contra 7,2 ms na anterior; esse valor isolado não mede latência da rede, resposta do aparelho real ou fluidez física no Firefox. Os testes de arraste horizontal e rolagem por cima de aparelho passaram, incluindo bloqueio de clique atrasado e preservação do toque seguinte.

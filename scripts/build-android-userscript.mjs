@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=file=>readFile(path.join(root,file),'utf8');
 const manifest=JSON.parse(await read('chrome-extension/manifest.json'));
-const version=manifest.version+'.8';
+const version=manifest.version+'.9';
 const download='https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js';
 const metadata=`// ==UserScript==
 // @name         HomeHub — Google Home
@@ -46,6 +46,11 @@ const motionStartup='});startMotion();apply();';
 if(!content.includes(motionStartup))throw Error('O início dos efeitos mudou; revise o perfil Android.');
 content=content.replace(motionStartup,'});apply();')
   .replace('#homehub-ui,#homehub-widgets','#homehub-ui,#homehub-dashboard,#homehub-scroll-heading,#homehub-widgets');
+const reconcileStart=content.indexOf('  function schedule(changes) {');
+const reconcileEnd=content.indexOf('  function start() {',reconcileStart);
+if(reconcileStart<0||reconcileEnd<0)throw Error('O observador comum mudou; revise a reconciliação Android.');
+content=content.slice(0,reconcileStart)+await read('scripts/userscript-reconcile.js')+content.slice(reconcileEnd);
+content=content.replace('if(!ui)makeUi();ui.hidden=false;','if(!ui)makeUi();if(ui.hidden)ui.hidden=false;');
 const css=(await Promise.all(['theme.css','widgets.css','ambient.css'].map(file=>read('chrome-extension/'+file))))
   .concat(await read('safari-extension/safari.css'),await read('android/phone.css'))
   .join('\n').replaceAll('#homehub-ui',':is(#homehub-ui,#homehub-scroll-heading)');

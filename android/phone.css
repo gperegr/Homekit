@@ -230,10 +230,10 @@ html[data-homehub-android][data-homehub-active] #homehub-dashboard {
   display:flex;position:fixed;inset:0;z-index:2;box-sizing:border-box;
   align-items:center;justify-content:center;overflow:auto;
   padding:calc(72px + env(safe-area-inset-top,0px)) 18px calc(68px + env(safe-area-inset-bottom,0px));
-  touch-action:pan-y;transform:translateX(0);transition:transform .38s cubic-bezier(.2,.85,.25,1.08);
+  touch-action:pan-y;transform:translateX(0);transition:transform .22s cubic-bezier(.2,.8,.25,1);
 }
 html[data-homehub-android][data-homehub-active] ghw-devices {
-  transform:translateX(-100vw);transition:transform .38s cubic-bezier(.2,.85,.25,1.08)!important;
+  transform:translateX(-100vw);transition:transform .22s cubic-bezier(.2,.8,.25,1)!important;
   top:calc(64px + env(safe-area-inset-top,0px))!important;touch-action:pan-y;
 }
 html[data-homehub-android][data-homehub-screen="devices"] ghw-devices {transform:translateX(0);}
@@ -342,4 +342,12 @@ html[data-homehub-android][data-homehub-active][data-homehub-hide-rooms="true"] 
 html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card],
 html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card] * {
   touch-action:pan-y!important;
+}
+
+/* Immediate press feedback; the real device state still comes from Google Home. */
+html[data-homehub-android][data-homehub-active] ghw-devices [data-homehub-card][data-homehub-pressed] {
+  opacity:.72!important;transition:none!important;
+}
+html[data-homehub-android][data-homehub-dragging] #homehub-ui .hh-dock {
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
 }

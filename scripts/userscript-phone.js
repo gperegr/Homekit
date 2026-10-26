@@ -7,6 +7,7 @@ try{
     }
   }
 }catch(_){}
+const homeHubInteraction={active:false,until:0};
 document.documentElement.setAttribute('data-homehub-android','');
 const homeHubDashboard=document.createElement('main');
 homeHubDashboard.id='homehub-dashboard';homeHubDashboard.setAttribute('aria-label','Painel da casa');
@@ -132,13 +133,12 @@ function homeHubStartPhoneUi(){
   }
   function schedule(){if(!frame)frame=requestAnimationFrame(sync);}
   new MutationObserver(changes=>{
-    if(changes.every(change=>{
-      const target=change.target.nodeType===1?change.target:change.target.parentElement;
-      if(change.type==='attributes')return target!==root&&target!==ui;
-      return !!target?.closest('#homehub-widgets,[data-homehub-card],.homehub-symbol,.homehub-room-label');
-    }))return;
-    schedule();
-  }).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['data-homehub-active','data-homehub-theme','data-homehub-dock','hidden']});
+    if(changes.some(change=>{
+      if(change.type==='attributes')return (change.target===root||change.target===ui)&&change.oldValue!==change.target.getAttribute(change.attributeName);
+      return [...change.addedNodes,...change.removedNodes].some(node=>node.nodeType===1&&
+        (node.matches('#homehub-ui,ghw-devices,mat-sidenav-content,.devices-container')||node.querySelector('#homehub-ui,ghw-devices,mat-sidenav-content,.devices-container')));
+    }))schedule();
+  }).observe(root,{childList:true,subtree:true,attributes:true,attributeOldValue:true,attributeFilter:['data-homehub-active','data-homehub-theme','data-homehub-dock','hidden']});
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden||!root.hasAttribute('data-homehub-active'))return;
     schedule();
@@ -151,6 +151,7 @@ function homeHubStartPhoneUi(){
     }).catch(()=>{});
   });
   let touch,suppressClickUntil=0,dragFrame=0;
+  const settling=new Set();
   function paintDrag(){
     dragFrame=0;if(!touch?.horizontal)return;
     const dx=touch.offset;
@@ -159,65 +160,77 @@ function homeHubStartPhoneUi(){
   }
   function finishDrag(cancelled=false){
     if(!touch)return;
-    const drag=touch;
+    const drag=touch;touch=null;
+    homeHubInteraction.active=false;homeHubInteraction.until=performance.now()+80;
+    drag.card?.removeAttribute('data-homehub-pressed');
     if(drag.moved||(cancelled&&drag.card))suppressClickUntil=performance.now()+500;
-    if(drag.horizontal){
-      if(dragFrame){cancelAnimationFrame(dragFrame);dragFrame=0;}
-      paintDrag();
-      // Commit the last dragged position before restoring the short CSS snap transition.
-      homeHubDashboard.getBoundingClientRect();
-      suppressClickUntil=performance.now()+400;
-      const forward=drag.screen==='dashboard'?1:-1;
-      const velocity=performance.now()-drag.lastTime<90?drag.velocity:0;
-      const advance=!cancelled&&(drag.dx*forward>drag.width*.23||
-        (drag.dx*forward>24&&velocity*forward>.45));
-      root.removeAttribute('data-homehub-dragging');
-      touch=null;
-      showScreen(advance?(drag.screen==='dashboard'?'devices':'dashboard'):drag.screen);
-      homeHubDashboard.style.removeProperty('transform');
-      drag.devices?.style.removeProperty('transform');
-    }else touch=null;
+    if(dragFrame){cancelAnimationFrame(dragFrame);dragFrame=0;}
+    if(!drag.horizontal)return;
+    const forward=drag.screen==='dashboard'?1:-1;
+    const velocity=performance.now()-drag.lastTime<90?drag.velocity:0;
+    const advance=!cancelled&&(drag.dx*forward>drag.width*.23||
+      (drag.dx*forward>24&&velocity*forward>.45));
+    const next=advance?(drag.screen==='dashboard'?'devices':'dashboard'):drag.screen;
+    showScreen(next);
+    const reduced=effects==='reduced'||matchMedia('(prefers-reduced-motion:reduce)').matches;
+    // Explicit start/end transforms avoid forcing a layout read on release.
+    for(const [panel,start,end] of [[homeHubDashboard,(drag.screen==='devices'?drag.width:0)+drag.offset,next==='devices'?drag.width:0],
+      [drag.devices,(drag.screen==='dashboard'?-drag.width:0)+drag.offset,next==='dashboard'?-drag.width:0]]){
+      if(!panel)continue;
+      if(!reduced&&Math.abs(start-end)>.5){
+        const animation=panel.animate([{transform:'translateX('+start+'px)'},{transform:'translateX('+end+'px)'}],
+          {duration:220,easing:'cubic-bezier(.2,.8,.25,1)'});
+        settling.add(animation);animation.finished.catch(()=>{}).finally(()=>settling.delete(animation));
+      }
+      panel.style.removeProperty('transform');
+    }
+    root.removeAttribute('data-homehub-dragging');
   }
-  document.addEventListener('touchstart',event=>{
-    if(event.touches.length!==1){finishDrag(true);return;}
+  document.addEventListener('pointerdown',event=>{
+    if(event.pointerType!=='touch'||!event.isPrimary){if(touch)finishDrag(true);return;}
     suppressClickUntil=0;
     if(!root.hasAttribute('data-homehub-active')||document.querySelector('dialog[open]'))return;
     if(event.target.closest('input,textarea,select,a,[contenteditable=true],.hh-rooms,.hh-categories')||
       (event.target.closest('button')&&!event.target.closest('[data-homehub-card]')))return;
-    const point=event.touches[0];
+    for(const animation of settling)animation.cancel();settling.clear();
     const card=event.target.closest('[data-homehub-card]');
-    // Native click remains the tap action. Keep Google's drag handlers out of touch scrolling.
-    if(card)event.stopPropagation();
-    touch={x:point.clientX,y:point.clientY,lastX:point.clientX,lastTime:performance.now(),
+    if(card){event.stopPropagation();card.setAttribute('data-homehub-pressed','');}
+    homeHubInteraction.active=true;
+    touch={id:event.pointerId,x:event.clientX,y:event.clientY,lastX:event.clientX,lastTime:performance.now(),
       velocity:0,dx:0,offset:0,card,moved:false,vertical:false,width:innerWidth,screen,devices:document.querySelector('ghw-devices')};
   },{passive:true,capture:true});
-  document.addEventListener('touchmove',event=>{
-    if(!touch)return;if(event.touches.length!==1){finishDrag(true);return;}
-    const point=event.touches[0],dx=point.clientX-touch.x,dy=point.clientY-touch.y;
-    if(touch.vertical){if(touch.card)event.stopPropagation();return;}
+  document.addEventListener('pointermove',event=>{
+    if(!touch||event.pointerId!==touch.id)return;
+    if(touch.card)event.stopPropagation();
+    const dx=event.clientX-touch.x,dy=event.clientY-touch.y;
+    if(touch.vertical)return;
     if(!touch.horizontal){
-      if(Math.max(Math.abs(dx),Math.abs(dy))<8){if(touch.card)event.stopPropagation();return;}
-      touch.moved=true;suppressClickUntil=performance.now()+500;
-      if(Math.abs(dx)<Math.abs(dy)*1.25){touch.vertical=true;if(touch.card)event.stopPropagation();return;}
+      if(Math.max(Math.abs(dx),Math.abs(dy))<8)return;
+      touch.moved=true;touch.card?.removeAttribute('data-homehub-pressed');suppressClickUntil=performance.now()+500;
+      if(Math.abs(dx)<Math.abs(dy)*1.25){touch.vertical=true;return;}
       touch.horizontal=true;root.setAttribute('data-homehub-dragging','');
     }
-    if(event.cancelable)event.preventDefault();
     event.stopPropagation();
     const now=performance.now(),elapsed=now-touch.lastTime;
-    if(elapsed>0)touch.velocity=(point.clientX-touch.lastX)/elapsed;
-    touch.lastX=point.clientX;touch.lastTime=now;touch.dx=dx;
+    if(elapsed>0)touch.velocity=(event.clientX-touch.lastX)/elapsed;
+    touch.lastX=event.clientX;touch.lastTime=now;touch.dx=dx;
     const direction=touch.screen==='dashboard'?1:-1;
     touch.offset=dx*direction<0?dx*.18:Math.sign(dx)*Math.min(Math.abs(dx),touch.width);
     if(!dragFrame)dragFrame=requestAnimationFrame(paintDrag);
-  },{passive:false,capture:true});
-  document.addEventListener('touchend',event=>{if(touch?.horizontal||touch?.card)event.stopPropagation();if(touch?.moved&&event.cancelable)event.preventDefault();finishDrag();},{passive:false,capture:true});
-  document.addEventListener('touchcancel',()=>finishDrag(true),{passive:true,capture:true});
-  // Do not cancel pointerdown: the browser needs it to start native pan-y scrolling and synthesize taps.
-  for(const type of ['pointerdown','pointermove','pointerup'])document.addEventListener(type,event=>{
-    if(event.pointerType!=='touch'||!root.hasAttribute('data-homehub-active')||
-      !event.target.closest('[data-homehub-card]')||event.target.closest('input,textarea,select,[contenteditable=true]'))return;
-    event.stopPropagation();
-  },{capture:true,passive:true});
+  },{passive:true,capture:true});
+  document.addEventListener('pointerup',event=>{
+    if(!touch||event.pointerId!==touch.id)return;
+    if(touch.card||touch.horizontal)event.stopPropagation();finishDrag();
+  },{passive:true,capture:true});
+  document.addEventListener('pointercancel',event=>{if(event.pointerId===touch?.id)finishDrag(true);},{passive:true,capture:true});
+  // All touch listeners are passive: native vertical scrolling never waits for a cancellable JS handler.
+  for(const type of ['touchstart','touchmove','touchend'])document.addEventListener(type,event=>{
+    if(root.hasAttribute('data-homehub-active')&&event.target.closest('[data-homehub-card]')&&
+      !event.target.closest('input,textarea,select,[contenteditable=true]'))event.stopPropagation();
+  },{passive:true,capture:true});
+  document.addEventListener('scroll',event=>{
+    if(event.target?.closest?.('ghw-devices'))homeHubInteraction.until=performance.now()+100;
+  },{passive:true,capture:true});
   window.addEventListener('resize',()=>finishDrag(true));
   document.addEventListener('visibilitychange',()=>{if(document.hidden)finishDrag(true);});
   document.addEventListener('click',event=>{if(performance.now()<suppressClickUntil){event.preventDefault();event.stopImmediatePropagation();}},true);

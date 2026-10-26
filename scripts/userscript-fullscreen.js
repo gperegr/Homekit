@@ -44,6 +44,7 @@
     const ambient=document.querySelector('#homehub-ambient');
     if(ambient?.open)ambient.close();
   });
-  new MutationObserver(attach).observe(document.documentElement,{childList:true,subtree:true});
+  const observer=new MutationObserver(()=>{attach();if(button?.isConnected)observer.disconnect();});
+  observer.observe(document.documentElement,{childList:true,subtree:true});
   attach();
 })();
