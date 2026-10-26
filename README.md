@@ -26,6 +26,12 @@ A distribuição Safari 0.8.2 fica em [`safari-extension`](safari-extension/READ
 
 Execute `node scripts/build-safari.mjs` para gerar `dist/HomeHub-Safari-0.8.2.zip`. Para instalar nos dispositivos móveis, use o empacotamento pelo App Store Connect/TestFlight ou execute `scripts/Gerar projeto Apple.command` com Xcode completo instalado. A pasta e o ZIP contêm recursos de extensão, não um aplicativo Apple já assinado. Consulte o guia Safari para assinatura, permissões e limitações dos testes.
 
+## Android no navegador
+
+Use o Firefox para Android com Tampermonkey e o [script HomeHub](https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js). O [guia de instalação](android/README.md) e a página [`android.html`](android.html) explicam os passos. O script usa a sessão real do Google Home no navegador; nenhum APK próprio é necessário.
+
+Para gerar o script novamente, execute `node scripts/build-android-userscript.mjs`. O HTML serve como guia; não incorpora nem tenta controlar uma página de outro domínio.
+
 ## Experimento anterior: Home Assistant
 
 O código experimental permanece no mockup enquanto essa integração está pausada.

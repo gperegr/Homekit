@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>HomeHub no Android</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;padding:48px 22px 64px;background:#11151d;color:#edf1f9;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  main{max-width:650px;margin:auto}.brand{color:#9fbef4;font-size:13px;letter-spacing:.14em;text-transform:uppercase}h1{font-size:clamp(32px,7vw,48px);line-height:1.1;letter-spacing:-.05em;margin:16px 0}p{color:#b7c1d3}ol{padding:0;list-style:none;counter-reset:steps}li{counter-increment:steps;margin:16px 0;padding:22px;border:1px solid #354052;border-radius:22px;background:#202733}li::before{content:counter(steps);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#354b6f;color:#dce9ff;margin-right:9px}strong{font-weight:650}a{color:#b2d1ff}a.button{display:block;margin-top:15px;padding:12px 18px;border-radius:13px;background:#3979da;color:white;text-decoration:none;text-align:center;font-weight:600}.note{font-size:13px}.footer{margin-top:36px;font-size:13px}details{padding:15px 0;border-top:1px solid #354052}summary{cursor:pointer;font-weight:600}code{font-size:.9em;overflow-wrap:anywhere}
+</style>
+<main>
+  <div class="brand">HomeHub · Android</div>
+  <h1>Sua casa, no navegador.</h1>
+  <p>Use nossa interface diretamente no Google Home, com Firefox e Tampermonkey. Sem criar um aplicativo Android próprio.</p>
+  <ol>
+    <li><strong>Instale o Firefox no Android</strong><p>Use o Firefox atualizado e faça os próximos passos dentro dele.</p><a class="button" href="https://www.mozilla.org/pt-BR/firefox/browsers/mobile/android/">Obter Firefox</a></li>
+    <li><strong>Adicione o Tampermonkey</strong><p>É a extensão que executa o HomeHub automaticamente. Na loja do Firefox, toque em adicionar e confirme a instalação.</p><a class="button" href="https://addons.mozilla.org/pt-BR/android/addon/tampermonkey/">Adicionar Tampermonkey</a></li>
+    <li><strong>Instale o script HomeHub</strong><p>Com o Tampermonkey ativo, abra o link e confirme <b>Instalar</b> na tela dele.</p><a class="button" href="https://raw.githubusercontent.com/gperegr/Homekit/main/dist/HomeHub-Android.user.js">Instalar HomeHub</a></li>
+    <li><strong>Abra sua casa</strong><p>Entre na sua conta Google no próprio Firefox e abra <b>Dispositivos</b>. O HomeHub aplica a interface quando os aparelhos carregarem. Depois, escolha a cidade no Tempo.</p><a class="button" href="https://home.google.com/">Abrir Google Home</a></li>
+  </ol>
+  <details><summary>O link mostrou um monte de código?</summary><p>Confira se você está no Firefox e se o Tampermonkey está ativo. Pelo menu de extensões do Firefox, abra o painel do Tampermonkey. Nas configurações/utilitários, use a opção de instalar/importar por URL e cole o endereço do botão <b>Instalar HomeHub</b> acima.</p></details>
+  <details><summary>Apareceu o Google Home original?</summary><p>Atualize a página. No menu do Tampermonkey, confira se HomeHub está habilitado. Se a versão móvel não mostrar Dispositivos, tente <b>Site para computador</b> no menu do Firefox.</p><p>Este é um protótipo: precisamos validar login e controles no seu aparelho. A interface depende da tela que o Google disponibiliza para o navegador.</p></details>
+  <details><summary>Preciso reinstalar quando fechar o navegador?</summary><p>O script instalado fica salvo no Tampermonkey e é executado nas próximas visitas ao Google Home. Use uma aba normal para manter a sessão e as configurações.</p></details>
+  <p class="note">Esta página é apenas o guia de instalação. Ela não conecta sua conta nem incorpora o Google Home. O script atua somente em <code>home.google.com</code>; as consultas externas de clima usam Open-Meteo.</p>
+  <p class="footer"><a href="https://github.com/gperegr/Homekit">Código do projeto</a> · <a href="https://github.com/gperegr/Homekit/blob/main/android/README.md">Guia e limitações</a></p>
+</main>
+</html>
